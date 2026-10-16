@@ -1,0 +1,18 @@
+
+[shaped_v2_seed42] training for 1,000,000 steps...
+  1,015,808 steps | score  261.7 ±  26.1 | landed  97.0% | crashed  0.0% | never settled  0.0% | fuel 135.3
+  done in 1.6 min -> SOLVED, saved models/shaped_v2_seed42.zip
+
+[shaped_v2_seed142] training for 1,000,000 steps...
+  1,015,808 steps | score  261.7 ±  33.2 | landed  98.0% | crashed  1.0% | never settled  1.0% | fuel 139.6
+  done in 1.5 min -> SOLVED, saved models/shaped_v2_seed142.zip
+
+[shaped_v2_seed242] training for 1,000,000 steps...
+  1,015,808 steps | score  265.8 ±  21.8 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 135.3
+  done in 1.5 min -> SOLVED, saved models/shaped_v2_seed242.zip
+
+=== shaped_v2: 3 seeds ===
+  seed  42 | 1,015,808 steps | score  261.7 ±  26.1 | landed  97.0% | crashed  0.0% | never settled  0.0% | fuel 135.3
+  seed 142 | 1,015,808 steps | score  261.7 ±  33.2 | landed  98.0% | crashed  1.0% | never settled  1.0% | fuel 139.6
+  seed 242 | 1,015,808 steps | score  265.8 ±  21.8 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 135.3
+  mean across seeds: score 263.1 ± 1.9, landed 98.3% ± 1.2%

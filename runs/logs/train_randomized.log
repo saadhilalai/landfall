@@ -1,0 +1,19 @@
+
+[randomized_seed42] training for 1,000,000 steps...
+  1,015,808 steps | score  213.7 ±  22.6 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 314.6
+  done in 1.8 min -> SOLVED, saved models/randomized_seed42.zip
+
+[randomized_seed142] training for 1,000,000 steps...
+  1,015,808 steps | score  231.9 ±  42.9 | landed  93.0% | crashed  2.0% | never settled  0.0% | fuel 212.8
+  done in 1.9 min -> SOLVED, saved models/randomized_seed142.zip
+
+[randomized_seed242] training for 1,000,000 steps...
+  1,015,808 steps | score  178.8 ±  90.6 | landed  56.0% | crashed 14.0% | never settled  5.0% | fuel 224.3
+  1,277,952 steps | score  216.0 ±  65.4 | landed  84.0% | crashed  5.0% | never settled  4.0% | fuel 210.2
+  done in 2.1 min -> SOLVED, saved models/randomized_seed242.zip
+
+=== randomized: 3 seeds ===
+  seed  42 | 1,015,808 steps | score  213.7 ±  22.6 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 314.6
+  seed 142 | 1,015,808 steps | score  231.9 ±  42.9 | landed  93.0% | crashed  2.0% | never settled  0.0% | fuel 212.8
+  seed 242 | 1,277,952 steps | score  216.0 ±  65.4 | landed  84.0% | crashed  5.0% | never settled  4.0% | fuel 210.2
+  mean across seeds: score 220.5 ± 8.1, landed 92.3% ± 6.5%

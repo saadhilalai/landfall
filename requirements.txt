@@ -1,0 +1,15 @@
+# Python 3.11. Box2D needs `swig` to build:  brew install swig
+gymnasium[box2d]==1.4.0
+Box2D==2.3.10
+stable-baselines3==2.9.0
+torch==2.14.1
+numpy==2.4.6
+tensorboard==2.21.0
+optuna==5.0.0
+matplotlib==3.11.2
+pandas==3.0.6
+gradio==6.30.0
+pillow==11.3.0
+moviepy==2.2.1
+imageio==2.38.1
+imageio-ffmpeg==0.6.0

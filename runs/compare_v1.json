@@ -1,0 +1,145 @@
+{
+  "baseline": {
+    "per_seed": {
+      "42": {
+        "episodes": 1000,
+        "mean_score": 266.8488416816265,
+        "std_score": 24.653940262984847,
+        "success_rate": 0.991,
+        "crash_rate": 0.002,
+        "never_settled_rate": 0.005,
+        "mean_fuel": 134.84379999999993,
+        "outcomes": {
+          "landed": 991,
+          "never_settled": 5,
+          "crashed": 2,
+          "landed_off_pad": 2
+        }
+      },
+      "142": {
+        "episodes": 1000,
+        "mean_score": 267.5931492068527,
+        "std_score": 21.842157492237305,
+        "success_rate": 0.994,
+        "crash_rate": 0.001,
+        "never_settled_rate": 0.001,
+        "mean_fuel": 133.04509999999982,
+        "outcomes": {
+          "landed": 994,
+          "landed_off_pad": 4,
+          "never_settled": 1,
+          "crashed": 1
+        }
+      },
+      "242": {
+        "episodes": 1000,
+        "mean_score": 236.71804736330373,
+        "std_score": 29.632207197542815,
+        "success_rate": 0.989,
+        "crash_rate": 0.006,
+        "never_settled_rate": 0.005,
+        "mean_fuel": 229.71399999999943,
+        "outcomes": {
+          "landed": 989,
+          "crashed": 6,
+          "never_settled": 5
+        }
+      }
+    },
+    "across_seeds": {
+      "mean_score": {
+        "mean": 257.05334608392764,
+        "std": 14.382437877860696
+      },
+      "success_rate": {
+        "mean": 0.9913333333333333,
+        "std": 0.0020548046676563273
+      },
+      "crash_rate": {
+        "mean": 0.0030000000000000005,
+        "std": 0.002160246899469287
+      },
+      "never_settled_rate": {
+        "mean": 0.0036666666666666666,
+        "std": 0.0018856180831641268
+      },
+      "mean_fuel": {
+        "mean": 165.86763333333306,
+        "std": 45.152170363658826
+      }
+    }
+  },
+  "shaped": {
+    "per_seed": {
+      "42": {
+        "episodes": 1000,
+        "mean_score": 256.6407452147204,
+        "std_score": 21.807888150070344,
+        "success_rate": 0.999,
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.001,
+        "mean_fuel": 174.2409999999999,
+        "outcomes": {
+          "landed": 999,
+          "never_settled": 1
+        }
+      },
+      "142": {
+        "episodes": 1000,
+        "mean_score": 248.4782117396567,
+        "std_score": 24.79641338230928,
+        "success_rate": 0.989,
+        "crash_rate": 0.001,
+        "never_settled_rate": 0.002,
+        "mean_fuel": 195.73699999999977,
+        "outcomes": {
+          "landed": 989,
+          "landed_off_pad": 8,
+          "never_settled": 2,
+          "crashed": 1
+        }
+      },
+      "242": {
+        "episodes": 1000,
+        "mean_score": 256.96075505175963,
+        "std_score": 21.27698451732733,
+        "success_rate": 0.999,
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0,
+        "mean_fuel": 173.76419999999968,
+        "outcomes": {
+          "landed": 999,
+          "landed_off_pad": 1
+        }
+      }
+    },
+    "across_seeds": {
+      "mean_score": {
+        "mean": 254.02657066871225,
+        "std": 3.9254568038359836
+      },
+      "success_rate": {
+        "mean": 0.9956666666666667,
+        "std": 0.004714045207910321
+      },
+      "crash_rate": {
+        "mean": 0.0003333333333333333,
+        "std": 0.0004714045207910317
+      },
+      "never_settled_rate": {
+        "mean": 0.001,
+        "std": 0.000816496580927726
+      },
+      "mean_fuel": {
+        "mean": 181.24739999999977,
+        "std": 10.247543304942239
+      }
+    }
+  },
+  "baseline_never_settled_vs_shaped": {
+    "total": 11,
+    "outcomes": {
+      "landed": 11
+    }
+  }
+}
