@@ -1,0 +1,41 @@
+{
+  "randomized_memory": {
+    "per_seed": {
+      "42": {
+        "score": 233.7933823671428,
+        "landed": 0.88
+      },
+      "142": {
+        "score": 216.91363558521408,
+        "landed": 0.8
+      },
+      "242": {
+        "score": 230.2207439998306,
+        "landed": 0.84
+      }
+    },
+    "mean_score": 226.97592065072914,
+    "std_score": 7.263062796583075,
+    "mean_landed": 0.84
+  },
+  "randomized_memory_tuned": {
+    "per_seed": {
+      "42": {
+        "score": 256.72273633470905,
+        "landed": 0.91
+      },
+      "142": {
+        "score": 270.33126714344627,
+        "landed": 0.97
+      },
+      "242": {
+        "score": 256.0635856352703,
+        "landed": 0.92
+      }
+    },
+    "mean_score": 261.0391963711418,
+    "std_score": 6.575994441364133,
+    "mean_landed": 0.9333333333333332
+  },
+  "adopt_tuned": true
+}

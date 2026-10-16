@@ -1,0 +1,24 @@
+
+=== strong_wind: {'wind_power': 16.25, 'turbulence_power': 1.625} | 500 landings x 3 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  shaped_v2_2m   106.0 ±   7.0    34.2% ± 1.9%    48.3%           1.7%   94.5         6.5 s
+  randomized_2m   121.1 ±  12.6    37.2% ± 2.5%    42.5%           3.2%  149.9         7.6 s
+  randomized_memory   151.5 ±  17.2    46.8% ± 3.4%    31.9%           3.7%  147.1         7.6 s
+  randomized_2m vs shaped_v2_2m: failed only by shaped_v2_2m 346, only by randomized_2m 301, both 641 -> p = 0.0836
+    where shaped_v2_2m never settled (26), randomized_2m did: {'crashed': 10, 'landed_off_pad': 2, 'landed': 13, 'never_settled': 1}
+  randomized_memory vs shaped_v2_2m: failed only by shaped_v2_2m 419, only by randomized_memory 230, both 568 -> p = 0.0000
+    where shaped_v2_2m never settled (26), randomized_memory did: {'crashed': 5, 'never_settled': 4, 'landed': 11, 'landed_off_pad': 6}
+  randomized_memory vs randomized_2m: failed only by randomized_2m 359, only by randomized_memory 215, both 583 -> p = 0.0000
+    where randomized_2m never settled (48), randomized_memory did: {'landed': 24, 'never_settled': 5, 'crashed': 11, 'landed_off_pad': 8}
+
+=== harsh: {'gravity': -11.25, 'wind_power': 16.25, 'turbulence_power': 1.625, 'engine_power': 0.8375} | 500 landings x 3 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  shaped_v2_2m   -85.4 ±  23.4     3.7% ± 0.8%    94.1%           0.0%   74.5         5.9 s
+  randomized_2m   -75.4 ±  13.3     2.0% ± 0.9%    95.1%           0.1%   93.4         6.5 s
+  randomized_memory   -45.5 ±   8.6     6.2% ± 0.3%    90.6%           0.1%   93.0         7.1 s
+  randomized_2m vs shaped_v2_2m: failed only by shaped_v2_2m 24, only by randomized_2m 49, both 1421 -> p = 0.0046
+  randomized_memory vs shaped_v2_2m: failed only by shaped_v2_2m 72, only by randomized_memory 34, both 1373 -> p = 0.0003
+  randomized_memory vs randomized_2m: failed only by randomized_2m 76, only by randomized_memory 13, both 1394 -> p = 0.0000
+    where randomized_2m never settled (1), randomized_memory did: {'crashed': 1}
+
+Saved runs/stress_test_2m_main_wind.json

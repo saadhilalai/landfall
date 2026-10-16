@@ -27,7 +27,7 @@ from landing_stats import LandingStats
 from reward_shaping import V1, V2, LandingRewardShaping
 
 
-def recipe(reward=None, conditions=None, memory=1, full_budget=False, validate_in="normal"):
+def recipe(reward=None, conditions=None, memory=1, full_budget=False, validate_in="normal", ppo=None):
     """What makes an agent type different. Everything else (PPO settings, seeds, tests) is shared.
 
     reward       custom reward settings (None = the official reward only)
@@ -36,9 +36,10 @@ def recipe(reward=None, conditions=None, memory=1, full_budget=False, validate_i
     full_budget  always train the full config.MAX_STEPS, instead of stopping as soon
                  as the validation score passes 200
     validate_in  the test scenario used for validation and learning-curve check-ups
+    ppo          PPO settings for this agent (None = the shared config.PPO_KWARGS)
     """
     return dict(reward=reward, conditions=conditions, memory=memory,
-                full_budget=full_budget, validate_in=validate_in)
+                full_budget=full_budget, validate_in=validate_in, ppo=ppo)
 
 
 AGENTS = {
@@ -55,6 +56,9 @@ AGENTS = {
     "randomized_memory": recipe(reward=V2, conditions=config.TRAIN_CONDITIONS,
                                 memory=config.MEMORY, full_budget=True),
 
+    # Step 5: the final agent with the PPO settings found by Optuna (tune.py).
+    "randomized_memory_tuned": recipe(reward=V2, conditions=config.TRAIN_CONDITIONS, memory=config.MEMORY,
+                                      full_budget=True, ppo=config.TUNED_PPO_KWARGS),
 }
 
 # Landability check: a specialist per test scenario, trained directly IN it, to find

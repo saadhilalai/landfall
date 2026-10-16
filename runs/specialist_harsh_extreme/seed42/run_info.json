@@ -1,5 +1,5 @@
 {
-  "agent": "specialist_harsh",
+  "agent": "specialist_harsh_extreme",
   "seed": 42,
   "solved": false,
   "total_steps": 2015232,
@@ -156,7 +156,7 @@
     },
     "memory": 4,
     "full_budget": true,
-    "validated_in": "harsh"
+    "validated_in": "harsh_extreme"
   },
   "versions": {
     "python": "3.11.17",

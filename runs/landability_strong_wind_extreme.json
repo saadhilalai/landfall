@@ -1,6 +1,6 @@
 {
-  "strong_wind": {
-    "specialist_strong_wind": {
+  "strong_wind_extreme": {
+    "specialist_strong_wind_extreme": {
       "per_seed": {
         "42": {
           "episodes": 500,

@@ -60,16 +60,19 @@ TRAIN_CONDITIONS = dict(
 )
 
 # Test scenarios. Every changed value lies OUTSIDE the training ranges above.
-# "strong_wind" and "harsh" were softened by the landability check (see below):
-# the originals stopped even a specialist trained in them (10.6% and 0% landed),
-# so each changed value moved halfway back toward the edge of the training range.
+# The wind tests went through the landability check (see below):
+#   *_original  first design: not landable even by a specialist trained in it (10.6% / 0%)
+#   *_extreme   halfway back toward the training edge: still not landable (25.4% / 1.6%);
+#               kept as "extreme limits" rows that show where the AI breaks
+#   main tests  halfway back once more (decided 2026-10-15, before testing any agent on them)
 TEST_SCENARIOS = dict(
     normal=dict(),
-    strong_wind=dict(wind_power=17.5, turbulence_power=1.75),
+    strong_wind=dict(wind_power=16.25, turbulence_power=1.625),
     heavy_gravity=dict(gravity=-12.0),
     weak_engine=dict(engine_power=0.8),
-    harsh=dict(gravity=-11.5, wind_power=17.5, turbulence_power=1.75, engine_power=0.825),
-    # The originals, kept so earlier results can be reproduced.
+    harsh=dict(gravity=-11.25, wind_power=16.25, turbulence_power=1.625, engine_power=0.8375),
+    strong_wind_extreme=dict(wind_power=17.5, turbulence_power=1.75),
+    harsh_extreme=dict(gravity=-11.5, wind_power=17.5, turbulence_power=1.75, engine_power=0.825),
     strong_wind_original=dict(wind_power=20.0, turbulence_power=2.0),
     harsh_original=dict(gravity=-12.0, wind_power=20.0, turbulence_power=2.0, engine_power=0.8),
 )
@@ -84,6 +87,21 @@ LANDABLE_RATE = 0.5
 # A "memory" agent sees its last 4 moments instead of just the current one, so it
 # can work out the wind and engine strength from how it has been moving.
 MEMORY = 4
+
+# ---- Tuned PPO settings (Step 5) ------------------------------------------------
+# Found by tune.py (Optuna, 28 trials, best = trial 23; see runs/optuna/). Scored only
+# on validation landings in the training conditions. Used by "randomized_memory_tuned".
+TUNED_PPO_KWARGS = dict(
+    PPO_KWARGS,
+    learning_rate=4.753e-4,   # was 3e-4
+    n_steps=512,              # was 1024: shorter practice rounds between updates
+    batch_size=128,           # was 64
+    n_epochs=9,               # was 4: learn more from each round (most important knob)
+    gamma=0.995,              # was 0.999: a little less far-sighted
+    gae_lambda=0.9,           # was 0.98
+    ent_coef=4.182e-4,        # was 0.01: much less random exploration
+    clip_range=0.1,           # was 0.2: smaller, safer policy updates
+)                             # network size unchanged (2 layers of 64)
 
 # ---- Learning-curve check-ups -----------------------------------------------
 CURVE_EVAL_EVERY = 32_768   # steps between check-ups (= every 2 learning updates)

@@ -105,13 +105,15 @@ def train_one(agent, seed):
     curve_env = DummyVecEnv([lambda: Monitor(make_test_env(validation_conditions, memory=recipe["memory"]))])
     curve_env.seed(config.CURVE_EVAL_SEED)
 
+    # Shared PPO settings, unless this agent type has its own (e.g. found by tune.py).
+    ppo_kwargs = {**config.PPO_KWARGS, **(recipe.get("ppo") or {})}
     model = PPO(
         env=train_env,
         seed=seed,
         device="cpu",
         tensorboard_log=str(tb_dir),
         verbose=0,
-        **config.PPO_KWARGS,
+        **ppo_kwargs,
     )
 
     callbacks = CallbackList([
@@ -175,7 +177,7 @@ def train_one(agent, seed):
             extra_chunk_steps=config.EXTRA_CHUNK_STEPS,
             max_steps=config.MAX_STEPS,
             solved_score=config.SOLVED_SCORE,
-            ppo=config.PPO_KWARGS,
+            ppo=ppo_kwargs,
             reward_shaping=asdict(recipe["reward"]) if recipe["reward"] else None,
             training_conditions=recipe["conditions"],
             memory=recipe["memory"],

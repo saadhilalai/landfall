@@ -1,0 +1,12 @@
+
+[randomized_memory_tuned_seed242] training for 2,000,000 steps (full budget)...
+  1,007,616 steps | score  268.7 ±  29.4 | landed  99.0% | crashed  1.0% | never settled  0.0% | fuel 115.5
+  1,261,568 steps | score  271.0 ±  34.5 | landed  99.0% | crashed  1.0% | never settled  0.0% | fuel 109.5
+  1,515,520 steps | score  273.2 ±  30.1 | landed  99.0% | crashed  1.0% | never settled  0.0% | fuel  99.9
+  1,769,472 steps | score  272.6 ±  30.0 | landed  99.0% | crashed  1.0% | never settled  0.0% | fuel 105.1
+  2,007,040 steps | score  274.4 ±  31.5 | landed  99.0% | crashed  1.0% | never settled  0.0% | fuel  99.8
+  done in 5.6 min -> SOLVED, saved models/randomized_memory_tuned_seed242.zip
+
+=== randomized_memory_tuned: 1 seeds ===
+  seed 242 | 2,007,040 steps | score  274.4 ±  31.5 | landed  99.0% | crashed  1.0% | never settled  0.0% | fuel  99.8
+  mean across seeds: score 274.4 ± 0.0, landed 99.0% ± 0.0%

@@ -705,7 +705,7 @@
       }
     }
   },
-  "strong_wind": {
+  "strong_wind_extreme": {
     "shaped_v2_2m": {
       "per_seed": {
         "42": {
@@ -962,7 +962,7 @@
       }
     }
   },
-  "harsh": {
+  "harsh_extreme": {
     "shaped_v2_2m": {
       "per_seed": {
         "42": {

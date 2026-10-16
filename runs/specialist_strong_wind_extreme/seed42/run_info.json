@@ -1,5 +1,5 @@
 {
-  "agent": "specialist_strong_wind",
+  "agent": "specialist_strong_wind_extreme",
   "seed": 42,
   "solved": false,
   "total_steps": 2015232,
@@ -164,7 +164,7 @@
     },
     "memory": 4,
     "full_budget": true,
-    "validated_in": "strong_wind"
+    "validated_in": "strong_wind_extreme"
   },
   "versions": {
     "python": "3.11.17",

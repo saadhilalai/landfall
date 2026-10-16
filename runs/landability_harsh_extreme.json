@@ -1,6 +1,6 @@
 {
-  "harsh": {
-    "specialist_harsh": {
+  "harsh_extreme": {
+    "specialist_harsh_extreme": {
       "per_seed": {
         "42": {
           "episodes": 500,

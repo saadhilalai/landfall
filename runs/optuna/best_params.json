@@ -1,0 +1,16 @@
+{
+  "trial": 23,
+  "validation_score": 264.69044586959905,
+  "params": {
+    "learning_rate": 0.000475327721697248,
+    "n_steps": 512,
+    "batch_size": 128,
+    "n_epochs": 9,
+    "gamma": 0.995,
+    "gae_lambda": 0.9,
+    "ent_coef": 0.0004181527448699341,
+    "clip_range": 0.1,
+    "net_width": 64
+  },
+  "current_settings_score": 233.7933823671428
+}

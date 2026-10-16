@@ -7,8 +7,8 @@ _Last updated 2026-10-15 (evening). Nothing is running. All models, results and 
 | 1. Setup | ✅ Done |
 | 2. Baseline agent | ✅ Done (redone with 3 seeds) |
 | 3. Custom reward shaping | ✅ Done (v1, then a tuning round to v2) |
-| 4. Domain randomization | ✅ Round 2 done (memory + equal 2M budget). **Waiting on 2 decisions** (see the end of this file) |
-| 5. Optuna auto-tuning | Not started |
+| 4. Domain randomization | ✅ Done. Final agent design: randomized + memory |
+| 5. Optuna auto-tuning | ✅ Done. **Final agent: `randomized_memory_tuned`** |
 | 6. Final results, charts, videos | Not started |
 | 7. Gradio demo | Not started |
 | 8. README, packaging, resume bullets | Not started (`requirements.txt` and `.gitignore` exist) |
@@ -47,6 +47,7 @@ Useful commands:
 | `domain_randomization.py` | Changes gravity, wind, turbulence and engine power (fixed values or random ranges) |
 | `train.py` | Trains an agent type, once per seed. Logs to TensorBoard and writes `runs/<agent>/seed<N>/run_info.json` |
 | `evaluate.py` | Flies a model through a fixed list of landings |
+| `tune.py` | Step 5: Optuna search (`search`), its summary and charts (`report`), and the tuned-vs-current check (`confirm`) |
 | `compare.py` | Compares agents on identical landings, with a paired significance test (`--seeds`, `--scenarios`, `--reference`) |
 | `check_setup.py` | Step 1 simulator check |
 | `models/<agent>_seed<N>.zip` | 12 trained models (~150 KB each) |
@@ -140,8 +141,10 @@ The randomized agents use the v2 reward, and every practice episode re-rolls the
 | weak_engine test | −10 | off | off | **0.8×** | 1.44 |
 | strong_wind_original | −10 | **20** | **2.0** | 1.0× | 1.80 |
 | harsh_original | **−12** | **20** | **2.0** | **0.8×** | 1.20 |
-| strong_wind (softened) | −10 | **17.5** | **1.75** | 1.0× | 1.80 |
-| harsh (softened) | **−11.5** | **17.5** | **1.75** | **0.825×** | 1.29 |
+| strong_wind_extreme (softened once) | −10 | **17.5** | **1.75** | 1.0× | 1.80 |
+| harsh_extreme (softened once) | **−11.5** | **17.5** | **1.75** | **0.825×** | 1.29 |
+| **strong_wind** (main test, softened twice) | −10 | **16.25** | **1.625** | 1.0× | 1.80 |
+| **harsh** (main test, softened twice) | **−11.25** | **16.25** | **1.625** | **0.8375×** | 1.34 |
 
 ### Round 1: randomized agent with the normal budget (stops once the score passes 200, about 1M steps)
 
@@ -161,14 +164,14 @@ Stress test: 500 analysis landings × 3 seeds (`runs/stress_test_3seeds.json`). 
 
 The rule: a scenario counts as landable if a specialist (trained in it, with memory, for 2M steps) lands at least 50% of 500 times. If not, every changed value moves halfway back toward the edge of the training range, and the check runs once more.
 
-| Specialist landed safely | Original | Softened |
+| Specialist landed safely | Original | Softened once (now `*_extreme`) |
 |---|---|---|
 | strong_wind | 10.6% | 25.4% |
 | harsh | 0.0% | 1.6% |
 
 **Both fail, even after softening.** The rule allows only one softening round, so the next step is **your decision** (see below).
 
-The landability check turned out to be flawed: specialists **underestimate** what's landable. The memory generalist below lands **40.6%** in softened strong wind, which beats the specialist trained only there (25.4%). Learning to land from scratch in a gale is harder than learning to land first and then handling wind, which is the argument for curriculum learning.
+The landability check turned out to be flawed: specialists **underestimate** what's landable. The memory generalist below lands **40.6%** in strong_wind_extreme, which beats the specialist trained only there (25.4%). Learning to land from scratch in a gale is harder than learning to land first and then handling wind, which is the argument for curriculum learning.
 
 ### Round 2, part 2: memory, with the SAME 2M budget for every agent (`runs/stress_test_2m.json`)
 
@@ -187,8 +190,10 @@ Stress test: 500 landings × 3 seeds per cell.
 | normal | **99.7% (277)** | 99.3% (257) | **99.7% (259)** |
 | heavy_gravity | 85.5% (236) | **99.3% (251)** | 97.7% (249) |
 | weak_engine | 69.7% (194) | **96.1% (242)** | 94.1% (239) |
-| strong_wind (softened) | 27.3% (81) | 33.8% (104) | **40.6% (130)** |
-| harsh (softened) | 1.4% (−112) | 1.3% (−108) | **2.7% (−80)** |
+| strong_wind_extreme | 27.3% (81) | 33.8% (104) | **40.6% (130)** |
+| harsh_extreme | 1.4% (−112) | 1.3% (−108) | **2.7% (−80)** |
+| **strong_wind** (main) | 34.2% (106) | 37.2% (121) | **46.8% (152)** |
+| **harsh** (main) | 3.7% (−85) | 2.0% (−75) | **6.2% (−46)** |
 | Fuel per landing (normal game) | **109** | 172 | 171 |
 
 What the paired tests on the same landings show:
@@ -196,19 +201,64 @@ What the paired tests on the same landings show:
 - **Memory helps against wind, the thing it was meant to sense.** randomized_memory vs randomized_2m: strong wind **40.6% vs 33.8% (p < 0.0001)** and harsh 2.7% vs 1.3% (p = 0.002). It costs a little under steady changes: heavy gravity 97.7% vs 99.3% (p = 0.0001) and weak engine 94.1% vs 96.1% (p = 0.001). **Memory is a trade-off, not a free win.**
 - **Surprise: extra practice in one world made an agent MORE fragile** (`runs/practice_effect.json`). shaped_v2 at 1M vs 2M, same landings: the normal game is unchanged (99.8% → 99.7%, p = 0.73), but heavy gravity drops from 98.8% to **85.5%** and weak engine from 96.1% to **69.7%** (both p < 0.0001). At 2M it lands faster (4.7 s vs 5.6 s) on less fuel (109 vs 136), likely by braking at the last moment with exactly enough thrust for normal gravity and no safety margin. That margin disappears with a weaker engine or stronger gravity. **This is the textbook case for domain randomization.**
 - **Extra practice fixed the randomized agent** (1M → 2M, same landings): normal 92.9% → 99.3%, heavy gravity 94.5% → 99.3%, weak engine 93.5% → 96.1% (all p < 0.001). Round 1's main problem was under-training.
-- **Strong wind is still the limit.** Even the best agent lands 41% in softened strong wind, and everyone lands about 0–3% in harsh.
+- **Strong wind is still the limit.** In the main strong_wind test the memory agent lands 46.8%, vs 37.2% without memory (p < 0.0001). The main harsh test is still mostly unlandable: 6.2% at best. (Main wind tests: `runs/stress_test_2m_main_wind.json`.)
 
 ---
 
-## Decisions waiting (as of 2026-10-15 evening)
+## Decisions made after Step 4 (2026-10-15 evening)
 
-1. **How to define the wind tests**, since the one softening round still isn't landable. Options proposed: keep the current tests as "extreme" rows, re-apply the halfway rule once more for the main "harsh" test, or both.
-2. **Which agent becomes the final agent** for Step 5 (Optuna), Step 6 and the demo: `randomized_memory` (best in wind) or `randomized_2m` (best under heavy gravity and a weak engine).
+1. **Wind tests: option C.** The main `strong_wind` and `harsh` tests apply the halfway rule a second time. The once-softened versions stay as `*_extreme` rows that show where the AI breaks. The first designs remain as `*_original`.
+2. **Final agent: `randomized_memory`.** It's best in wind, where the memory gain is proven.
+3. **Step 5 honesty rule:** tuning may only use the training conditions and the validation landings, never the stress scenarios or the final test landings.
+
+---
+
+## Step 5: Optuna auto-tuning (done)
+
+**Honesty rules:**
+- Every trial trained in the **training** conditions and was scored **only** on the 100 validation landings, flown in the training conditions.
+- The stress scenarios and the final test landings (10000–10099) were never used.
+- The confirmation rule was set before seeing any results.
+
+**The search** (`tune.py search`, `runs/optuna/`):
+- 28 trials in about 48 minutes, 3 at a time: 18 completed, 10 pruned early.
+- Each trial trained a randomized_memory agent with seed 42 for 2M steps.
+- Trial 0 used the current settings and scored **233.8** (88% landed). The best trial, number 23, scored **264.7** (95% landed).
+- Most important knobs (`importance.png`): learning passes per batch `n_epochs` (0.36), round length `n_steps` (0.24), and the policy-update limit `clip_range` (0.14).
+
+**Winning settings** (in `config.TUNED_PPO_KWARGS`):
+
+| Setting | Before → after |
+|---|---|
+| n_epochs | 4 → 9 |
+| n_steps | 1024 → 512 |
+| batch_size | 64 → 128 |
+| clip_range | 0.2 → 0.1 |
+| ent_coef | 0.01 → 0.0004 |
+| gamma | 0.999 → 0.995 |
+| gae_lambda | 0.98 → 0.9 |
+| learning_rate | 3e-4 → 4.75e-4 |
+
+The network size didn't change.
+
+**Confirmation** (`tune.py confirm`, `runs/optuna/confirm.json`): retrained with 3 seeds at 2M steps, scored on validation landings in the training conditions.
+
+| | Score (± spread across seeds) | Landed | Seed 42 | Seed 142 | Seed 242 |
+|---|---|---|---|---|---|
+| randomized_memory (current settings) | 227.0 ± 7.3 | 84.0% | 233.8 | 216.9 | 230.2 |
+| **randomized_memory_tuned** | **261.0 ± 6.6** | **93.3%** | 256.7 | 270.3 | 256.1 |
+
+- **The tuned settings win on every seed**, so by the pre-set rule they are **adopted**.
+- Seeds 142 and 242 were never used in the search, and they improve too (+53 and +26). So this isn't just luck on seed 42.
+- A small "winner's curse" shows up: trial 23 scored 264.7, but the same settings retrained on seed 42 score 256.7. The best-of-28 was a little lucky, as expected.
+- Side effect in the normal game (validation during training): **274–280 points with about 90–100 fuel**, compared with about 252–259 points and 161–184 fuel for the current settings.
+- On purpose, the tuned agent has **not** been run on the stress scenarios. Its first contact with them will be the honest Step 6 evaluation.
 
 ## What to do next, in order
 
-1. Make the two decisions above.
-2. **Step 5:** Optuna search for the final agent's settings (about 1 hour).
-3. **Step 6:** final evaluation on the untouched **test** landings (10000–10099), in normal and harsh conditions. Learning-curve and success-rate charts. Videos: an untrained crash, each agent landing, the final agent in heavy wind.
-4. **Step 7:** Gradio demo with gravity, wind and engine sliders and a Launch button.
-5. **Step 8:** README (including the leg-sensor bug story, the v1 → v2 iteration, and the "more practice made it more fragile" finding), packaging, and 3 resume bullets with the real numbers.
+1. **Step 6:** final evaluation on the untouched **test** landings (10000–10099):
+   - Normal and harsh conditions, plus the other scenarios, with the extreme rows labelled as limits.
+   - Learning-curve and success-rate charts.
+   - Videos: an untrained crash, each agent landing, and the final agent (`randomized_memory_tuned`) in heavy wind.
+2. **Step 7:** Gradio demo with gravity, wind and engine sliders and a Launch button, using the final agent.
+3. **Step 8:** README (including the leg-sensor bug story, the v1 → v2 iteration, the "more practice made it more fragile" finding, and the honest tuning), packaging, and 3 resume bullets with the real numbers.
