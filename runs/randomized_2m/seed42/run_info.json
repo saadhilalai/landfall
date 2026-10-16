@@ -1,0 +1,173 @@
+{
+  "agent": "randomized_2m",
+  "seed": 42,
+  "solved": true,
+  "total_steps": 2015232,
+  "train_minutes": 5.29,
+  "final_validation": {
+    "episodes": 100,
+    "mean_score": 250.579196292716,
+    "std_score": 26.335649466556827,
+    "success_rate": 0.99,
+    "crash_rate": 0.0,
+    "never_settled_rate": 0.01,
+    "mean_fuel": 184.7109999999998,
+    "outcomes": {
+      "landed": 99,
+      "never_settled": 1
+    }
+  },
+  "validation_history": [
+    {
+      "steps": 1015808,
+      "minutes": 2.5029839992523195,
+      "episodes": 100,
+      "mean_score": 213.6586492812355,
+      "std_score": 22.5515916212531,
+      "success_rate": 1.0,
+      "crash_rate": 0.0,
+      "never_settled_rate": 0.0,
+      "mean_fuel": 314.6290000000001,
+      "outcomes": {
+        "landed": 100
+      }
+    },
+    {
+      "steps": 1277952,
+      "minutes": 3.2279216488202414,
+      "episodes": 100,
+      "mean_score": 232.58984371760104,
+      "std_score": 24.395615923194477,
+      "success_rate": 0.98,
+      "crash_rate": 0.0,
+      "never_settled_rate": 0.0,
+      "mean_fuel": 244.84599999999983,
+      "outcomes": {
+        "landed": 98,
+        "landed_off_pad": 2
+      }
+    },
+    {
+      "steps": 1540096,
+      "minutes": 3.9347106337547304,
+      "episodes": 100,
+      "mean_score": 239.8510620365473,
+      "std_score": 34.47464720702072,
+      "success_rate": 0.98,
+      "crash_rate": 0.01,
+      "never_settled_rate": 0.01,
+      "mean_fuel": 208.69599999999966,
+      "outcomes": {
+        "landed": 98,
+        "never_settled": 1,
+        "crashed": 1
+      }
+    },
+    {
+      "steps": 1802240,
+      "minutes": 4.664716247717539,
+      "episodes": 100,
+      "mean_score": 236.06845564759067,
+      "std_score": 41.39044130063622,
+      "success_rate": 0.93,
+      "crash_rate": 0.0,
+      "never_settled_rate": 0.07,
+      "mean_fuel": 190.91099999999952,
+      "outcomes": {
+        "landed": 93,
+        "never_settled": 7
+      }
+    },
+    {
+      "steps": 2015232,
+      "minutes": 5.28527623017629,
+      "episodes": 100,
+      "mean_score": 250.579196292716,
+      "std_score": 26.335649466556827,
+      "success_rate": 0.99,
+      "crash_rate": 0.0,
+      "never_settled_rate": 0.01,
+      "mean_fuel": 184.7109999999998,
+      "outcomes": {
+        "landed": 99,
+        "never_settled": 1
+      }
+    }
+  ],
+  "settings": {
+    "env_id": "LunarLander-v3",
+    "n_envs": 16,
+    "train_seed": 42,
+    "curve_eval_seed": 2024,
+    "validation_seed": 5000,
+    "first_check_steps": 1000000,
+    "extra_chunk_steps": 250000,
+    "max_steps": 2000000,
+    "solved_score": 200,
+    "ppo": {
+      "policy": "MlpPolicy",
+      "n_steps": 1024,
+      "batch_size": 64,
+      "n_epochs": 4,
+      "gamma": 0.999,
+      "gae_lambda": 0.98,
+      "ent_coef": 0.01,
+      "learning_rate": 0.0003,
+      "clip_range": 0.2,
+      "policy_kwargs": {
+        "net_arch": {
+          "pi": [
+            64,
+            64
+          ],
+          "vf": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "reward_shaping": {
+      "tilt_cost": 1.0,
+      "hover_height": 0.2,
+      "hover_speed": 0.05,
+      "hover_cost": 0.1,
+      "not_settled_cost": 0.1,
+      "safe_touchdown_speed": 0.2,
+      "hard_landing_cost": 200.0,
+      "hard_landing_max": 30.0,
+      "settle_bonus": 100.0,
+      "fuel_budget": 200.0,
+      "fuel_bonus": 0.5
+    },
+    "training_conditions": {
+      "gravity": [
+        -11.0,
+        -8.0
+      ],
+      "wind_power": [
+        0.0,
+        15.0
+      ],
+      "turbulence_power": [
+        0.0,
+        1.5
+      ],
+      "engine_power": [
+        0.85,
+        1.15
+      ]
+    },
+    "memory": 1,
+    "full_budget": true,
+    "validated_in": "normal"
+  },
+  "versions": {
+    "python": "3.11.17",
+    "torch": "2.14.1",
+    "stable_baselines3": "2.9.0",
+    "gymnasium": "1.4.0",
+    "machine": "Darwin arm64",
+    "torch_threads": 1
+  }
+}

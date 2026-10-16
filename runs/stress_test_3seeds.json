@@ -228,7 +228,7 @@
       "reference_never_settled": {}
     }
   },
-  "strong_wind": {
+  "strong_wind_original": {
     "baseline": {
       "per_seed": {
         "42": {
@@ -956,7 +956,7 @@
       "reference_never_settled": {}
     }
   },
-  "harsh": {
+  "harsh_original": {
     "baseline": {
       "per_seed": {
         "42": {

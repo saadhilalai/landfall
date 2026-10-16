@@ -1,0 +1,47 @@
+{
+  "strong_wind": {
+    "specialist_strong_wind": {
+      "per_seed": {
+        "42": {
+          "episodes": 500,
+          "mean_score": 98.29628037476051,
+          "std_score": 139.76707632530028,
+          "success_rate": 0.254,
+          "crash_rate": 0.182,
+          "never_settled_rate": 0.048,
+          "mean_fuel": 204.49460000000005,
+          "outcomes": {
+            "crashed": 91,
+            "flew_away": 67,
+            "landed_off_pad": 191,
+            "landed": 127,
+            "never_settled": 24
+          }
+        }
+      },
+      "across_seeds": {
+        "mean_score": {
+          "mean": 98.29628037476051,
+          "std": 0.0
+        },
+        "success_rate": {
+          "mean": 0.254,
+          "std": 0.0
+        },
+        "crash_rate": {
+          "mean": 0.182,
+          "std": 0.0
+        },
+        "never_settled_rate": {
+          "mean": 0.048,
+          "std": 0.0
+        },
+        "mean_fuel": {
+          "mean": 204.49460000000005,
+          "std": 0.0
+        },
+        "landing_seconds": 10.525511811023623
+      }
+    }
+  }
+}

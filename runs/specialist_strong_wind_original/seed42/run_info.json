@@ -1,0 +1,177 @@
+{
+  "agent": "specialist_strong_wind_original",
+  "seed": 42,
+  "solved": false,
+  "total_steps": 2015232,
+  "train_minutes": 3.82,
+  "final_validation": {
+    "episodes": 100,
+    "mean_score": -1.721799887399747,
+    "std_score": 123.41226024178276,
+    "success_rate": 0.08,
+    "crash_rate": 0.61,
+    "never_settled_rate": 0.06,
+    "mean_fuel": 152.92499999999987,
+    "outcomes": {
+      "landed": 8,
+      "landed_off_pad": 13,
+      "crashed": 61,
+      "flew_away": 12,
+      "never_settled": 6
+    }
+  },
+  "validation_history": [
+    {
+      "steps": 1015808,
+      "minutes": 1.7907598853111266,
+      "episodes": 100,
+      "mean_score": -30.97464762179341,
+      "std_score": 115.41681116853108,
+      "success_rate": 0.04,
+      "crash_rate": 0.56,
+      "never_settled_rate": 0.11,
+      "mean_fuel": 198.67400000000052,
+      "outcomes": {
+        "landed": 4,
+        "crashed": 56,
+        "never_settled": 11,
+        "landed_off_pad": 12,
+        "flew_away": 17
+      }
+    },
+    {
+      "steps": 1277952,
+      "minutes": 2.3549129525820414,
+      "episodes": 100,
+      "mean_score": -62.280304194764405,
+      "std_score": 129.43210862034948,
+      "success_rate": 0.02,
+      "crash_rate": 0.41,
+      "never_settled_rate": 0.09,
+      "mean_fuel": 229.6630000000006,
+      "outcomes": {
+        "never_settled": 9,
+        "crashed": 41,
+        "flew_away": 34,
+        "landed_off_pad": 14,
+        "landed": 2
+      }
+    },
+    {
+      "steps": 1540096,
+      "minutes": 2.9123125672340393,
+      "episodes": 100,
+      "mean_score": -50.97508880960151,
+      "std_score": 124.86233043690602,
+      "success_rate": 0.07,
+      "crash_rate": 0.45,
+      "never_settled_rate": 0.13,
+      "mean_fuel": 253.77700000000078,
+      "outcomes": {
+        "never_settled": 13,
+        "crashed": 45,
+        "flew_away": 24,
+        "landed_off_pad": 11,
+        "landed": 7
+      }
+    },
+    {
+      "steps": 1802240,
+      "minutes": 3.454234453042348,
+      "episodes": 100,
+      "mean_score": -16.3533629212214,
+      "std_score": 126.62775093391589,
+      "success_rate": 0.04,
+      "crash_rate": 0.55,
+      "never_settled_rate": 0.1,
+      "mean_fuel": 193.56600000000037,
+      "outcomes": {
+        "landed": 4,
+        "crashed": 55,
+        "never_settled": 10,
+        "flew_away": 14,
+        "landed_off_pad": 17
+      }
+    },
+    {
+      "steps": 2015232,
+      "minutes": 3.8222021659215293,
+      "episodes": 100,
+      "mean_score": -1.721799887399747,
+      "std_score": 123.41226024178276,
+      "success_rate": 0.08,
+      "crash_rate": 0.61,
+      "never_settled_rate": 0.06,
+      "mean_fuel": 152.92499999999987,
+      "outcomes": {
+        "landed": 8,
+        "landed_off_pad": 13,
+        "crashed": 61,
+        "flew_away": 12,
+        "never_settled": 6
+      }
+    }
+  ],
+  "settings": {
+    "env_id": "LunarLander-v3",
+    "n_envs": 16,
+    "train_seed": 42,
+    "curve_eval_seed": 2024,
+    "validation_seed": 5000,
+    "first_check_steps": 1000000,
+    "extra_chunk_steps": 250000,
+    "max_steps": 2000000,
+    "solved_score": 200,
+    "ppo": {
+      "policy": "MlpPolicy",
+      "n_steps": 1024,
+      "batch_size": 64,
+      "n_epochs": 4,
+      "gamma": 0.999,
+      "gae_lambda": 0.98,
+      "ent_coef": 0.01,
+      "learning_rate": 0.0003,
+      "clip_range": 0.2,
+      "policy_kwargs": {
+        "net_arch": {
+          "pi": [
+            64,
+            64
+          ],
+          "vf": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "reward_shaping": {
+      "tilt_cost": 1.0,
+      "hover_height": 0.2,
+      "hover_speed": 0.05,
+      "hover_cost": 0.1,
+      "not_settled_cost": 0.1,
+      "safe_touchdown_speed": 0.2,
+      "hard_landing_cost": 200.0,
+      "hard_landing_max": 30.0,
+      "settle_bonus": 100.0,
+      "fuel_budget": 200.0,
+      "fuel_bonus": 0.5
+    },
+    "training_conditions": {
+      "wind_power": 20.0,
+      "turbulence_power": 2.0
+    },
+    "memory": 4,
+    "full_budget": true,
+    "validated_in": "strong_wind_original"
+  },
+  "versions": {
+    "python": "3.11.17",
+    "torch": "2.14.1",
+    "stable_baselines3": "2.9.0",
+    "gymnasium": "1.4.0",
+    "machine": "Darwin arm64",
+    "torch_threads": 1
+  }
+}

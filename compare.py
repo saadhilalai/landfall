@@ -62,9 +62,10 @@ def main():
                         help="agent(s) the others are compared against")
     parser.add_argument("--scenarios", nargs="+", default=["normal"], choices=list(config.TEST_SCENARIOS))
     parser.add_argument("--episodes", type=int, default=config.N_ANALYSIS_EPISODES)
+    parser.add_argument("--seeds", type=int, nargs="+", default=list(config.TRAIN_SEEDS))
     parser.add_argument("--out", default="runs/compare.json")
     args = parser.parse_args()
-    seeds = config.TRAIN_SEEDS
+    seeds = args.seeds
 
     jobs = [(a, s, sc, args.episodes) for sc in args.scenarios for a in args.agents for s in seeds]
     with Pool() as pool:

@@ -1,0 +1,6 @@
+
+=== strong_wind: {'wind_power': 17.5, 'turbulence_power': 1.75} | 500 landings x 1 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  specialist_strong_wind    98.3 ±   0.0    25.4% ± 0.0%    18.2%           4.8%  204.5        10.5 s
+
+Saved runs/landability_strong_wind.json

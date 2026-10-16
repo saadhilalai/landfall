@@ -1,13 +1,13 @@
 # Rocket Lander: Progress Notes
 
-_Parked on 2026-10-15. Nothing is running. All models, results and logs are saved and committed._
+_Last updated 2026-10-15 (evening). Nothing is running. All models, results and logs are saved and committed._
 
 | Step | Status |
 |---|---|
 | 1. Setup | ✅ Done |
 | 2. Baseline agent | ✅ Done (redone with 3 seeds) |
 | 3. Custom reward shaping | ✅ Done (v1, then a tuning round to v2) |
-| 4. Domain randomization | ⚠️ Trained and stress-tested, **not yet reviewed together**. The result is negative (see below), so we need to choose a fix |
+| 4. Domain randomization | ✅ Round 2 done (memory + equal 2M budget). **Waiting on 2 decisions** (see the end of this file) |
 | 5. Optuna auto-tuning | Not started |
 | 6. Final results, charts, videos | Not started |
 | 7. Gradio demo | Not started |
@@ -33,7 +33,7 @@ Useful commands:
 .venv/bin/python train.py --agent shaped_v2                 # train one agent type (3 seeds, ~5 min)
 .venv/bin/python compare.py --agents baseline shaped_v2     # compare agents on 1,000 landings per seed
 .venv/bin/python compare.py --agents baseline shaped_v2 randomized --reference baseline shaped_v2 \
-    --scenarios normal strong_wind heavy_gravity weak_engine harsh --episodes 500   # stress test (~3 min)
+    --scenarios normal heavy_gravity weak_engine strong_wind harsh --episodes 500   # stress test (~3 min)
 ```
 
 ## Files
@@ -47,7 +47,7 @@ Useful commands:
 | `domain_randomization.py` | Changes gravity, wind, turbulence and engine power (fixed values or random ranges) |
 | `train.py` | Trains an agent type, once per seed. Logs to TensorBoard and writes `runs/<agent>/seed<N>/run_info.json` |
 | `evaluate.py` | Flies a model through a fixed list of landings |
-| `compare.py` | Compares agents on identical landings, with a paired significance test |
+| `compare.py` | Compares agents on identical landings, with a paired significance test (`--seeds`, `--scenarios`, `--reference`) |
 | `check_setup.py` | Step 1 simulator check |
 | `models/<agent>_seed<N>.zip` | 12 trained models (~150 KB each) |
 | `runs/` | Per-run info, learning-curve data (`evaluations.npz`), episode logs, TensorBoard, training logs, comparison JSONs |
@@ -128,54 +128,87 @@ Results: 1,000 analysis landings × 3 seeds each, official score (`runs/compare_
 
 ---
 
-## Step 4: Domain randomization (done, not yet reviewed)
+## Step 4: Domain randomization
 
-The randomized agent uses the v2 reward, and every practice episode re-rolls the physics. Each harsh value is outside the training range, but the harsh world is still physically landable on paper: the engine is 1.2× stronger than gravity.
+The randomized agents use the v2 reward, and every practice episode re-rolls the physics. Every test value lies outside the training range.
 
 | | Gravity | Wind | Turbulence | Engine | Engine ÷ gravity |
 |---|---|---|---|---|---|
 | Normal game | −10 | off | off | 1.0× | 1.80 |
 | **Training range** (re-rolled every episode) | −11 to −8 | 0–15 | 0–1.5 | 0.85–1.15× | ≥ 1.39 |
-| strong_wind test | −10 | **20** | **2.0** | 1.0× | 1.80 |
 | heavy_gravity test | **−12** | off | off | 1.0× | 1.50 |
 | weak_engine test | −10 | off | off | **0.8×** | 1.44 |
-| **harsh** test (all at once) | **−12** | **20** | **2.0** | **0.8×** | 1.20 |
+| strong_wind_original | −10 | **20** | **2.0** | 1.0× | 1.80 |
+| harsh_original | **−12** | **20** | **2.0** | **0.8×** | 1.20 |
+| strong_wind (softened) | −10 | **17.5** | **1.75** | 1.0× | 1.80 |
+| harsh (softened) | **−11.5** | **17.5** | **1.75** | **0.825×** | 1.29 |
 
-**Training:** every seed passed 200 on the normal game. Seed 242 needed one extension, to 1.28M steps. Validation scores: 213.7 / 231.9 / 216.0, with 100% / 93% / 84% landed.
+### Round 1: randomized agent with the normal budget (stops once the score passes 200, about 1M steps)
 
-**Stress test:** 500 analysis landings × 3 seeds per agent and scenario (`runs/stress_test_3seeds.json`)
+Stress test: 500 analysis landings × 3 seeds (`runs/stress_test_3seeds.json`). Wind tests used the **original** values.
 
 | Landed safely (official score) | Baseline | Shaped v2 | Randomized |
 |---|---|---|---|
 | normal | 99.1% (258) | **99.8% (268)** | 92.9% (224) |
-| strong_wind | 18.3% (19) | 15.5% (17) | **20.7% (47)** |
+| strong_wind_original | 18.3% (19) | 15.5% (17) | **20.7% (47)** |
 | heavy_gravity | 97.1% (248) | **98.8% (261)** | 94.5% (220) |
 | weak_engine | 92.9% (234) | **96.1% (253)** | 93.5% (217) |
-| harsh | 0.2% (−231) | 0.5% (−193) | 0.0% (−152) |
+| harsh_original | 0.2% (−231) | 0.5% (−193) | 0.0% (−152) |
 
-**The headline, stated honestly: in its current form, domain randomization did NOT make the agent more robust.**
-- In the **normal** game it's clearly worse: 92.9% vs 99.8% landed, and about 80% more fuel (247 vs 136).
-- Under **heavy gravity** and a **weak engine**, shaped v2 (no randomization) is the most robust. The randomized agent is roughly at baseline level.
-- In **strong wind** every agent fails, landing only 15–21% of the time. The randomized agent is a little better: 20.7% vs 15.5% for v2 (p = 0.0001), but not significantly better than the baseline (p = 0.07).
-- In **harsh** conditions everyone lands about 0%. As it stands, this test can't tell the agents apart.
+**Round 1 headline: randomization did NOT help.** The randomized agent was worse in the normal game, about equal to the baseline elsewhere, and nobody could land in harsh. Suspected causes: under-training, no way to sense the conditions, and test scenarios that might not be landable at all.
 
-**Likely reasons (guesses, none tested yet):**
-1. **Under-training.** The budget rule stops training as soon as the normal-game score reaches 200. The randomized agent has a much harder job but got the same ~1M steps.
-2. **It can't tell what conditions it's in.** It only sees the current moment (8 numbers), so it can't work out the wind or engine strength from how it has been moving. The usual fix is a short memory: stack the last few observations, or use an LSTM policy.
-3. **"harsh" and "strong_wind" might not be landable at all.** That hasn't been checked yet.
-4. **Wind is drawn evenly from 0 to 15**, so strong wind was rare during training.
+### Round 2, part 1: landability check (decided BEFORE looking at results; rule in `config.py`)
+
+The rule: a scenario counts as landable if a specialist (trained in it, with memory, for 2M steps) lands at least 50% of 500 times. If not, every changed value moves halfway back toward the edge of the training range, and the check runs once more.
+
+| Specialist landed safely | Original | Softened |
+|---|---|---|
+| strong_wind | 10.6% | 25.4% |
+| harsh | 0.0% | 1.6% |
+
+**Both fail, even after softening.** The rule allows only one softening round, so the next step is **your decision** (see below).
+
+The landability check turned out to be flawed: specialists **underestimate** what's landable. The memory generalist below lands **40.6%** in softened strong wind, which beats the specialist trained only there (25.4%). Learning to land from scratch in a gale is harder than learning to land first and then handling wind, which is the argument for curriculum learning.
+
+### Round 2, part 2: memory, with the SAME 2M budget for every agent (`runs/stress_test_2m.json`)
+
+These three agents differ in only one thing at a time:
+
+| Agent | Randomized physics | Memory (last 4 moments) |
+|---|---|---|
+| `shaped_v2_2m` | no | no |
+| `randomized_2m` | yes | no |
+| `randomized_memory` | yes | yes |
+
+Stress test: 500 landings × 3 seeds per cell.
+
+| Landed safely (official score) | shaped_v2_2m | randomized_2m | randomized_memory |
+|---|---|---|---|
+| normal | **99.7% (277)** | 99.3% (257) | **99.7% (259)** |
+| heavy_gravity | 85.5% (236) | **99.3% (251)** | 97.7% (249) |
+| weak_engine | 69.7% (194) | **96.1% (242)** | 94.1% (239) |
+| strong_wind (softened) | 27.3% (81) | 33.8% (104) | **40.6% (130)** |
+| harsh (softened) | 1.4% (−112) | 1.3% (−108) | **2.7% (−80)** |
+| Fuel per landing (normal game) | **109** | 172 | 171 |
+
+What the paired tests on the same landings show:
+- **Randomization works once it gets enough practice.** randomized_2m vs shaped_v2_2m: heavy gravity 99.3% vs 85.5%, weak engine 96.1% vs 69.7%, strong wind 33.8% vs 27.3% (all p ≤ 0.0001). Normal game: no significant difference (p = 0.30).
+- **Memory helps against wind, the thing it was meant to sense.** randomized_memory vs randomized_2m: strong wind **40.6% vs 33.8% (p < 0.0001)** and harsh 2.7% vs 1.3% (p = 0.002). It costs a little under steady changes: heavy gravity 97.7% vs 99.3% (p = 0.0001) and weak engine 94.1% vs 96.1% (p = 0.001). **Memory is a trade-off, not a free win.**
+- **Surprise: extra practice in one world made an agent MORE fragile** (`runs/practice_effect.json`). shaped_v2 at 1M vs 2M, same landings: the normal game is unchanged (99.8% → 99.7%, p = 0.73), but heavy gravity drops from 98.8% to **85.5%** and weak engine from 96.1% to **69.7%** (both p < 0.0001). At 2M it lands faster (4.7 s vs 5.6 s) on less fuel (109 vs 136), likely by braking at the last moment with exactly enough thrust for normal gravity and no safety margin. That margin disappears with a weaker engine or stronger gravity. **This is the textbook case for domain randomization.**
+- **Extra practice fixed the randomized agent** (1M → 2M, same landings): normal 92.9% → 99.3%, heavy gravity 94.5% → 99.3%, weak engine 93.5% → 96.1% (all p < 0.001). Round 1's main problem was under-training.
+- **Strong wind is still the limit.** Even the best agent lands 41% in softened strong wind, and everyone lands about 0–3% in harsh.
 
 ---
 
+## Decisions waiting (as of 2026-10-15 evening)
+
+1. **How to define the wind tests**, since the one softening round still isn't landable. Options proposed: keep the current tests as "extreme" rows, re-apply the halfway rule once more for the main "harsh" test, or both.
+2. **Which agent becomes the final agent** for Step 5 (Optuna), Step 6 and the demo: `randomized_memory` (best in wind) or `randomized_2m` (best under heavy gravity and a weak engine).
+
 ## What to do next, in order
 
-1. **Review the Step 4 results together** (the section above).
-2. **Choose a fix for Step 4.** My recommendation, each step taking about 5–10 minutes of compute:
-   - **a. Check whether the harsh tests are even landable.** Train one specialist agent directly in `harsh` (and in `strong_wind`). If even a specialist can't land, soften the scenario. **Settle the new scenario values before looking at any agent's results**, so they aren't cherry-picked.
-   - **b. Give the randomized agent the full 2M-step budget**, instead of stopping at the first score of 200. This changes the budget rule, so decide whether every agent gets 2M for fairness.
-   - **c. Optionally, give it memory** by stacking the last 4 observations, so it can sense wind and engine strength from its recent motion.
-   - Then re-run the stress test.
-3. **Step 5:** Optuna search for the final agent's settings (about 1 hour).
-4. **Step 6:** final evaluation on the untouched **test** landings (10000–10099), in normal and harsh conditions. Learning-curve and success-rate charts. Videos: an untrained crash, each agent landing, the final agent in heavy wind.
-5. **Step 7:** Gradio demo with gravity, wind and engine sliders and a Launch button.
-6. **Step 8:** README (including the leg-sensor bug story and the v1 → v2 iteration), packaging, and 3 resume bullets with the real numbers.
+1. Make the two decisions above.
+2. **Step 5:** Optuna search for the final agent's settings (about 1 hour).
+3. **Step 6:** final evaluation on the untouched **test** landings (10000–10099), in normal and harsh conditions. Learning-curve and success-rate charts. Videos: an untrained crash, each agent landing, the final agent in heavy wind.
+4. **Step 7:** Gradio demo with gravity, wind and engine sliders and a Launch button.
+5. **Step 8:** README (including the leg-sensor bug story, the v1 → v2 iteration, and the "more practice made it more fragile" finding), packaging, and 3 resume bullets with the real numbers.

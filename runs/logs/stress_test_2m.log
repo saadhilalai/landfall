@@ -1,0 +1,57 @@
+
+=== normal: default game | 500 landings x 3 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  shaped_v2_2m   277.1 ±   2.3    99.7% ± 0.1%     0.2%           0.0%  109.4         4.7 s
+  randomized_2m   256.7 ±   1.4    99.3% ± 0.5%     0.1%           0.6%  172.0         6.6 s
+  randomized_memory   258.7 ±   2.8    99.7% ± 0.3%     0.0%           0.3%  170.9         6.5 s
+  randomized_2m vs shaped_v2_2m: failed only by shaped_v2_2m 5, only by randomized_2m 10, both 0 -> p = 0.3018
+  randomized_memory vs shaped_v2_2m: failed only by shaped_v2_2m 4, only by randomized_memory 4, both 1 -> p = 1.0000
+  randomized_memory vs randomized_2m: failed only by randomized_2m 10, only by randomized_memory 5, both 0 -> p = 0.3018
+    where randomized_2m never settled (9), randomized_memory did: {'landed': 9}
+
+=== heavy_gravity: {'gravity': -12.0} | 500 landings x 3 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  shaped_v2_2m   236.3 ±   4.6    85.5% ± 2.3%    13.7%           0.3%  117.8         4.6 s
+  randomized_2m   251.0 ±   2.0    99.3% ± 0.3%     0.3%           0.3%  191.4         6.3 s
+  randomized_memory   248.8 ±   3.3    97.7% ± 1.4%     2.0%           0.1%  186.7         6.1 s
+  randomized_2m vs shaped_v2_2m: failed only by shaped_v2_2m 212, only by randomized_2m 5, both 5 -> p = 0.0000
+    where shaped_v2_2m never settled (5), randomized_2m did: {'landed': 5}
+  randomized_memory vs shaped_v2_2m: failed only by shaped_v2_2m 195, only by randomized_memory 12, both 22 -> p = 0.0000
+    where shaped_v2_2m never settled (5), randomized_memory did: {'landed': 5}
+  randomized_memory vs randomized_2m: failed only by randomized_2m 7, only by randomized_memory 31, both 3 -> p = 0.0001
+    where randomized_2m never settled (4), randomized_memory did: {'crashed': 1, 'landed': 3}
+
+=== weak_engine: {'engine_power': 0.8} | 500 landings x 3 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  shaped_v2_2m   193.9 ±   3.3    69.7% ± 2.0%    26.1%           0.7%  112.9         4.6 s
+  randomized_2m   242.0 ±   1.6    96.1% ± 2.2%     3.1%           0.1%  193.4         6.2 s
+  randomized_memory   238.5 ±   4.6    94.1% ± 2.3%     4.7%           0.4%  189.0         6.1 s
+  randomized_2m vs shaped_v2_2m: failed only by shaped_v2_2m 401, only by randomized_2m 5, both 53 -> p = 0.0000
+    where shaped_v2_2m never settled (11), randomized_2m did: {'landed': 11}
+  randomized_memory vs shaped_v2_2m: failed only by shaped_v2_2m 378, only by randomized_memory 12, both 76 -> p = 0.0000
+    where shaped_v2_2m never settled (11), randomized_memory did: {'landed': 11}
+  randomized_memory vs randomized_2m: failed only by randomized_2m 27, only by randomized_memory 57, both 31 -> p = 0.0014
+    where randomized_2m never settled (1), randomized_memory did: {'crashed': 1}
+
+=== strong_wind: {'wind_power': 17.5, 'turbulence_power': 1.75} | 500 landings x 3 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  shaped_v2_2m    81.4 ±  12.3    27.3% ± 3.4%    55.1%           1.9%   92.1         6.9 s
+  randomized_2m   104.4 ±  13.6    33.8% ± 2.1%    48.0%           2.6%  143.0         7.6 s
+  randomized_memory   129.5 ±  17.7    40.6% ± 3.4%    39.0%           3.0%  140.8         7.8 s
+  randomized_2m vs shaped_v2_2m: failed only by shaped_v2_2m 345, only by randomized_2m 247, both 746 -> p = 0.0001
+    where shaped_v2_2m never settled (29), randomized_2m did: {'crashed': 16, 'landed': 12, 'landed_off_pad': 1}
+  randomized_memory vs shaped_v2_2m: failed only by shaped_v2_2m 390, only by randomized_memory 190, both 701 -> p = 0.0000
+    where shaped_v2_2m never settled (29), randomized_memory did: {'crashed': 5, 'landed': 9, 'never_settled': 3, 'landed_off_pad': 12}
+  randomized_memory vs randomized_2m: failed only by randomized_2m 314, only by randomized_memory 212, both 679 -> p = 0.0000
+    where randomized_2m never settled (39), randomized_memory did: {'landed': 23, 'crashed': 11, 'never_settled': 3, 'landed_off_pad': 2}
+
+=== harsh: {'gravity': -11.5, 'wind_power': 17.5, 'turbulence_power': 1.75, 'engine_power': 0.825} | 500 landings x 3 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  shaped_v2_2m  -112.0 ±  21.3     1.4% ± 0.3%    97.2%           0.0%   71.4         5.7 s
+  randomized_2m  -108.2 ±  21.2     1.3% ± 0.3%    97.4%           0.0%   85.7         7.4 s
+  randomized_memory   -79.7 ±  13.9     2.7% ± 0.5%    94.3%           0.1%   84.9         6.7 s
+  randomized_2m vs shaped_v2_2m: failed only by shaped_v2_2m 15, only by randomized_2m 17, both 1464 -> p = 0.8601
+  randomized_memory vs shaped_v2_2m: failed only by shaped_v2_2m 38, only by randomized_memory 18, both 1441 -> p = 0.0105
+  randomized_memory vs randomized_2m: failed only by randomized_2m 34, only by randomized_memory 12, both 1447 -> p = 0.0016
+
+Saved runs/stress_test_2m.json

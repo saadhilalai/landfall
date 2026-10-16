@@ -1,0 +1,169 @@
+{
+  "agent": "specialist_harsh",
+  "seed": 42,
+  "solved": false,
+  "total_steps": 2015232,
+  "train_minutes": 3.44,
+  "final_validation": {
+    "episodes": 100,
+    "mean_score": -46.04422976408928,
+    "std_score": 78.1116485251352,
+    "success_rate": 0.03,
+    "crash_rate": 0.9,
+    "never_settled_rate": 0.0,
+    "mean_fuel": 89.0689999999999,
+    "outcomes": {
+      "crashed": 90,
+      "landed": 3,
+      "landed_off_pad": 1,
+      "flew_away": 6
+    }
+  },
+  "validation_history": [
+    {
+      "steps": 1015808,
+      "minutes": 1.7139408667882283,
+      "episodes": 100,
+      "mean_score": -51.92300792423111,
+      "std_score": 64.23927678421411,
+      "success_rate": 0.0,
+      "crash_rate": 0.92,
+      "never_settled_rate": 0.0,
+      "mean_fuel": 70.28699999999998,
+      "outcomes": {
+        "crashed": 92,
+        "landed_off_pad": 2,
+        "flew_away": 6
+      }
+    },
+    {
+      "steps": 1277952,
+      "minutes": 2.1616570631663006,
+      "episodes": 100,
+      "mean_score": -57.0050193928407,
+      "std_score": 60.21568257384062,
+      "success_rate": 0.0,
+      "crash_rate": 0.94,
+      "never_settled_rate": 0.0,
+      "mean_fuel": 82.97299999999997,
+      "outcomes": {
+        "crashed": 94,
+        "flew_away": 5,
+        "landed_off_pad": 1
+      }
+    },
+    {
+      "steps": 1540096,
+      "minutes": 2.6122992515563963,
+      "episodes": 100,
+      "mean_score": -54.261504332753766,
+      "std_score": 67.30876733702303,
+      "success_rate": 0.0,
+      "crash_rate": 0.92,
+      "never_settled_rate": 0.0,
+      "mean_fuel": 83.76999999999997,
+      "outcomes": {
+        "crashed": 92,
+        "landed_off_pad": 2,
+        "flew_away": 6
+      }
+    },
+    {
+      "steps": 1802240,
+      "minutes": 3.0634082158406577,
+      "episodes": 100,
+      "mean_score": -47.59620650090503,
+      "std_score": 74.02290079498079,
+      "success_rate": 0.0,
+      "crash_rate": 0.88,
+      "never_settled_rate": 0.0,
+      "mean_fuel": 86.72799999999992,
+      "outcomes": {
+        "crashed": 88,
+        "flew_away": 7,
+        "landed_off_pad": 5
+      }
+    },
+    {
+      "steps": 2015232,
+      "minutes": 3.4416840116182965,
+      "episodes": 100,
+      "mean_score": -46.04422976408928,
+      "std_score": 78.1116485251352,
+      "success_rate": 0.03,
+      "crash_rate": 0.9,
+      "never_settled_rate": 0.0,
+      "mean_fuel": 89.0689999999999,
+      "outcomes": {
+        "crashed": 90,
+        "landed": 3,
+        "landed_off_pad": 1,
+        "flew_away": 6
+      }
+    }
+  ],
+  "settings": {
+    "env_id": "LunarLander-v3",
+    "n_envs": 16,
+    "train_seed": 42,
+    "curve_eval_seed": 2024,
+    "validation_seed": 5000,
+    "first_check_steps": 1000000,
+    "extra_chunk_steps": 250000,
+    "max_steps": 2000000,
+    "solved_score": 200,
+    "ppo": {
+      "policy": "MlpPolicy",
+      "n_steps": 1024,
+      "batch_size": 64,
+      "n_epochs": 4,
+      "gamma": 0.999,
+      "gae_lambda": 0.98,
+      "ent_coef": 0.01,
+      "learning_rate": 0.0003,
+      "clip_range": 0.2,
+      "policy_kwargs": {
+        "net_arch": {
+          "pi": [
+            64,
+            64
+          ],
+          "vf": [
+            64,
+            64
+          ]
+        }
+      }
+    },
+    "reward_shaping": {
+      "tilt_cost": 1.0,
+      "hover_height": 0.2,
+      "hover_speed": 0.05,
+      "hover_cost": 0.1,
+      "not_settled_cost": 0.1,
+      "safe_touchdown_speed": 0.2,
+      "hard_landing_cost": 200.0,
+      "hard_landing_max": 30.0,
+      "settle_bonus": 100.0,
+      "fuel_budget": 200.0,
+      "fuel_bonus": 0.5
+    },
+    "training_conditions": {
+      "gravity": -11.5,
+      "wind_power": 17.5,
+      "turbulence_power": 1.75,
+      "engine_power": 0.825
+    },
+    "memory": 4,
+    "full_budget": true,
+    "validated_in": "harsh"
+  },
+  "versions": {
+    "python": "3.11.17",
+    "torch": "2.14.1",
+    "stable_baselines3": "2.9.0",
+    "gymnasium": "1.4.0",
+    "machine": "Darwin arm64",
+    "torch_threads": 1
+  }
+}

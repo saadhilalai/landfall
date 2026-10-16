@@ -1,0 +1,12 @@
+
+[specialist_harsh_seed42] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score  -77.1 ±  51.0 | landed   0.0% | crashed 95.0% | never settled  0.0% | fuel  43.2
+  1,277,952 steps | score  -69.9 ±  54.3 | landed   0.0% | crashed 94.0% | never settled  0.0% | fuel  51.0
+  1,540,096 steps | score  -67.2 ±  59.1 | landed   0.0% | crashed 94.0% | never settled  0.0% | fuel  58.7
+  1,802,240 steps | score  -64.4 ±  65.0 | landed   1.0% | crashed 93.0% | never settled  0.0% | fuel  64.1
+  2,015,232 steps | score  -61.3 ±  62.4 | landed   0.0% | crashed 93.0% | never settled  0.0% | fuel  65.1
+  done in 3.4 min -> not solved, saved models/specialist_harsh_seed42.zip
+
+=== specialist_harsh: 1 seeds ===
+  seed  42 | 2,015,232 steps | score  -61.3 ±  62.4 | landed   0.0% | crashed 93.0% | never settled  0.0% | fuel  65.1
+  mean across seeds: score -61.3 ± 0.0, landed 0.0% ± 0.0%

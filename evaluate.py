@@ -16,12 +16,12 @@ import numpy as np
 from stable_baselines3 import PPO
 
 import config
-from envs import make_test_env
+from envs import make_test_env, model_memory
 
 
 def run_episodes(model, n_episodes, seed, conditions=None, deterministic=True):
     """Fly `n_episodes` landings. Landing i uses seed `seed + i` (same terrain + start every time)."""
-    env = make_test_env(conditions)
+    env = make_test_env(conditions, memory=model_memory(model))
     episodes = []
     for i in range(n_episodes):
         obs, _ = env.reset(seed=seed + i)

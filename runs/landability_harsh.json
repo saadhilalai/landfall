@@ -1,0 +1,46 @@
+{
+  "harsh": {
+    "specialist_harsh": {
+      "per_seed": {
+        "42": {
+          "episodes": 500,
+          "mean_score": -53.377633807058345,
+          "std_score": 77.00070186437183,
+          "success_rate": 0.016,
+          "crash_rate": 0.87,
+          "never_settled_rate": 0.0,
+          "mean_fuel": 82.99679999999996,
+          "outcomes": {
+            "crashed": 435,
+            "flew_away": 48,
+            "landed": 8,
+            "landed_off_pad": 9
+          }
+        }
+      },
+      "across_seeds": {
+        "mean_score": {
+          "mean": -53.377633807058345,
+          "std": 0.0
+        },
+        "success_rate": {
+          "mean": 0.016,
+          "std": 0.0
+        },
+        "crash_rate": {
+          "mean": 0.87,
+          "std": 0.0
+        },
+        "never_settled_rate": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "mean_fuel": {
+          "mean": 82.99679999999996,
+          "std": 0.0
+        },
+        "landing_seconds": 7.185
+      }
+    }
+  }
+}

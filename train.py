@@ -76,9 +76,10 @@ class LandingStatsCallback(BaseCallback):
                 self.logger.record(f"shaping/{term}", float(np.mean([s[term] for s in self.shaping])))
 
 
-def validate(model):
+def validate(model, conditions=None):
     """The 100-landing 'is it solved?' test (validation seeds, official score)."""
-    summary = summarize(run_episodes(model, config.N_VALIDATION_EPISODES, config.VALIDATION_SEED))
+    summary = summarize(run_episodes(model, config.N_VALIDATION_EPISODES, config.VALIDATION_SEED,
+                                     conditions=conditions))
     for key in ("mean_score", "success_rate", "crash_rate", "never_settled_rate", "mean_fuel"):
         model.logger.record(f"validation/{key}", summary[key])
     model.logger.dump(model.num_timesteps)
@@ -88,6 +89,8 @@ def validate(model):
 def train_one(agent, seed):
     """Train one agent with one seed. Returns its run_info dict."""
     run_name = f"{agent}_seed{seed}"
+    recipe = AGENTS[agent]
+    validation_conditions = config.TEST_SCENARIOS[recipe["validate_in"]]
     run_dir = Path("runs") / agent / f"seed{seed}"
     tb_dir = Path("runs") / "tensorboard"
 
@@ -99,7 +102,7 @@ def train_one(agent, seed):
 
     # Practice worlds (16 in parallel) and a separate world for learning-curve check-ups.
     train_env = make_vec_env(agent, monitor_dir=run_dir / "monitor")
-    curve_env = DummyVecEnv([lambda: Monitor(make_test_env())])
+    curve_env = DummyVecEnv([lambda: Monitor(make_test_env(validation_conditions, memory=recipe["memory"]))])
     curve_env.seed(config.CURVE_EVAL_SEED)
 
     model = PPO(
@@ -130,16 +133,20 @@ def train_one(agent, seed):
     start = time.time()
     history = []
 
-    print(f"\n[{run_name}] training for {config.FIRST_CHECK_STEPS:,} steps...", flush=True)
+    budget = f"{config.MAX_STEPS:,} steps (full budget)" if recipe["full_budget"] else \
+        f"{config.FIRST_CHECK_STEPS:,} steps, more if not solved"
+    print(f"\n[{run_name}] training for {budget}...", flush=True)
     train_for(config.FIRST_CHECK_STEPS, first=True)
-    summary = validate(model)
+    summary = validate(model, validation_conditions)
     history.append(dict(steps=model.num_timesteps, minutes=(time.time() - start) / 60, **summary))
     print(f"  {model.num_timesteps:>9,} steps | {format_summary(summary)}", flush=True)
 
-    while summary["mean_score"] < config.SOLVED_SCORE and model.num_timesteps < config.MAX_STEPS:
+    # Keep going if not solved yet, or if this agent always gets the full budget.
+    while model.num_timesteps < config.MAX_STEPS and (
+            recipe["full_budget"] or summary["mean_score"] < config.SOLVED_SCORE):
         chunk = min(config.EXTRA_CHUNK_STEPS, config.MAX_STEPS - model.num_timesteps)
         train_for(chunk, first=False)
-        summary = validate(model)
+        summary = validate(model, validation_conditions)
         history.append(dict(steps=model.num_timesteps, minutes=(time.time() - start) / 60, **summary))
         print(f"  {model.num_timesteps:>9,} steps | {format_summary(summary)}", flush=True)
 
@@ -169,8 +176,11 @@ def train_one(agent, seed):
             max_steps=config.MAX_STEPS,
             solved_score=config.SOLVED_SCORE,
             ppo=config.PPO_KWARGS,
-            reward_shaping=asdict(AGENTS[agent]["reward"]) if AGENTS[agent]["reward"] else None,
-            training_conditions=AGENTS[agent]["conditions"],
+            reward_shaping=asdict(recipe["reward"]) if recipe["reward"] else None,
+            training_conditions=recipe["conditions"],
+            memory=recipe["memory"],
+            full_budget=recipe["full_budget"],
+            validated_in=recipe["validate_in"],
         ),
         versions=dict(
             python=platform.python_version(),

@@ -59,15 +59,31 @@ TRAIN_CONDITIONS = dict(
     engine_power=(0.85, 1.15),     # multiplier on the game's engine strength
 )
 
-# Test scenarios. Every changed value lies OUTSIDE the training ranges above,
-# but stays landable: in "harsh" the engine is still 1.2x stronger than gravity.
+# Test scenarios. Every changed value lies OUTSIDE the training ranges above.
+# "strong_wind" and "harsh" were softened by the landability check (see below):
+# the originals stopped even a specialist trained in them (10.6% and 0% landed),
+# so each changed value moved halfway back toward the edge of the training range.
 TEST_SCENARIOS = dict(
     normal=dict(),
-    strong_wind=dict(wind_power=20.0, turbulence_power=2.0),
+    strong_wind=dict(wind_power=17.5, turbulence_power=1.75),
     heavy_gravity=dict(gravity=-12.0),
     weak_engine=dict(engine_power=0.8),
-    harsh=dict(gravity=-12.0, wind_power=20.0, turbulence_power=2.0, engine_power=0.8),
+    harsh=dict(gravity=-11.5, wind_power=17.5, turbulence_power=1.75, engine_power=0.825),
+    # The originals, kept so earlier results can be reproduced.
+    strong_wind_original=dict(wind_power=20.0, turbulence_power=2.0),
+    harsh_original=dict(gravity=-12.0, wind_power=20.0, turbulence_power=2.0, engine_power=0.8),
 )
+
+# Landability check, decided BEFORE looking at any results: a test scenario counts
+# as landable if a specialist trained directly in it (with memory, full 2M steps)
+# lands safely in at least half of 500 landings. If not, every changed value moves
+# halfway back toward the edge of the training range, and the check runs once more.
+LANDABLE_RATE = 0.5
+
+# ---- Memory (Step 4 fix) ----------------------------------------------------
+# A "memory" agent sees its last 4 moments instead of just the current one, so it
+# can work out the wind and engine strength from how it has been moving.
+MEMORY = 4
 
 # ---- Learning-curve check-ups -----------------------------------------------
 CURVE_EVAL_EVERY = 32_768   # steps between check-ups (= every 2 learning updates)

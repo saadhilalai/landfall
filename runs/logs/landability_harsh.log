@@ -1,0 +1,6 @@
+
+=== harsh: {'gravity': -11.5, 'wind_power': 17.5, 'turbulence_power': 1.75, 'engine_power': 0.825} | 500 landings x 1 seeds per agent ===
+  agent         official score          landed  crashed  never settled   fuel  landing time
+  specialist_harsh   -53.4 ±   0.0     1.6% ± 0.0%    87.0%           0.0%   83.0         7.2 s
+
+Saved runs/landability_harsh.json

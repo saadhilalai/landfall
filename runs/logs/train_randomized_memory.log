@@ -1,0 +1,30 @@
+
+[randomized_memory_seed42] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score  246.2 ±  22.2 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 205.1
+  1,277,952 steps | score  253.5 ±  26.6 | landed  99.0% | crashed  0.0% | never settled  1.0% | fuel 174.3
+  1,540,096 steps | score  255.0 ±  25.9 | landed  99.0% | crashed  0.0% | never settled  1.0% | fuel 171.2
+  1,802,240 steps | score  259.1 ±  21.1 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 161.3
+  2,015,232 steps | score  259.2 ±  21.5 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 160.9
+  done in 4.9 min -> SOLVED, saved models/randomized_memory_seed42.zip
+
+[randomized_memory_seed142] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score  240.6 ±  21.0 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 222.5
+  1,277,952 steps | score  251.5 ±  33.2 | landed  95.0% | crashed  1.0% | never settled  1.0% | fuel 157.6
+  1,540,096 steps | score  258.5 ±  28.3 | landed  98.0% | crashed  0.0% | never settled  2.0% | fuel 148.7
+  1,802,240 steps | score  258.1 ±  21.5 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 162.8
+  2,015,232 steps | score  252.5 ±  21.5 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 183.6
+  done in 5.2 min -> SOLVED, saved models/randomized_memory_seed142.zip
+
+[randomized_memory_seed242] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score  230.8 ±  21.8 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 254.7
+  1,277,952 steps | score  242.2 ±  29.0 | landed  97.0% | crashed  0.0% | never settled  3.0% | fuel 202.1
+  1,540,096 steps | score  251.5 ±  28.5 | landed  98.0% | crashed  0.0% | never settled  2.0% | fuel 166.0
+  1,802,240 steps | score  256.4 ±  23.7 | landed  99.0% | crashed  0.0% | never settled  1.0% | fuel 166.1
+  2,015,232 steps | score  256.7 ±  20.3 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 170.7
+  done in 5.1 min -> SOLVED, saved models/randomized_memory_seed242.zip
+
+=== randomized_memory: 3 seeds ===
+  seed  42 | 2,015,232 steps | score  259.2 ±  21.5 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 160.9
+  seed 142 | 2,015,232 steps | score  252.5 ±  21.5 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 183.6
+  seed 242 | 2,015,232 steps | score  256.7 ±  20.3 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 170.7
+  mean across seeds: score 256.1 ± 2.8, landed 100.0% ± 0.0%

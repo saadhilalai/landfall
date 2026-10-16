@@ -1,0 +1,12 @@
+
+[specialist_strong_wind_seed42] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score   20.2 ± 128.7 | landed  16.0% | crashed 38.0% | never settled 20.0% | fuel 242.6
+  1,277,952 steps | score  -13.8 ± 127.2 | landed   5.0% | crashed 37.0% | never settled 23.0% | fuel 301.7
+  1,540,096 steps | score   70.4 ± 137.4 | landed  19.0% | crashed 31.0% | never settled  2.0% | fuel 238.7
+  1,802,240 steps | score   76.4 ± 142.8 | landed  19.0% | crashed 28.0% | never settled  3.0% | fuel 229.3
+  2,015,232 steps | score   95.5 ± 131.7 | landed  24.0% | crashed 24.0% | never settled  5.0% | fuel 214.1
+  done in 4.0 min -> not solved, saved models/specialist_strong_wind_seed42.zip
+
+=== specialist_strong_wind: 1 seeds ===
+  seed  42 | 2,015,232 steps | score   95.5 ± 131.7 | landed  24.0% | crashed 24.0% | never settled  5.0% | fuel 214.1
+  mean across seeds: score 95.5 ± 0.0, landed 24.0% ± 0.0%

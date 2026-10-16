@@ -1,0 +1,30 @@
+
+[randomized_2m_seed42] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score  213.7 ±  22.6 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 314.6
+  1,277,952 steps | score  232.6 ±  24.4 | landed  98.0% | crashed  0.0% | never settled  0.0% | fuel 244.8
+  1,540,096 steps | score  239.9 ±  34.5 | landed  98.0% | crashed  1.0% | never settled  1.0% | fuel 208.7
+  1,802,240 steps | score  236.1 ±  41.4 | landed  93.0% | crashed  0.0% | never settled  7.0% | fuel 190.9
+  2,015,232 steps | score  250.6 ±  26.3 | landed  99.0% | crashed  0.0% | never settled  1.0% | fuel 184.7
+  done in 5.3 min -> SOLVED, saved models/randomized_2m_seed42.zip
+
+[randomized_2m_seed142] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score  231.9 ±  42.9 | landed  93.0% | crashed  2.0% | never settled  0.0% | fuel 212.8
+  1,277,952 steps | score  235.4 ±  27.1 | landed  98.0% | crashed  0.0% | never settled  1.0% | fuel 231.2
+  1,540,096 steps | score  236.9 ±  24.3 | landed  98.0% | crashed  0.0% | never settled  1.0% | fuel 224.8
+  1,802,240 steps | score  249.4 ±  24.7 | landed  99.0% | crashed  0.0% | never settled  1.0% | fuel 184.8
+  2,015,232 steps | score  251.9 ±  27.4 | landed  98.0% | crashed  0.0% | never settled  2.0% | fuel 167.4
+  done in 5.5 min -> SOLVED, saved models/randomized_2m_seed142.zip
+
+[randomized_2m_seed242] training for 2,000,000 steps (full budget)...
+  1,015,808 steps | score  178.8 ±  90.6 | landed  56.0% | crashed 14.0% | never settled  5.0% | fuel 224.3
+  1,277,952 steps | score  216.0 ±  65.4 | landed  84.0% | crashed  5.0% | never settled  4.0% | fuel 210.2
+  1,540,096 steps | score  245.7 ±  26.5 | landed  99.0% | crashed  0.0% | never settled  1.0% | fuel 199.4
+  1,802,240 steps | score  241.3 ±  23.6 | landed 100.0% | crashed  0.0% | never settled  0.0% | fuel 220.0
+  2,015,232 steps | score  254.4 ±  28.6 | landed  98.0% | crashed  0.0% | never settled  2.0% | fuel 165.3
+  done in 4.8 min -> SOLVED, saved models/randomized_2m_seed242.zip
+
+=== randomized_2m: 3 seeds ===
+  seed  42 | 2,015,232 steps | score  250.6 ±  26.3 | landed  99.0% | crashed  0.0% | never settled  1.0% | fuel 184.7
+  seed 142 | 2,015,232 steps | score  251.9 ±  27.4 | landed  98.0% | crashed  0.0% | never settled  2.0% | fuel 167.4
+  seed 242 | 2,015,232 steps | score  254.4 ±  28.6 | landed  98.0% | crashed  0.0% | never settled  2.0% | fuel 165.3
+  mean across seeds: score 252.3 ± 1.6, landed 98.3% ± 0.5%
