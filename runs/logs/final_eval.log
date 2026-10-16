@@ -1,0 +1,67 @@
+Final evaluation: 8 agents x 3 seeds x 7 scenarios x 100 test landings = 16,800 landings
+Done in 1.7 min
+# Final results (test landings 10000-10099, 3 seeds per agent = 300 landings per cell)
+
+## Landed safely
+
+| Agent | normal | heavy_gravity | weak_engine | strong_wind | harsh | strong_wind_extreme | harsh_extreme |
+|---|---|---|---|---|---|---|---|
+| baseline | 99.7% | 96.0% | 91.0% | 33.3% | 2.7% | 24.0% | 2.0% |
+| shaped_v1 | 100.0% | 99.3% | 95.7% | 37.3% | 1.7% | 29.0% | 1.3% |
+| shaped_v2 | 99.7% | 97.0% | 89.0% | 32.3% | 2.3% | 29.3% | 1.3% |
+| randomized | 94.7% | 95.3% | 93.0% | 38.3% | 1.7% | 33.0% | 0.0% |
+| shaped_v2_2m | 100.0% | 80.0% | 69.3% | 35.3% | 1.7% | 29.7% | 0.3% |
+| randomized_2m | 99.7% | 99.0% | 93.7% | 40.0% | 2.3% | 33.7% | 1.0% |
+| randomized_memory | 100.0% | 95.7% | 87.7% | 45.0% | 5.3% | 38.7% | 3.7% |
+| randomized_memory_tuned | 100.0% | 91.7% | 79.7% | 73.0% | 13.7% | 69.0% | 7.0% |
+
+## Official score (mean)
+
+| Agent | normal | heavy_gravity | weak_engine | strong_wind | harsh | strong_wind_extreme | harsh_extreme |
+|---|---|---|---|---|---|---|---|
+| baseline | 259.3 | 245.4 | 234.6 | 104.3 | -125.6 | 73.3 | -160.9 |
+| shaped_v1 | 256.5 | 249.7 | 241.1 | 114.1 | -99.9 | 79.2 | -127.8 |
+| shaped_v2 | 268.9 | 259.1 | 239.4 | 114.6 | -129.3 | 81.0 | -168.3 |
+| randomized | 229.2 | 222.8 | 220.8 | 114.1 | -78.7 | 98.6 | -113.0 |
+| shaped_v2_2m | 278.3 | 220.7 | 189.6 | 116.5 | -91.2 | 94.6 | -122.2 |
+| randomized_2m | 258.6 | 251.2 | 235.8 | 133.7 | -82.1 | 110.5 | -117.6 |
+| randomized_memory | 260.5 | 245.1 | 223.1 | 146.2 | -43.3 | 133.8 | -82.6 |
+| randomized_memory_tuned | 282.1 | 256.5 | 216.1 | 205.7 | -4.0 | 189.3 | -54.8 |
+
+## Paired tests (failures on the same landings)
+
+| Agent | vs | Scenario | Landed (agent / ref) | Failed only by agent / ref | p |
+|---|---|---|---|---|---|
+| shaped_v2 | baseline | normal | 99.7% / 99.7% | 1 / 1 | 1.0000 |
+| shaped_v2_2m | shaped_v2 | heavy_gravity | 80.0% / 97.0% | 53 / 2 | 0.0000 |
+| shaped_v2_2m | shaped_v2 | weak_engine | 69.3% / 89.0% | 59 / 0 | 0.0000 |
+| randomized_2m | shaped_v2_2m | normal | 99.7% / 100.0% | 1 / 0 | 1.0000 |
+| randomized_2m | shaped_v2_2m | heavy_gravity | 99.0% / 80.0% | 0 / 57 | 0.0000 |
+| randomized_2m | shaped_v2_2m | weak_engine | 93.7% / 69.3% | 1 / 74 | 0.0000 |
+| randomized_2m | shaped_v2_2m | strong_wind | 40.0% / 35.3% | 64 / 78 | 0.2752 |
+| randomized_2m | shaped_v2_2m | harsh | 2.3% / 1.7% | 4 / 6 | 0.7539 |
+| randomized_2m | shaped_v2_2m | strong_wind_extreme | 33.7% / 29.7% | 58 / 70 | 0.3309 |
+| randomized_2m | shaped_v2_2m | harsh_extreme | 1.0% / 0.3% | 1 / 3 | 0.6250 |
+| randomized_memory | randomized_2m | normal | 100.0% / 99.7% | 0 / 1 | 1.0000 |
+| randomized_memory | randomized_2m | heavy_gravity | 95.7% / 99.0% | 10 / 0 | 0.0020 |
+| randomized_memory | randomized_2m | weak_engine | 87.7% / 93.7% | 23 / 5 | 0.0009 |
+| randomized_memory | randomized_2m | strong_wind | 45.0% / 40.0% | 54 / 69 | 0.2066 |
+| randomized_memory | randomized_2m | harsh | 5.3% / 2.3% | 4 / 13 | 0.0490 |
+| randomized_memory | randomized_2m | strong_wind_extreme | 38.7% / 33.7% | 48 / 63 | 0.1837 |
+| randomized_memory | randomized_2m | harsh_extreme | 3.7% / 1.0% | 0 / 8 | 0.0078 |
+| randomized_memory_tuned | randomized_memory | normal | 100.0% / 100.0% | 0 / 0 | 1.0000 |
+| randomized_memory_tuned | randomized_memory | heavy_gravity | 91.7% / 95.7% | 18 / 6 | 0.0227 |
+| randomized_memory_tuned | randomized_memory | weak_engine | 79.7% / 87.7% | 29 / 5 | 0.0000 |
+| randomized_memory_tuned | randomized_memory | strong_wind | 73.0% / 45.0% | 25 / 109 | 0.0000 |
+| randomized_memory_tuned | randomized_memory | harsh | 13.7% / 5.3% | 12 / 37 | 0.0005 |
+| randomized_memory_tuned | randomized_memory | strong_wind_extreme | 69.0% / 38.7% | 17 / 108 | 0.0000 |
+| randomized_memory_tuned | randomized_memory | harsh_extreme | 7.0% / 3.7% | 10 / 20 | 0.0987 |
+| randomized_memory_tuned | baseline | normal | 100.0% / 99.7% | 0 / 1 | 1.0000 |
+| randomized_memory_tuned | baseline | heavy_gravity | 91.7% / 96.0% | 22 / 9 | 0.0294 |
+| randomized_memory_tuned | baseline | weak_engine | 79.7% / 91.0% | 40 / 6 | 0.0000 |
+| randomized_memory_tuned | baseline | strong_wind | 73.0% / 33.3% | 20 / 139 | 0.0000 |
+| randomized_memory_tuned | baseline | harsh | 13.7% / 2.7% | 8 / 41 | 0.0000 |
+| randomized_memory_tuned | baseline | strong_wind_extreme | 69.0% / 24.0% | 12 / 147 | 0.0000 |
+| randomized_memory_tuned | baseline | harsh_extreme | 7.0% / 2.0% | 6 / 21 | 0.0059 |
+
+Saved runs/final/episodes.csv, results.json, results.md

@@ -1,0 +1,1788 @@
+{
+  "run": {
+    "git_commit": "6ca403d5372d88abc0423cdb0454c127fb4b4a6c",
+    "date": "2026-10-15 23:09",
+    "test_seeds": [
+      10000,
+      10099
+    ],
+    "train_seeds": [
+      42,
+      142,
+      242
+    ],
+    "python": "3.11.17"
+  },
+  "agents": [
+    "baseline",
+    "shaped_v1",
+    "shaped_v2",
+    "randomized",
+    "shaped_v2_2m",
+    "randomized_2m",
+    "randomized_memory",
+    "randomized_memory_tuned"
+  ],
+  "scenarios": {
+    "normal": {},
+    "heavy_gravity": {
+      "gravity": -12.0
+    },
+    "weak_engine": {
+      "engine_power": 0.8
+    },
+    "strong_wind": {
+      "wind_power": 16.25,
+      "turbulence_power": 1.625
+    },
+    "harsh": {
+      "gravity": -11.25,
+      "wind_power": 16.25,
+      "turbulence_power": 1.625,
+      "engine_power": 0.8375
+    },
+    "strong_wind_extreme": {
+      "wind_power": 17.5,
+      "turbulence_power": 1.75
+    },
+    "harsh_extreme": {
+      "gravity": -11.5,
+      "wind_power": 17.5,
+      "turbulence_power": 1.75,
+      "engine_power": 0.825
+    }
+  },
+  "cells": {
+    "normal": {
+      "baseline": {
+        "landings": 300,
+        "landed_rate": 0.9966666666666667,
+        "landed_ci95": [
+          0.9813628354450568,
+          0.9994113574238592
+        ],
+        "landed_rate_per_seed": [
+          0.99,
+          1.0,
+          1.0
+        ],
+        "crash_rate": 0.0033333333333333335,
+        "never_settled_rate": 0.0,
+        "mean_score": 259.3090198981715,
+        "score_std_across_seeds": 13.907898946896532,
+        "fuel_per_safe_landing": 166.11304347826058,
+        "seconds_per_safe_landing": 6.481003344481605,
+        "outcomes": {
+          "landed": 299,
+          "crashed": 1
+        }
+      },
+      "shaped_v1": {
+        "landings": 300,
+        "landed_rate": 1.0,
+        "landed_ci95": [
+          0.9873565700022643,
+          0.9999999999999999
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0,
+        "mean_score": 256.4595144477723,
+        "score_std_across_seeds": 2.981702152685562,
+        "fuel_per_safe_landing": 181.46966666666646,
+        "seconds_per_safe_landing": 6.882066666666667,
+        "outcomes": {
+          "landed": 300
+        }
+      },
+      "shaped_v2": {
+        "landings": 300,
+        "landed_rate": 0.9966666666666667,
+        "landed_ci95": [
+          0.9813628354450568,
+          0.9994113574238592
+        ],
+        "landed_rate_per_seed": [
+          0.99,
+          1.0,
+          1.0
+        ],
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0,
+        "mean_score": 268.9421840972973,
+        "score_std_across_seeds": 1.0333877351883844,
+        "fuel_per_safe_landing": 136.97826086956513,
+        "seconds_per_safe_landing": 5.570033444816054,
+        "outcomes": {
+          "landed": 299,
+          "landed_off_pad": 1
+        }
+      },
+      "randomized": {
+        "landings": 300,
+        "landed_rate": 0.9466666666666667,
+        "landed_ci95": [
+          0.9151301612527315,
+          0.966908374615958
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          0.96,
+          0.88
+        ],
+        "crash_rate": 0.006666666666666667,
+        "never_settled_rate": 0.01,
+        "mean_score": 229.16404644488662,
+        "score_std_across_seeds": 10.209088373700249,
+        "fuel_per_safe_landing": 247.59718309859147,
+        "seconds_per_safe_landing": 9.312887323943663,
+        "outcomes": {
+          "landed": 284,
+          "landed_off_pad": 11,
+          "crashed": 2,
+          "never_settled": 3
+        }
+      },
+      "shaped_v2_2m": {
+        "landings": 300,
+        "landed_rate": 1.0,
+        "landed_ci95": [
+          0.9873565700022643,
+          0.9999999999999999
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0,
+        "mean_score": 278.30885058740193,
+        "score_std_across_seeds": 2.375469904317379,
+        "fuel_per_safe_landing": 109.94099999999996,
+        "seconds_per_safe_landing": 4.6942,
+        "outcomes": {
+          "landed": 300
+        }
+      },
+      "randomized_2m": {
+        "landings": 300,
+        "landed_rate": 0.9966666666666667,
+        "landed_ci95": [
+          0.9813628354450568,
+          0.9994113574238592
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          0.99,
+          1.0
+        ],
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0,
+        "mean_score": 258.58212481021343,
+        "score_std_across_seeds": 1.9979238509389385,
+        "fuel_per_safe_landing": 171.96220735785948,
+        "seconds_per_safe_landing": 6.6124414715719055,
+        "outcomes": {
+          "landed": 299,
+          "landed_off_pad": 1
+        }
+      },
+      "randomized_memory": {
+        "landings": 300,
+        "landed_rate": 1.0,
+        "landed_ci95": [
+          0.9873565700022643,
+          0.9999999999999999
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0,
+        "mean_score": 260.5346211563339,
+        "score_std_across_seeds": 2.717997865538776,
+        "fuel_per_safe_landing": 170.36999999999986,
+        "seconds_per_safe_landing": 6.4581333333333335,
+        "outcomes": {
+          "landed": 300
+        }
+      },
+      "randomized_memory_tuned": {
+        "landings": 300,
+        "landed_rate": 1.0,
+        "landed_ci95": [
+          0.9873565700022643,
+          0.9999999999999999
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0,
+        "mean_score": 282.06525963828784,
+        "score_std_across_seeds": 0.8533244576981684,
+        "fuel_per_safe_landing": 96.05133333333329,
+        "seconds_per_safe_landing": 3.9818000000000002,
+        "outcomes": {
+          "landed": 300
+        }
+      }
+    },
+    "heavy_gravity": {
+      "baseline": {
+        "landings": 300,
+        "landed_rate": 0.96,
+        "landed_ci95": [
+          0.9313951365400219,
+          0.9769729078620613
+        ],
+        "landed_rate_per_seed": [
+          0.97,
+          0.93,
+          0.98
+        ],
+        "crash_rate": 0.03666666666666667,
+        "never_settled_rate": 0.0,
+        "mean_score": 245.43798109899882,
+        "score_std_across_seeds": 12.449815435966876,
+        "fuel_per_safe_landing": 185.88611111111095,
+        "seconds_per_safe_landing": 6.388125,
+        "outcomes": {
+          "landed": 288,
+          "crashed": 11,
+          "landed_off_pad": 1
+        }
+      },
+      "shaped_v1": {
+        "landings": 300,
+        "landed_rate": 0.9933333333333333,
+        "landed_ci95": [
+          0.9760219257685385,
+          0.9981698899670288
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          1.0,
+          0.98
+        ],
+        "crash_rate": 0.0,
+        "never_settled_rate": 0.0033333333333333335,
+        "mean_score": 249.66900016583688,
+        "score_std_across_seeds": 2.9363259927209184,
+        "fuel_per_safe_landing": 202.63993288590586,
+        "seconds_per_safe_landing": 6.621275167785235,
+        "outcomes": {
+          "landed": 298,
+          "landed_off_pad": 1,
+          "never_settled": 1
+        }
+      },
+      "shaped_v2": {
+        "landings": 300,
+        "landed_rate": 0.97,
+        "landed_ci95": [
+          0.943976849008093,
+          0.9841383267940355
+        ],
+        "landed_rate_per_seed": [
+          0.96,
+          0.99,
+          0.96
+        ],
+        "crash_rate": 0.016666666666666666,
+        "never_settled_rate": 0.0,
+        "mean_score": 259.1091462330334,
+        "score_std_across_seeds": 3.5203218923563355,
+        "fuel_per_safe_landing": 155.07800687285214,
+        "seconds_per_safe_landing": 5.465429553264605,
+        "outcomes": {
+          "landed": 291,
+          "crashed": 5,
+          "landed_off_pad": 4
+        }
+      },
+      "randomized": {
+        "landings": 300,
+        "landed_rate": 0.9533333333333334,
+        "landed_ci95": [
+          0.9232019646862172,
+          0.9720013254491692
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          0.95,
+          0.91
+        ],
+        "crash_rate": 0.01,
+        "never_settled_rate": 0.013333333333333334,
+        "mean_score": 222.78838982559614,
+        "score_std_across_seeds": 10.24420378222571,
+        "fuel_per_safe_landing": 266.612937062937,
+        "seconds_per_safe_landing": 8.522867132867132,
+        "outcomes": {
+          "landed": 286,
+          "landed_off_pad": 7,
+          "never_settled": 4,
+          "crashed": 3
+        }
+      },
+      "shaped_v2_2m": {
+        "landings": 300,
+        "landed_rate": 0.8,
+        "landed_ci95": [
+          0.7510701139033206,
+          0.8413438280980382
+        ],
+        "landed_rate_per_seed": [
+          0.78,
+          0.81,
+          0.81
+        ],
+        "crash_rate": 0.19,
+        "never_settled_rate": 0.0,
+        "mean_score": 220.67019699471655,
+        "score_std_across_seeds": 3.8175574881787413,
+        "fuel_per_safe_landing": 121.96833333333328,
+        "seconds_per_safe_landing": 4.553916666666667,
+        "outcomes": {
+          "landed": 240,
+          "crashed": 57,
+          "landed_off_pad": 3
+        }
+      },
+      "randomized_2m": {
+        "landings": 300,
+        "landed_rate": 0.99,
+        "landed_ci95": [
+          0.9710159953649371,
+          0.9965934432372818
+        ],
+        "landed_rate_per_seed": [
+          0.99,
+          0.99,
+          0.99
+        ],
+        "crash_rate": 0.01,
+        "never_settled_rate": 0.0,
+        "mean_score": 251.20077847422507,
+        "score_std_across_seeds": 2.195512330671717,
+        "fuel_per_safe_landing": 190.83939393939386,
+        "seconds_per_safe_landing": 6.287070707070707,
+        "outcomes": {
+          "landed": 297,
+          "crashed": 3
+        }
+      },
+      "randomized_memory": {
+        "landings": 300,
+        "landed_rate": 0.9566666666666667,
+        "landed_ci95": [
+          0.927281870871939,
+          0.9745037963967957
+        ],
+        "landed_rate_per_seed": [
+          0.97,
+          0.97,
+          0.93
+        ],
+        "crash_rate": 0.04,
+        "never_settled_rate": 0.0033333333333333335,
+        "mean_score": 245.1100639678416,
+        "score_std_across_seeds": 6.280518782224682,
+        "fuel_per_safe_landing": 185.8205574912891,
+        "seconds_per_safe_landing": 6.0580487804878045,
+        "outcomes": {
+          "landed": 287,
+          "crashed": 12,
+          "never_settled": 1
+        }
+      },
+      "randomized_memory_tuned": {
+        "landings": 300,
+        "landed_rate": 0.9166666666666666,
+        "landed_ci95": [
+          0.8798776190248736,
+          0.94291952264368
+        ],
+        "landed_rate_per_seed": [
+          0.9,
+          0.92,
+          0.93
+        ],
+        "crash_rate": 0.08,
+        "never_settled_rate": 0.0033333333333333335,
+        "mean_score": 256.4862819054128,
+        "score_std_across_seeds": 4.009031160252495,
+        "fuel_per_safe_landing": 102.26072727272724,
+        "seconds_per_safe_landing": 3.7864,
+        "outcomes": {
+          "landed": 275,
+          "crashed": 24,
+          "never_settled": 1
+        }
+      }
+    },
+    "weak_engine": {
+      "baseline": {
+        "landings": 300,
+        "landed_rate": 0.91,
+        "landed_ci95": [
+          0.8722221947968226,
+          0.9374101926050341
+        ],
+        "landed_rate_per_seed": [
+          0.96,
+          0.8,
+          0.97
+        ],
+        "crash_rate": 0.06333333333333334,
+        "never_settled_rate": 0.0033333333333333335,
+        "mean_score": 234.60128778311622,
+        "score_std_across_seeds": 16.673660802770005,
+        "fuel_per_safe_landing": 195.56483516483505,
+        "seconds_per_safe_landing": 6.406153846153846,
+        "outcomes": {
+          "landed": 273,
+          "landed_off_pad": 7,
+          "crashed": 19,
+          "never_settled": 1
+        }
+      },
+      "shaped_v1": {
+        "landings": 300,
+        "landed_rate": 0.9566666666666667,
+        "landed_ci95": [
+          0.927281870871939,
+          0.9745037963967957
+        ],
+        "landed_rate_per_seed": [
+          0.97,
+          1.0,
+          0.9
+        ],
+        "crash_rate": 0.02,
+        "never_settled_rate": 0.0,
+        "mean_score": 241.06343096635308,
+        "score_std_across_seeds": 3.08871133547125,
+        "fuel_per_safe_landing": 212.15609756097544,
+        "seconds_per_safe_landing": 6.618397212543553,
+        "outcomes": {
+          "landed": 287,
+          "crashed": 6,
+          "landed_off_pad": 7
+        }
+      },
+      "shaped_v2": {
+        "landings": 300,
+        "landed_rate": 0.89,
+        "landed_ci95": [
+          0.8495429318702987,
+          0.9205951927314675
+        ],
+        "landed_rate_per_seed": [
+          0.91,
+          0.88,
+          0.88
+        ],
+        "crash_rate": 0.056666666666666664,
+        "never_settled_rate": 0.0,
+        "mean_score": 239.39773586068299,
+        "score_std_across_seeds": 1.3629652944373005,
+        "fuel_per_safe_landing": 161.02771535580516,
+        "seconds_per_safe_landing": 5.427715355805243,
+        "outcomes": {
+          "landed": 267,
+          "crashed": 17,
+          "landed_off_pad": 15,
+          "flew_away": 1
+        }
+      },
+      "randomized": {
+        "landings": 300,
+        "landed_rate": 0.93,
+        "landed_ci95": [
+          0.8953632441625534,
+          0.953763406039394
+        ],
+        "landed_rate_per_seed": [
+          1.0,
+          0.93,
+          0.86
+        ],
+        "crash_rate": 0.013333333333333334,
+        "never_settled_rate": 0.0033333333333333335,
+        "mean_score": 220.816163221883,
+        "score_std_across_seeds": 10.132136932194824,
+        "fuel_per_safe_landing": 274.74731182795693,
+        "seconds_per_safe_landing": 8.44752688172043,
+        "outcomes": {
+          "landed": 279,
+          "landed_off_pad": 16,
+          "crashed": 4,
+          "never_settled": 1
+        }
+      },
+      "shaped_v2_2m": {
+        "landings": 300,
+        "landed_rate": 0.6933333333333334,
+        "landed_ci95": [
+          0.6389827786899308,
+          0.7427950950442782
+        ],
+        "landed_rate_per_seed": [
+          0.69,
+          0.69,
+          0.7
+        ],
+        "crash_rate": 0.27,
+        "never_settled_rate": 0.0,
+        "mean_score": 189.57107532283675,
+        "score_std_across_seeds": 5.221805918430458,
+        "fuel_per_safe_landing": 125.31586538461532,
+        "seconds_per_safe_landing": 4.604615384615385,
+        "outcomes": {
+          "landed": 208,
+          "crashed": 81,
+          "landed_off_pad": 11
+        }
+      },
+      "randomized_2m": {
+        "landings": 300,
+        "landed_rate": 0.9366666666666666,
+        "landed_ci95": [
+          0.9032079605174259,
+          0.9590834439512181
+        ],
+        "landed_rate_per_seed": [
+          0.97,
+          0.93,
+          0.91
+        ],
+        "crash_rate": 0.056666666666666664,
+        "never_settled_rate": 0.0,
+        "mean_score": 235.80828756880481,
+        "score_std_across_seeds": 4.430873537922605,
+        "fuel_per_safe_landing": 195.25266903914581,
+        "seconds_per_safe_landing": 6.234163701067615,
+        "outcomes": {
+          "landed": 281,
+          "crashed": 17,
+          "landed_off_pad": 2
+        }
+      },
+      "randomized_memory": {
+        "landings": 300,
+        "landed_rate": 0.8766666666666667,
+        "landed_ci95": [
+          0.8346254157811881,
+          0.9091832002871845
+        ],
+        "landed_rate_per_seed": [
+          0.87,
+          0.91,
+          0.85
+        ],
+        "crash_rate": 0.11333333333333333,
+        "never_settled_rate": 0.0033333333333333335,
+        "mean_score": 223.081632073407,
+        "score_std_across_seeds": 2.363397879726599,
+        "fuel_per_safe_landing": 194.231939163498,
+        "seconds_per_safe_landing": 6.150722433460076,
+        "outcomes": {
+          "landed": 263,
+          "crashed": 34,
+          "landed_off_pad": 2,
+          "never_settled": 1
+        }
+      },
+      "randomized_memory_tuned": {
+        "landings": 300,
+        "landed_rate": 0.7966666666666666,
+        "landed_ci95": [
+          0.747504723102555,
+          0.8383268417654551
+        ],
+        "landed_rate_per_seed": [
+          0.81,
+          0.77,
+          0.81
+        ],
+        "crash_rate": 0.19666666666666666,
+        "never_settled_rate": 0.006666666666666667,
+        "mean_score": 216.06594361746969,
+        "score_std_across_seeds": 8.09313348244725,
+        "fuel_per_safe_landing": 106.93263598326358,
+        "seconds_per_safe_landing": 3.862008368200837,
+        "outcomes": {
+          "landed": 239,
+          "crashed": 59,
+          "never_settled": 2
+        }
+      }
+    },
+    "strong_wind": {
+      "baseline": {
+        "landings": 300,
+        "landed_rate": 0.3333333333333333,
+        "landed_ci95": [
+          0.2823925597902556,
+          0.3884885835423229
+        ],
+        "landed_rate_per_seed": [
+          0.24,
+          0.45,
+          0.31
+        ],
+        "crash_rate": 0.48333333333333334,
+        "never_settled_rate": 0.016666666666666666,
+        "mean_score": 104.33356064133913,
+        "score_std_across_seeds": 33.154291950474565,
+        "fuel_per_safe_landing": 154.8679999999996,
+        "seconds_per_safe_landing": 7.3656,
+        "outcomes": {
+          "crashed": 145,
+          "landed_off_pad": 50,
+          "landed": 100,
+          "never_settled": 5
+        }
+      },
+      "shaped_v1": {
+        "landings": 300,
+        "landed_rate": 0.37333333333333335,
+        "landed_ci95": [
+          0.32052375567605285,
+          0.4293459132567069
+        ],
+        "landed_rate_per_seed": [
+          0.43,
+          0.34,
+          0.35
+        ],
+        "crash_rate": 0.42,
+        "never_settled_rate": 0.016666666666666666,
+        "mean_score": 114.12782470207891,
+        "score_std_across_seeds": 8.351347398239426,
+        "fuel_per_safe_landing": 167.43035714285656,
+        "seconds_per_safe_landing": 8.897321428571429,
+        "outcomes": {
+          "crashed": 126,
+          "landed": 112,
+          "landed_off_pad": 56,
+          "never_settled": 5,
+          "flew_away": 1
+        }
+      },
+      "shaped_v2": {
+        "landings": 300,
+        "landed_rate": 0.3233333333333333,
+        "landed_ci95": [
+          0.27292452032605247,
+          0.3782094916064807
+        ],
+        "landed_rate_per_seed": [
+          0.32,
+          0.31,
+          0.34
+        ],
+        "crash_rate": 0.4066666666666667,
+        "never_settled_rate": 0.02,
+        "mean_score": 114.5570798063852,
+        "score_std_across_seeds": 10.070341348082243,
+        "fuel_per_safe_landing": 134.25154639175219,
+        "seconds_per_safe_landing": 8.062474226804124,
+        "outcomes": {
+          "crashed": 122,
+          "landed": 97,
+          "landed_off_pad": 74,
+          "never_settled": 6,
+          "flew_away": 1
+        }
+      },
+      "randomized": {
+        "landings": 300,
+        "landed_rate": 0.38333333333333336,
+        "landed_ci95": [
+          0.33011889302772734,
+          0.43949790730507765
+        ],
+        "landed_rate_per_seed": [
+          0.45,
+          0.3,
+          0.4
+        ],
+        "crash_rate": 0.4066666666666667,
+        "never_settled_rate": 0.013333333333333334,
+        "mean_score": 114.07624851061162,
+        "score_std_across_seeds": 17.347902620116574,
+        "fuel_per_safe_landing": 220.65739130434767,
+        "seconds_per_safe_landing": 10.069217391304347,
+        "outcomes": {
+          "crashed": 122,
+          "landed": 115,
+          "landed_off_pad": 59,
+          "never_settled": 4
+        }
+      },
+      "shaped_v2_2m": {
+        "landings": 300,
+        "landed_rate": 0.35333333333333333,
+        "landed_ci95": [
+          0.30140739106432274,
+          0.4089680150683464
+        ],
+        "landed_rate_per_seed": [
+          0.34,
+          0.4,
+          0.32
+        ],
+        "crash_rate": 0.4666666666666667,
+        "never_settled_rate": 0.01,
+        "mean_score": 116.53901742124387,
+        "score_std_across_seeds": 16.291207211453653,
+        "fuel_per_safe_landing": 107.11509433962232,
+        "seconds_per_safe_landing": 6.687924528301887,
+        "outcomes": {
+          "landed": 106,
+          "crashed": 140,
+          "landed_off_pad": 51,
+          "never_settled": 3
+        }
+      },
+      "randomized_2m": {
+        "landings": 300,
+        "landed_rate": 0.4,
+        "landed_ci95": [
+          0.3461642362605155,
+          0.4563644497390317
+        ],
+        "landed_rate_per_seed": [
+          0.33,
+          0.42,
+          0.45
+        ],
+        "crash_rate": 0.38333333333333336,
+        "never_settled_rate": 0.02,
+        "mean_score": 133.7321978876424,
+        "score_std_across_seeds": 14.055770879750861,
+        "fuel_per_safe_landing": 161.69666666666632,
+        "seconds_per_safe_landing": 7.803833333333333,
+        "outcomes": {
+          "landed_off_pad": 59,
+          "crashed": 115,
+          "landed": 120,
+          "never_settled": 6
+        }
+      },
+      "randomized_memory": {
+        "landings": 300,
+        "landed_rate": 0.45,
+        "landed_ci95": [
+          0.39468890948161645,
+          0.506575433518157
+        ],
+        "landed_rate_per_seed": [
+          0.49,
+          0.41,
+          0.45
+        ],
+        "crash_rate": 0.32666666666666666,
+        "never_settled_rate": 0.04666666666666667,
+        "mean_score": 146.16305517411482,
+        "score_std_across_seeds": 0.9616589214687676,
+        "fuel_per_safe_landing": 159.43481481481436,
+        "seconds_per_safe_landing": 7.781333333333333,
+        "outcomes": {
+          "landed_off_pad": 53,
+          "landed": 135,
+          "never_settled": 14,
+          "crashed": 98
+        }
+      },
+      "randomized_memory_tuned": {
+        "landings": 300,
+        "landed_rate": 0.73,
+        "landed_ci95": [
+          0.6770872468075737,
+          0.7770967753934679
+        ],
+        "landed_rate_per_seed": [
+          0.76,
+          0.7,
+          0.73
+        ],
+        "crash_rate": 0.16666666666666666,
+        "never_settled_rate": 0.07,
+        "mean_score": 205.73626563004942,
+        "score_std_across_seeds": 7.997370915534773,
+        "fuel_per_safe_landing": 109.95433789954312,
+        "seconds_per_safe_landing": 5.388584474885845,
+        "outcomes": {
+          "landed": 219,
+          "crashed": 50,
+          "never_settled": 21,
+          "landed_off_pad": 9,
+          "flew_away": 1
+        }
+      }
+    },
+    "harsh": {
+      "baseline": {
+        "landings": 300,
+        "landed_rate": 0.02666666666666667,
+        "landed_ci95": [
+          0.013572906766976815,
+          0.051729540297546284
+        ],
+        "landed_rate_per_seed": [
+          0.02,
+          0.05,
+          0.01
+        ],
+        "crash_rate": 0.9133333333333333,
+        "never_settled_rate": 0.0033333333333333335,
+        "mean_score": -125.57870687761589,
+        "score_std_across_seeds": 32.83207682445014,
+        "fuel_per_safe_landing": 151.78749999999968,
+        "seconds_per_safe_landing": 6.5875,
+        "outcomes": {
+          "landed_off_pad": 7,
+          "crashed": 274,
+          "flew_away": 10,
+          "landed": 8,
+          "never_settled": 1
+        }
+      },
+      "shaped_v1": {
+        "landings": 300,
+        "landed_rate": 0.016666666666666666,
+        "landed_ci95": [
+          0.0071393720427721935,
+          0.038415943621705605
+        ],
+        "landed_rate_per_seed": [
+          0.03,
+          0.01,
+          0.01
+        ],
+        "crash_rate": 0.94,
+        "never_settled_rate": 0.0,
+        "mean_score": -99.90577569505552,
+        "score_std_across_seeds": 11.730295111223207,
+        "fuel_per_safe_landing": 163.07999999999973,
+        "seconds_per_safe_landing": 6.76,
+        "outcomes": {
+          "crashed": 282,
+          "landed": 5,
+          "flew_away": 5,
+          "landed_off_pad": 8
+        }
+      },
+      "shaped_v2": {
+        "landings": 300,
+        "landed_rate": 0.023333333333333334,
+        "landed_ci95": [
+          0.01134751559829571,
+          0.04737255433287896
+        ],
+        "landed_rate_per_seed": [
+          0.02,
+          0.04,
+          0.01
+        ],
+        "crash_rate": 0.9166666666666666,
+        "never_settled_rate": 0.0,
+        "mean_score": -129.29846939094793,
+        "score_std_across_seeds": 44.75985485699367,
+        "fuel_per_safe_landing": 137.81428571428532,
+        "seconds_per_safe_landing": 5.88,
+        "outcomes": {
+          "crashed": 275,
+          "flew_away": 9,
+          "landed_off_pad": 9,
+          "landed": 7
+        }
+      },
+      "randomized": {
+        "landings": 300,
+        "landed_rate": 0.016666666666666666,
+        "landed_ci95": [
+          0.0071393720427721935,
+          0.038415943621705605
+        ],
+        "landed_rate_per_seed": [
+          0.01,
+          0.02,
+          0.02
+        ],
+        "crash_rate": 0.94,
+        "never_settled_rate": 0.0,
+        "mean_score": -78.73832904741394,
+        "score_std_across_seeds": 13.421100168824134,
+        "fuel_per_safe_landing": 133.2399999999998,
+        "seconds_per_safe_landing": 6.156000000000001,
+        "outcomes": {
+          "crashed": 282,
+          "landed_off_pad": 11,
+          "flew_away": 2,
+          "landed": 5
+        }
+      },
+      "shaped_v2_2m": {
+        "landings": 300,
+        "landed_rate": 0.016666666666666666,
+        "landed_ci95": [
+          0.0071393720427721935,
+          0.038415943621705605
+        ],
+        "landed_rate_per_seed": [
+          0.02,
+          0.01,
+          0.02
+        ],
+        "crash_rate": 0.9566666666666667,
+        "never_settled_rate": 0.0,
+        "mean_score": -91.19530214636758,
+        "score_std_across_seeds": 14.343079799089887,
+        "fuel_per_safe_landing": 108.63999999999987,
+        "seconds_per_safe_landing": 5.18,
+        "outcomes": {
+          "landed": 5,
+          "crashed": 287,
+          "landed_off_pad": 7,
+          "flew_away": 1
+        }
+      },
+      "randomized_2m": {
+        "landings": 300,
+        "landed_rate": 0.023333333333333334,
+        "landed_ci95": [
+          0.01134751559829571,
+          0.04737255433287896
+        ],
+        "landed_rate_per_seed": [
+          0.02,
+          0.02,
+          0.03
+        ],
+        "crash_rate": 0.9466666666666667,
+        "never_settled_rate": 0.0,
+        "mean_score": -82.1400458315651,
+        "score_std_across_seeds": 18.768231115083392,
+        "fuel_per_safe_landing": 134.95714285714266,
+        "seconds_per_safe_landing": 6.4314285714285715,
+        "outcomes": {
+          "landed_off_pad": 7,
+          "crashed": 284,
+          "flew_away": 2,
+          "landed": 7
+        }
+      },
+      "randomized_memory": {
+        "landings": 300,
+        "landed_rate": 0.05333333333333334,
+        "landed_ci95": [
+          0.03309162538404202,
+          0.08486983874726851
+        ],
+        "landed_rate_per_seed": [
+          0.06,
+          0.07,
+          0.03
+        ],
+        "crash_rate": 0.89,
+        "never_settled_rate": 0.0,
+        "mean_score": -43.255964560483775,
+        "score_std_across_seeds": 4.408289749494317,
+        "fuel_per_safe_landing": 141.75624999999962,
+        "seconds_per_safe_landing": 6.88125,
+        "outcomes": {
+          "landed": 16,
+          "crashed": 267,
+          "landed_off_pad": 16,
+          "flew_away": 1
+        }
+      },
+      "randomized_memory_tuned": {
+        "landings": 300,
+        "landed_rate": 0.13666666666666666,
+        "landed_ci95": [
+          0.10236459725248649,
+          0.18015629521253473
+        ],
+        "landed_rate_per_seed": [
+          0.13,
+          0.17,
+          0.11
+        ],
+        "crash_rate": 0.8033333333333333,
+        "never_settled_rate": 0.006666666666666667,
+        "mean_score": -4.0228791851515755,
+        "score_std_across_seeds": 0.8452556246023384,
+        "fuel_per_safe_landing": 110.68536585365821,
+        "seconds_per_safe_landing": 5.525853658536586,
+        "outcomes": {
+          "landed": 41,
+          "crashed": 241,
+          "landed_off_pad": 16,
+          "never_settled": 2
+        }
+      }
+    },
+    "strong_wind_extreme": {
+      "baseline": {
+        "landings": 300,
+        "landed_rate": 0.24,
+        "landed_ci95": [
+          0.1951523988530105,
+          0.29142218474581205
+        ],
+        "landed_rate_per_seed": [
+          0.19,
+          0.33,
+          0.2
+        ],
+        "crash_rate": 0.57,
+        "never_settled_rate": 0.023333333333333334,
+        "mean_score": 73.27614703274914,
+        "score_std_across_seeds": 34.580137249730974,
+        "fuel_per_safe_landing": 152.82361111111072,
+        "seconds_per_safe_landing": 7.487222222222222,
+        "outcomes": {
+          "crashed": 171,
+          "landed": 72,
+          "landed_off_pad": 50,
+          "never_settled": 7
+        }
+      },
+      "shaped_v1": {
+        "landings": 300,
+        "landed_rate": 0.29,
+        "landed_ci95": [
+          0.2415637129951771,
+          0.3437465276038718
+        ],
+        "landed_rate_per_seed": [
+          0.35,
+          0.26,
+          0.26
+        ],
+        "crash_rate": 0.5333333333333333,
+        "never_settled_rate": 0.016666666666666666,
+        "mean_score": 79.17218983974995,
+        "score_std_across_seeds": 6.457948460440496,
+        "fuel_per_safe_landing": 163.05172413793042,
+        "seconds_per_safe_landing": 8.85287356321839,
+        "outcomes": {
+          "crashed": 160,
+          "landed": 87,
+          "landed_off_pad": 46,
+          "never_settled": 5,
+          "flew_away": 2
+        }
+      },
+      "shaped_v2": {
+        "landings": 300,
+        "landed_rate": 0.29333333333333333,
+        "landed_ci95": [
+          0.24468550320426607,
+          0.34720711452813136
+        ],
+        "landed_rate_per_seed": [
+          0.27,
+          0.26,
+          0.35
+        ],
+        "crash_rate": 0.49333333333333335,
+        "never_settled_rate": 0.013333333333333334,
+        "mean_score": 80.96848609626906,
+        "score_std_across_seeds": 15.834865852981999,
+        "fuel_per_safe_landing": 131.87954545454494,
+        "seconds_per_safe_landing": 8.502727272727272,
+        "outcomes": {
+          "crashed": 148,
+          "landed": 88,
+          "landed_off_pad": 58,
+          "never_settled": 4,
+          "flew_away": 2
+        }
+      },
+      "randomized": {
+        "landings": 300,
+        "landed_rate": 0.33,
+        "landed_ci95": [
+          0.27923357997608433,
+          0.3850651862231458
+        ],
+        "landed_rate_per_seed": [
+          0.41,
+          0.26,
+          0.32
+        ],
+        "crash_rate": 0.45666666666666667,
+        "never_settled_rate": 0.02,
+        "mean_score": 98.55256199233834,
+        "score_std_across_seeds": 16.180520419098443,
+        "fuel_per_safe_landing": 215.59797979797958,
+        "seconds_per_safe_landing": 10.051919191919191,
+        "outcomes": {
+          "landed": 99,
+          "landed_off_pad": 58,
+          "never_settled": 6,
+          "crashed": 137
+        }
+      },
+      "shaped_v2_2m": {
+        "landings": 300,
+        "landed_rate": 0.2966666666666667,
+        "landed_ci95": [
+          0.2478105484553788,
+          0.35066444641036704
+        ],
+        "landed_rate_per_seed": [
+          0.31,
+          0.32,
+          0.26
+        ],
+        "crash_rate": 0.5133333333333333,
+        "never_settled_rate": 0.013333333333333334,
+        "mean_score": 94.58493890351647,
+        "score_std_across_seeds": 11.736335339949337,
+        "fuel_per_safe_landing": 106.06966292134794,
+        "seconds_per_safe_landing": 7.004494382022472,
+        "outcomes": {
+          "landed": 89,
+          "crashed": 154,
+          "landed_off_pad": 52,
+          "never_settled": 4,
+          "flew_away": 1
+        }
+      },
+      "randomized_2m": {
+        "landings": 300,
+        "landed_rate": 0.33666666666666667,
+        "landed_ci95": [
+          0.28555447659565275,
+          0.3919090438702742
+        ],
+        "landed_rate_per_seed": [
+          0.28,
+          0.33,
+          0.4
+        ],
+        "crash_rate": 0.4533333333333333,
+        "never_settled_rate": 0.02,
+        "mean_score": 110.46007483525781,
+        "score_std_across_seeds": 12.287751752352591,
+        "fuel_per_safe_landing": 159.89207920792043,
+        "seconds_per_safe_landing": 7.8441584158415845,
+        "outcomes": {
+          "landed": 101,
+          "crashed": 136,
+          "landed_off_pad": 56,
+          "never_settled": 6,
+          "flew_away": 1
+        }
+      },
+      "randomized_memory": {
+        "landings": 300,
+        "landed_rate": 0.38666666666666666,
+        "landed_ci95": [
+          0.3333226507857144,
+          0.44287652668043903
+        ],
+        "landed_rate_per_seed": [
+          0.4,
+          0.34,
+          0.42
+        ],
+        "crash_rate": 0.38,
+        "never_settled_rate": 0.02,
+        "mean_score": 133.79222745673863,
+        "score_std_across_seeds": 12.996369130736497,
+        "fuel_per_safe_landing": 157.697413793103,
+        "seconds_per_safe_landing": 7.521379310344828,
+        "outcomes": {
+          "crashed": 114,
+          "landed": 116,
+          "landed_off_pad": 64,
+          "never_settled": 6
+        }
+      },
+      "randomized_memory_tuned": {
+        "landings": 300,
+        "landed_rate": 0.69,
+        "landed_ci95": [
+          0.6355381623460284,
+          0.7396573342548319
+        ],
+        "landed_rate_per_seed": [
+          0.67,
+          0.72,
+          0.68
+        ],
+        "crash_rate": 0.21666666666666667,
+        "never_settled_rate": 0.06333333333333334,
+        "mean_score": 189.27966721673937,
+        "score_std_across_seeds": 3.084709358224747,
+        "fuel_per_safe_landing": 110.33429951690798,
+        "seconds_per_safe_landing": 5.3537198067632845,
+        "outcomes": {
+          "landed": 207,
+          "crashed": 65,
+          "never_settled": 19,
+          "landed_off_pad": 9
+        }
+      }
+    },
+    "harsh_extreme": {
+      "baseline": {
+        "landings": 300,
+        "landed_rate": 0.02,
+        "landed_ci95": [
+          0.009197506067771085,
+          0.042940186730055147
+        ],
+        "landed_rate_per_seed": [
+          0.02,
+          0.03,
+          0.01
+        ],
+        "crash_rate": 0.9066666666666666,
+        "never_settled_rate": 0.0,
+        "mean_score": -160.85094127378267,
+        "score_std_across_seeds": 40.554415728385095,
+        "fuel_per_safe_landing": 152.38333333333264,
+        "seconds_per_safe_landing": 8.953333333333333,
+        "outcomes": {
+          "landed_off_pad": 8,
+          "crashed": 272,
+          "flew_away": 14,
+          "landed": 6
+        }
+      },
+      "shaped_v1": {
+        "landings": 300,
+        "landed_rate": 0.013333333333333334,
+        "landed_ci95": [
+          0.005196877684679467,
+          0.03377606084644991
+        ],
+        "landed_rate_per_seed": [
+          0.01,
+          0.0,
+          0.03
+        ],
+        "crash_rate": 0.94,
+        "never_settled_rate": 0.0,
+        "mean_score": -127.83727910727022,
+        "score_std_across_seeds": 10.555624643183782,
+        "fuel_per_safe_landing": 139.07499999999968,
+        "seconds_per_safe_landing": 5.405,
+        "outcomes": {
+          "crashed": 282,
+          "landed": 4,
+          "landed_off_pad": 7,
+          "flew_away": 7
+        }
+      },
+      "shaped_v2": {
+        "landings": 300,
+        "landed_rate": 0.013333333333333334,
+        "landed_ci95": [
+          0.005196877684679467,
+          0.03377606084644991
+        ],
+        "landed_rate_per_seed": [
+          0.01,
+          0.02,
+          0.01
+        ],
+        "crash_rate": 0.9366666666666666,
+        "never_settled_rate": 0.0,
+        "mean_score": -168.2657365776591,
+        "score_std_across_seeds": 39.4756319596671,
+        "fuel_per_safe_landing": 118.17499999999993,
+        "seconds_per_safe_landing": 5.065,
+        "outcomes": {
+          "crashed": 281,
+          "flew_away": 13,
+          "landed": 4,
+          "landed_off_pad": 2
+        }
+      },
+      "randomized": {
+        "landings": 300,
+        "landed_rate": 0.0,
+        "landed_ci95": [
+          0.0,
+          0.012643429997735661
+        ],
+        "landed_rate_per_seed": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "crash_rate": 0.9833333333333333,
+        "never_settled_rate": 0.0,
+        "mean_score": -113.03255589017544,
+        "score_std_across_seeds": 19.580187013236532,
+        "fuel_per_safe_landing": null,
+        "seconds_per_safe_landing": null,
+        "outcomes": {
+          "crashed": 295,
+          "landed_off_pad": 4,
+          "flew_away": 1
+        }
+      },
+      "shaped_v2_2m": {
+        "landings": 300,
+        "landed_rate": 0.0033333333333333335,
+        "landed_ci95": [
+          0.0005886425761407379,
+          0.018637164554943353
+        ],
+        "landed_rate_per_seed": [
+          0.01,
+          0.0,
+          0.0
+        ],
+        "crash_rate": 0.9866666666666667,
+        "never_settled_rate": 0.0,
+        "mean_score": -122.17463466887813,
+        "score_std_across_seeds": 19.181050783936296,
+        "fuel_per_safe_landing": 101.69999999999999,
+        "seconds_per_safe_landing": 4.22,
+        "outcomes": {
+          "crashed": 296,
+          "landed": 1,
+          "landed_off_pad": 3
+        }
+      },
+      "randomized_2m": {
+        "landings": 300,
+        "landed_rate": 0.01,
+        "landed_ci95": [
+          0.0034065567627181124,
+          0.028984004635062833
+        ],
+        "landed_rate_per_seed": [
+          0.01,
+          0.01,
+          0.01
+        ],
+        "crash_rate": 0.98,
+        "never_settled_rate": 0.0,
+        "mean_score": -117.6381874463017,
+        "score_std_across_seeds": 33.571856322522684,
+        "fuel_per_safe_landing": 141.5999999999999,
+        "seconds_per_safe_landing": 4.7,
+        "outcomes": {
+          "crashed": 294,
+          "landed": 3,
+          "landed_off_pad": 3
+        }
+      },
+      "randomized_memory": {
+        "landings": 300,
+        "landed_rate": 0.03666666666666667,
+        "landed_ci95": [
+          0.02059509146818067,
+          0.06445448699638771
+        ],
+        "landed_rate_per_seed": [
+          0.04,
+          0.03,
+          0.04
+        ],
+        "crash_rate": 0.9533333333333334,
+        "never_settled_rate": 0.0,
+        "mean_score": -82.57867333439528,
+        "score_std_across_seeds": 12.415929520754572,
+        "fuel_per_safe_landing": 135.63636363636326,
+        "seconds_per_safe_landing": 6.683636363636364,
+        "outcomes": {
+          "landed": 11,
+          "crashed": 286,
+          "landed_off_pad": 3
+        }
+      },
+      "randomized_memory_tuned": {
+        "landings": 300,
+        "landed_rate": 0.07,
+        "landed_ci95": [
+          0.04623659396060609,
+          0.10463675583744661
+        ],
+        "landed_rate_per_seed": [
+          0.07,
+          0.05,
+          0.09
+        ],
+        "crash_rate": 0.9133333333333333,
+        "never_settled_rate": 0.0,
+        "mean_score": -54.80242871647527,
+        "score_std_across_seeds": 23.42645473531181,
+        "fuel_per_safe_landing": 107.15714285714259,
+        "seconds_per_safe_landing": 4.691428571428571,
+        "outcomes": {
+          "crashed": 274,
+          "landed": 21,
+          "flew_away": 2,
+          "landed_off_pad": 3
+        }
+      }
+    }
+  },
+  "paired_tests": [
+    {
+      "agent": "shaped_v2",
+      "reference": "baseline",
+      "scenario": "normal",
+      "failed_only_by_agent": 1,
+      "failed_only_by_reference": 1,
+      "failed_by_both": 0,
+      "landed_agent": 0.9966666666666667,
+      "landed_reference": 0.9966666666666667,
+      "p_value": 1.0
+    },
+    {
+      "agent": "shaped_v2_2m",
+      "reference": "shaped_v2",
+      "scenario": "heavy_gravity",
+      "failed_only_by_agent": 53,
+      "failed_only_by_reference": 2,
+      "failed_by_both": 7,
+      "landed_agent": 0.8,
+      "landed_reference": 0.97,
+      "p_value": 8.554268404736831e-14
+    },
+    {
+      "agent": "shaped_v2_2m",
+      "reference": "shaped_v2",
+      "scenario": "weak_engine",
+      "failed_only_by_agent": 59,
+      "failed_only_by_reference": 0,
+      "failed_by_both": 33,
+      "landed_agent": 0.6933333333333334,
+      "landed_reference": 0.89,
+      "p_value": 3.469446951953614e-18
+    },
+    {
+      "agent": "randomized_2m",
+      "reference": "shaped_v2_2m",
+      "scenario": "normal",
+      "failed_only_by_agent": 1,
+      "failed_only_by_reference": 0,
+      "failed_by_both": 0,
+      "landed_agent": 0.9966666666666667,
+      "landed_reference": 1.0,
+      "p_value": 1.0
+    },
+    {
+      "agent": "randomized_2m",
+      "reference": "shaped_v2_2m",
+      "scenario": "heavy_gravity",
+      "failed_only_by_agent": 0,
+      "failed_only_by_reference": 57,
+      "failed_by_both": 3,
+      "landed_agent": 0.99,
+      "landed_reference": 0.8,
+      "p_value": 1.3877787807814457e-17
+    },
+    {
+      "agent": "randomized_2m",
+      "reference": "shaped_v2_2m",
+      "scenario": "weak_engine",
+      "failed_only_by_agent": 1,
+      "failed_only_by_reference": 74,
+      "failed_by_both": 18,
+      "landed_agent": 0.9366666666666666,
+      "landed_reference": 0.6933333333333334,
+      "p_value": 4.0234064994579266e-21
+    },
+    {
+      "agent": "randomized_2m",
+      "reference": "shaped_v2_2m",
+      "scenario": "strong_wind",
+      "failed_only_by_agent": 64,
+      "failed_only_by_reference": 78,
+      "failed_by_both": 116,
+      "landed_agent": 0.4,
+      "landed_reference": 0.35333333333333333,
+      "p_value": 0.2752499689715738
+    },
+    {
+      "agent": "randomized_2m",
+      "reference": "shaped_v2_2m",
+      "scenario": "harsh",
+      "failed_only_by_agent": 4,
+      "failed_only_by_reference": 6,
+      "failed_by_both": 289,
+      "landed_agent": 0.023333333333333334,
+      "landed_reference": 0.016666666666666666,
+      "p_value": 0.75390625
+    },
+    {
+      "agent": "randomized_2m",
+      "reference": "shaped_v2_2m",
+      "scenario": "strong_wind_extreme",
+      "failed_only_by_agent": 58,
+      "failed_only_by_reference": 70,
+      "failed_by_both": 141,
+      "landed_agent": 0.33666666666666667,
+      "landed_reference": 0.2966666666666667,
+      "p_value": 0.33093582894221385
+    },
+    {
+      "agent": "randomized_2m",
+      "reference": "shaped_v2_2m",
+      "scenario": "harsh_extreme",
+      "failed_only_by_agent": 1,
+      "failed_only_by_reference": 3,
+      "failed_by_both": 296,
+      "landed_agent": 0.01,
+      "landed_reference": 0.0033333333333333335,
+      "p_value": 0.625
+    },
+    {
+      "agent": "randomized_memory",
+      "reference": "randomized_2m",
+      "scenario": "normal",
+      "failed_only_by_agent": 0,
+      "failed_only_by_reference": 1,
+      "failed_by_both": 0,
+      "landed_agent": 1.0,
+      "landed_reference": 0.9966666666666667,
+      "p_value": 1.0
+    },
+    {
+      "agent": "randomized_memory",
+      "reference": "randomized_2m",
+      "scenario": "heavy_gravity",
+      "failed_only_by_agent": 10,
+      "failed_only_by_reference": 0,
+      "failed_by_both": 3,
+      "landed_agent": 0.9566666666666667,
+      "landed_reference": 0.99,
+      "p_value": 0.001953125
+    },
+    {
+      "agent": "randomized_memory",
+      "reference": "randomized_2m",
+      "scenario": "weak_engine",
+      "failed_only_by_agent": 23,
+      "failed_only_by_reference": 5,
+      "failed_by_both": 14,
+      "landed_agent": 0.8766666666666667,
+      "landed_reference": 0.9366666666666666,
+      "p_value": 0.0009122341871261597
+    },
+    {
+      "agent": "randomized_memory",
+      "reference": "randomized_2m",
+      "scenario": "strong_wind",
+      "failed_only_by_agent": 54,
+      "failed_only_by_reference": 69,
+      "failed_by_both": 111,
+      "landed_agent": 0.45,
+      "landed_reference": 0.4,
+      "p_value": 0.2066471089849431
+    },
+    {
+      "agent": "randomized_memory",
+      "reference": "randomized_2m",
+      "scenario": "harsh",
+      "failed_only_by_agent": 4,
+      "failed_only_by_reference": 13,
+      "failed_by_both": 280,
+      "landed_agent": 0.05333333333333334,
+      "landed_reference": 0.023333333333333334,
+      "p_value": 0.049041748046875
+    },
+    {
+      "agent": "randomized_memory",
+      "reference": "randomized_2m",
+      "scenario": "strong_wind_extreme",
+      "failed_only_by_agent": 48,
+      "failed_only_by_reference": 63,
+      "failed_by_both": 136,
+      "landed_agent": 0.38666666666666666,
+      "landed_reference": 0.33666666666666667,
+      "p_value": 0.1836571719017748
+    },
+    {
+      "agent": "randomized_memory",
+      "reference": "randomized_2m",
+      "scenario": "harsh_extreme",
+      "failed_only_by_agent": 0,
+      "failed_only_by_reference": 8,
+      "failed_by_both": 289,
+      "landed_agent": 0.03666666666666667,
+      "landed_reference": 0.01,
+      "p_value": 0.0078125
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "randomized_memory",
+      "scenario": "normal",
+      "failed_only_by_agent": 0,
+      "failed_only_by_reference": 0,
+      "failed_by_both": 0,
+      "landed_agent": 1.0,
+      "landed_reference": 1.0,
+      "p_value": 1.0
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "randomized_memory",
+      "scenario": "heavy_gravity",
+      "failed_only_by_agent": 18,
+      "failed_only_by_reference": 6,
+      "failed_by_both": 7,
+      "landed_agent": 0.9166666666666666,
+      "landed_reference": 0.9566666666666667,
+      "p_value": 0.022655844688415527
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "randomized_memory",
+      "scenario": "weak_engine",
+      "failed_only_by_agent": 29,
+      "failed_only_by_reference": 5,
+      "failed_by_both": 32,
+      "landed_agent": 0.7966666666666666,
+      "landed_reference": 0.8766666666666667,
+      "p_value": 3.8558151572942734e-05
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "randomized_memory",
+      "scenario": "strong_wind",
+      "failed_only_by_agent": 25,
+      "failed_only_by_reference": 109,
+      "failed_by_both": 56,
+      "landed_agent": 0.73,
+      "landed_reference": 0.45,
+      "p_value": 1.053309282433861e-13
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "randomized_memory",
+      "scenario": "harsh",
+      "failed_only_by_agent": 12,
+      "failed_only_by_reference": 37,
+      "failed_by_both": 247,
+      "landed_agent": 0.13666666666666666,
+      "landed_reference": 0.05333333333333334,
+      "p_value": 0.0004697573180081349
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "randomized_memory",
+      "scenario": "strong_wind_extreme",
+      "failed_only_by_agent": 17,
+      "failed_only_by_reference": 108,
+      "failed_by_both": 76,
+      "landed_agent": 0.69,
+      "landed_reference": 0.38666666666666666,
+      "p_value": 2.2210629525385693e-17
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "randomized_memory",
+      "scenario": "harsh_extreme",
+      "failed_only_by_agent": 10,
+      "failed_only_by_reference": 20,
+      "failed_by_both": 269,
+      "landed_agent": 0.07,
+      "landed_reference": 0.03666666666666667,
+      "p_value": 0.09873714670538902
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "baseline",
+      "scenario": "normal",
+      "failed_only_by_agent": 0,
+      "failed_only_by_reference": 1,
+      "failed_by_both": 0,
+      "landed_agent": 1.0,
+      "landed_reference": 0.9966666666666667,
+      "p_value": 1.0
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "baseline",
+      "scenario": "heavy_gravity",
+      "failed_only_by_agent": 22,
+      "failed_only_by_reference": 9,
+      "failed_by_both": 3,
+      "landed_agent": 0.9166666666666666,
+      "landed_reference": 0.96,
+      "p_value": 0.029449373483657837
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "baseline",
+      "scenario": "weak_engine",
+      "failed_only_by_agent": 40,
+      "failed_only_by_reference": 6,
+      "failed_by_both": 21,
+      "landed_agent": 0.7966666666666666,
+      "landed_reference": 0.91,
+      "p_value": 3.1028037028590916e-07
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "baseline",
+      "scenario": "strong_wind",
+      "failed_only_by_agent": 20,
+      "failed_only_by_reference": 139,
+      "failed_by_both": 61,
+      "landed_agent": 0.73,
+      "landed_reference": 0.3333333333333333,
+      "p_value": 4.0157731101098577e-23
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "baseline",
+      "scenario": "harsh",
+      "failed_only_by_agent": 8,
+      "failed_only_by_reference": 41,
+      "failed_by_both": 251,
+      "landed_agent": 0.13666666666666666,
+      "landed_reference": 0.02666666666666667,
+      "p_value": 1.9646537765538596e-06
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "baseline",
+      "scenario": "strong_wind_extreme",
+      "failed_only_by_agent": 12,
+      "failed_only_by_reference": 147,
+      "failed_by_both": 81,
+      "landed_agent": 0.69,
+      "landed_reference": 0.24,
+      "p_value": 1.060062610241581e-30
+    },
+    {
+      "agent": "randomized_memory_tuned",
+      "reference": "baseline",
+      "scenario": "harsh_extreme",
+      "failed_only_by_agent": 6,
+      "failed_only_by_reference": 21,
+      "failed_by_both": 273,
+      "landed_agent": 0.07,
+      "landed_reference": 0.02,
+      "p_value": 0.005924612283706665
+    }
+  ]
+}

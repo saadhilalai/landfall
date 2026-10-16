@@ -9,7 +9,7 @@ _Last updated 2026-10-15 (evening). Nothing is running. All models, results and 
 | 3. Custom reward shaping | ✅ Done (v1, then a tuning round to v2) |
 | 4. Domain randomization | ✅ Done. Final agent design: randomized + memory |
 | 5. Optuna auto-tuning | ✅ Done. **Final agent: `randomized_memory_tuned`** |
-| 6. Final results, charts, videos | Not started |
+| 6. Final results, charts, videos | ✅ Done (evaluated once, plan committed first) |
 | 7. Gradio demo | Not started |
 | 8. README, packaging, resume bullets | Not started (`requirements.txt` and `.gitignore` exist) |
 
@@ -48,6 +48,9 @@ Useful commands:
 | `train.py` | Trains an agent type, once per seed. Logs to TensorBoard and writes `runs/<agent>/seed<N>/run_info.json` |
 | `evaluate.py` | Flies a model through a fixed list of landings |
 | `tune.py` | Step 5: Optuna search (`search`), its summary and charts (`report`), and the tuned-vs-current check (`confirm`) |
+| `final_eval.py` | Step 6: the ONE-TIME final evaluation on the test landings (refuses to run twice) |
+| `make_charts.py` | Draws `charts/*.png` from saved results (safe to re-run) |
+| `make_videos.py` | Renders `videos/*.mp4` at 1920×1280, replaying recorded test landings |
 | `compare.py` | Compares agents on identical landings, with a paired significance test (`--seeds`, `--scenarios`, `--reference`) |
 | `check_setup.py` | Step 1 simulator check |
 | `models/<agent>_seed<N>.zip` | 12 trained models (~150 KB each) |
@@ -254,11 +257,77 @@ The network size didn't change.
 - Side effect in the normal game (validation during training): **274–280 points with about 90–100 fuel**, compared with about 252–259 points and 161–184 fuel for the current settings.
 - On purpose, the tuned agent has **not** been run on the stress scenarios. Its first contact with them will be the honest Step 6 evaluation.
 
+## Step 6: Final evaluation, charts, videos (done)
+
+**Run exactly once.** `final_eval.py` (the agents, seeds, scenarios, metrics, paired tests and video rules) was committed in `6ca403d` **before** it ran, and it refuses to run a second time. Before that, it was dry-run on throwaway landings (seeds 25000+) in a single process, so the test landings stayed untouched.
+- 8 agents × 3 seeds × 7 scenarios × 100 test landings (10000–10099) = **16,800 landings**, which took 1.7 minutes.
+- Outputs: `runs/final/episodes.csv` (every landing), `results.json` and `results.md`.
+
+**Landed safely** (300 test landings per cell):
+
+| Agent | Normal | Heavy gravity | Weak engine | Strong wind | Harsh | Strong wind (extreme) | Harsh (extreme) |
+|---|---|---|---|---|---|---|---|
+| Baseline | 99.7% | 96.0% | 91.0% | 33.3% | 2.7% | 24.0% | 2.0% |
+| Custom reward v1 | 100% | 99.3% | 95.7% | 37.3% | 1.7% | 29.0% | 1.3% |
+| Custom reward v2, 1M | 99.7% | 97.0% | 89.0% | 32.3% | 2.3% | 29.3% | 1.3% |
+| Randomized, 1M | 94.7% | 95.3% | 93.0% | 38.3% | 1.7% | 33.0% | 0.0% |
+| Custom reward v2, 2M | 100% | 80.0% | 69.3% | 35.3% | 1.7% | 29.7% | 0.3% |
+| Randomized, 2M | 99.7% | **99.0%** | **93.7%** | 40.0% | 2.3% | 33.7% | 1.0% |
+| Randomized + memory | 100% | 95.7% | 87.7% | 45.0% | 5.3% | 38.7% | 3.7% |
+| **Final (tuned)** | **100%** | 91.7% | 79.7% | **73.0%** | **13.7%** | **69.0%** | **7.0%** |
+
+**What the paired tests on the same landings show:**
+- **The final agent vs the baseline:**
+  - Strong wind: **73.0% vs 33.3%** (p < 0.001).
+  - Harsh: 13.7% vs 2.7% (p < 0.001).
+  - Strong wind (extreme): 69.0% vs 24.0% (p < 0.001).
+  - Best normal-game score: 282 vs 259.
+  - **But it's worse** under heavy gravity (91.7% vs 96.0%, p = 0.03) and with a weak engine (79.7% vs 91.0%, p < 0.001).
+- **More practice in one world made the agent more fragile (replicated on the test set).** Reward v2 at 2M vs 1M steps: heavy gravity 80.0% vs 97.0%, weak engine 69.3% vs 89.0% (both p < 0.001).
+- **Randomization works at an equal budget.** Randomized vs not, both at 2M steps: heavy gravity 99.0% vs 80.0%, weak engine 93.7% vs 69.3% (p < 0.001). In wind the gap isn't significant (40.0% vs 35.3%, p = 0.28).
+- **Memory, at an equal budget:**
+  - Harsh: 5.3% vs 2.3% (p = 0.049). Harsh (extreme): 3.7% vs 1.0% (p = 0.008).
+  - Strong wind: +5 points, but **not significant on 300 landings** (p = 0.21). On 1,500 analysis landings earlier it was significant.
+  - Costs: heavy gravity 95.7% vs 99.0% (p = 0.002), weak engine 87.7% vs 93.7% (p < 0.001).
+- **Tuning helped a lot in wind but cost robustness to steady changes.** Tuned vs untuned memory agent:
+  - Strong wind: 73.0% vs 45.0% (p < 0.001). Harsh: 13.7% vs 5.3% (p < 0.001).
+  - Heavy gravity: 91.7% vs 95.7% (p = 0.02). Weak engine: 79.7% vs 87.7% (p < 0.001).
+- **The likely mechanism is efficiency vs safety margin** (consistent with the data, not proven).
+  - The leanest flyers crash most when the engine is weaker than anything seen in training:
+
+    | Agent | Normal-game landing | Normal-game fuel | Weak engine, crashed |
+    |---|---|---|---|
+    | Final (tuned) | 4.0 s | 96 | 19.7% |
+    | Reward v2, 2M | 4.7 s | 110 | 27.0% |
+    | Randomized, 2M | 6.6 s | 172 | 5.7% |
+
+  - Tuning optimised the official score, which rewards saving fuel, so it found a fast, lean flyer. Spending less time in the air probably also helps in wind.
+
+**Charts** (`charts/`, one fixed colour per agent, palette checked for colourblind safety):
+1. Learning curves: small multiples, mean of 3 seeds with a band.
+2. Landing success heatmap: every agent × every scenario.
+3. More practice made it fragile: reward v2, 1M vs 2M steps.
+4. Memory vs no memory in wind, with honest p-values.
+
+**Videos** (`videos/`, 1920×1280, 50 fps (real time), H.264):
+- The simulator only draws at 600×400, so `make_videos.py` redraws the same physics objects as sharp vector shapes at 3.2×.
+- Every clip replays a recorded test landing and is **checked to match the evaluation's outcome and score exactly**.
+- Landings were picked by the fixed rule: the seed-42 model, and the first matching test landing in seed order.
+- The clips:
+  - `untrained_crash.mp4`
+  - `baseline_landing.mp4`
+  - `final_strong_wind.mp4` (+ `_arrow` version with a live wind indicator)
+  - `side_by_side_heavy_gravity.mp4` (3840×1280; landing 10001: no randomization crashed, final landed), plus each half on its own
+  - `broll_1.mp4` to `broll_5.mp4`
+- The side-by-side is an **illustrative example**: across all heavy-gravity test landings the rates are 80.0% vs 91.7%.
+
 ## What to do next, in order
 
-1. **Step 6:** final evaluation on the untouched **test** landings (10000–10099):
-   - Normal and harsh conditions, plus the other scenarios, with the extreme rows labelled as limits.
-   - Learning-curve and success-rate charts.
-   - Videos: an untrained crash, each agent landing, and the final agent (`randomized_memory_tuned`) in heavy wind.
-2. **Step 7:** Gradio demo with gravity, wind and engine sliders and a Launch button, using the final agent.
-3. **Step 8:** README (including the leg-sensor bug story, the v1 → v2 iteration, the "more practice made it more fragile" finding, and the honest tuning), packaging, and 3 resume bullets with the real numbers.
+1. **Step 7:** Gradio demo with gravity, wind and engine sliders and a Launch button, using the final agent (`models/randomized_memory_tuned_seed42.zip`). It can reuse `make_videos.render_hires`.
+2. **Step 8:** README, packaging, and 3 resume bullets with the real numbers. The README should cover:
+   - the leg-sensor bug story
+   - the v1 → v2 iteration
+   - "more practice made it more fragile"
+   - honest tuning and the one-shot final test
+   - the efficiency-vs-margin trade-off
+   - charts, and a demo GIF made from the videos
