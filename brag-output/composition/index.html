@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>LANDFALL brag</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/data/landfall-data.js"></script>
+    <style>
+      @font-face { font-family: "D-DIN"; src: url("assets/fonts/D-DIN.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "D-DIN"; src: url("assets/fonts/D-DIN-Bold.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "D-DIN Exp"; src: url("assets/fonts/D-DINExp.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "D-DIN Exp"; src: url("assets/fonts/D-DINExp-Bold.woff2") format("woff2"); font-weight: 700; }
+
+      :root {
+        --white: #ffffff;
+        --grey: #a3a3a3;
+        --line: rgba(255, 255, 255, 0.22);
+        --go: #29c7ac;
+        --caution: #f5b83d;
+        --glow: 0.15;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000000; }
+      #root {
+        position: relative; width: 100%; height: 100%; overflow: hidden; background: #000000;
+        color: var(--white); font-family: "D-DIN", Arial, sans-serif;
+      }
+      #sky { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; }
+      .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .wide { font-family: "D-DIN Exp", Arial, sans-serif; font-weight: 700; text-transform: uppercase; }
+
+      /* Liquid glass, as on the site */
+      .glass {
+        position: absolute; border-radius: 4px;
+        background: rgba(255, 255, 255, 0.06);
+        -webkit-backdrop-filter: blur(22px) saturate(170%); backdrop-filter: blur(22px) saturate(170%);
+        box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, calc(0.2 + var(--glow))), inset 0 2px 0 rgba(255, 255, 255, 0.22),
+          0 40px 80px -30px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Pane head (top-left of a flight) */
+      .head { position: absolute; left: 72px; top: 64px; right: 72px; display: flex; justify-content: space-between; align-items: flex-start; }
+      .head-pilot { display: block; font-size: 30px; letter-spacing: 0.26em; }
+      .head-sub { display: block; margin-top: 10px; font-size: 26px; color: var(--grey); }
+      .head-meta { font-size: 26px; color: var(--grey); text-align: right; }
+
+      /* Telemetry: glass lower third */
+      .hud {
+        left: 56px; right: 56px; bottom: 40px; height: 168px; padding: 0 44px;
+        display: flex; align-items: center; justify-content: space-between; gap: 40px;
+      }
+      .gauges { display: flex; gap: 26px; }
+      .gauge { position: relative; width: 126px; height: 126px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      .gauge svg { position: absolute; inset: 0; width: 126px; height: 126px; }
+      .gauge-track, .gauge-arc { fill: none; stroke-width: 3; }
+      .gauge-track { stroke: rgba(255, 255, 255, 0.24); }
+      .gauge-arc { stroke: #ffffff; }
+      .gauge .num { font-size: 34px; line-height: 1; margin-top: 6px; }
+      .gauge .unit { font-size: 14px; letter-spacing: 0.16em; color: var(--grey); margin-top: 6px; text-transform: uppercase; }
+      .readouts { display: flex; gap: 44px; }
+      .readout { display: flex; flex-direction: column; }
+      .readout .num { font-size: 40px; line-height: 1.1; display: flex; align-items: baseline; }
+      .readout .num small { font-size: 20px; color: var(--grey); margin-left: 6px; }
+      .readout .lbl { font-size: 16px; letter-spacing: 0.18em; color: var(--grey); text-transform: uppercase; margin-top: 6px; white-space: nowrap; }
+      .clock { display: flex; flex-direction: column; align-items: center; }
+      .clock .tplus { font-family: "D-DIN Exp", Arial, sans-serif; font-size: 52px; line-height: 1; letter-spacing: 0.05em; }
+      .clock .phase { margin-top: 10px; font-size: 17px; letter-spacing: 0.24em; color: var(--grey); text-transform: uppercase; }
+      .arrow { width: 34px; height: 16px; margin-right: 10px; align-self: center; }
+
+      /* Rolling flight-computer digits */
+      .roll { display: inline-flex; font-variant-numeric: tabular-nums; }
+      .rd { display: inline-block; height: 1.1em; overflow: hidden; }
+      .rs { display: flex; flex-direction: column; }
+      .rs span, .rc { display: block; height: 1.1em; line-height: 1.1em; }
+
+      /* Result cards */
+      .card { left: 50%; top: 190px; width: 1040px; margin-left: -520px; padding: 54px 60px 46px; text-align: center; }
+      .card-title { font-size: 76px; letter-spacing: 0.2em; margin-right: -0.2em; line-height: 1.05; }
+      .card-stats { display: flex; justify-content: center; gap: 96px; margin-top: 38px; padding-top: 32px; border-top: 2px solid rgba(255, 255, 255, 0.45); }
+      .stat { display: flex; flex-direction: column; align-items: center; }
+      .stat .v { font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+      .stat .v small { font-size: 26px; color: var(--grey); margin-left: 6px; }
+      .stat .l { font-size: 18px; letter-spacing: 0.2em; color: var(--grey); text-transform: uppercase; margin-top: 14px; }
+      .flash { position: absolute; inset: 0; background: #ffffff; opacity: 0; }
+
+      /* Scene 2: learning curve */
+      .s2-title { position: absolute; left: 120px; top: 120px; font-size: 92px; letter-spacing: 0.1em; line-height: 1; }
+      .s2-cap { position: absolute; left: 124px; top: 244px; font-size: 30px; color: var(--grey); width: 980px; }
+      .counter { position: absolute; right: 120px; top: 118px; text-align: right; }
+      .counter .v { font-family: "D-DIN Exp", Arial, sans-serif; font-size: 96px; line-height: 1; font-variant-numeric: tabular-nums; }
+      .counter .l { font-size: 24px; letter-spacing: 0.2em; color: var(--grey); text-transform: uppercase; margin-top: 12px; }
+      #chart { position: absolute; left: 120px; top: 360px; width: 1680px; height: 620px; overflow: visible; }
+      .axis-lbl { font-family: "D-DIN", Arial, sans-serif; font-size: 22px; fill: #a3a3a3; }
+      .solved-lbl { font-family: "D-DIN Exp", Arial, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.2em; fill: #ffffff; }
+      .end-lbl { font-family: "D-DIN Exp", Arial, sans-serif; font-weight: 700; font-size: 44px; fill: #ffffff; }
+
+      /* Scene 3: mission control card */
+      .cond { right: 72px; top: 150px; width: 520px; padding: 34px 38px 32px; }
+      .cond-label { font-size: 18px; letter-spacing: 0.24em; color: var(--grey); }
+      .cond-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: 22px; }
+      .cond-row .k { font-size: 24px; letter-spacing: 0.18em; text-transform: uppercase; }
+      .cond-row .v { font-size: 46px; }
+      .track { position: relative; height: 34px; margin-top: 6px; }
+      .zone { position: absolute; top: 16px; height: 0; }
+      .z-go { border-top: 5px solid var(--go); margin-top: -2.5px; }
+      .z-beyond { border-top: 2.5px solid var(--caution); margin-top: -1.25px; }
+      .thumb { position: absolute; top: 6px; width: 20px; height: 20px; margin-left: -10px; background: #ffffff; box-shadow: 0 0 0 4px #000000, 0 0 18px rgba(255, 255, 255, 0.6); }
+      .zone-name { display: flex; align-items: center; gap: 12px; font-size: 22px; color: var(--grey); margin-top: 6px; }
+      .zone-name i { display: inline-block; width: 26px; border-top: 2.5px solid var(--caution); }
+      .small-row { display: flex; justify-content: space-between; font-size: 22px; color: var(--grey); margin-top: 22px; }
+      .launch-btn { margin-top: 26px; height: 78px; display: flex; align-items: center; justify-content: center; font-size: 24px; letter-spacing: 0.42em;
+        background: rgba(255, 255, 255, 0.16); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.7); border-radius: 3px; }
+      .cd { position: absolute; left: 0; right: 0; top: 330px; text-align: center; font-size: 190px; letter-spacing: 0.1em; line-height: 1; }
+      .cd-go { font-size: 130px; letter-spacing: 0.4em; margin-right: -0.4em; opacity: 0; }
+      .ch { display: inline-block; }
+
+      /* Scene 4: the proof */
+      .s4-kicker { position: absolute; left: 120px; top: 150px; font-size: 26px; letter-spacing: 0.26em; color: var(--grey); }
+      .s4-big { position: absolute; left: 108px; top: 200px; font-family: "D-DIN Exp", Arial, sans-serif; font-size: 330px; line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+      .s4-label { position: absolute; left: 124px; top: 560px; font-size: 46px; letter-spacing: 0.06em; }
+      .s4-base { position: absolute; right: 120px; top: 230px; text-align: right; }
+      .s4-base .k { font-size: 26px; letter-spacing: 0.26em; color: var(--grey); }
+      .s4-base .v { font-family: "D-DIN Exp", Arial, sans-serif; font-size: 150px; line-height: 1; color: var(--grey); margin-top: 12px; }
+      .bars { position: absolute; left: 124px; right: 120px; top: 680px; }
+      .bar-row { display: flex; align-items: center; gap: 28px; margin-bottom: 26px; }
+      .bar-row .who { width: 220px; font-size: 24px; letter-spacing: 0.16em; text-transform: uppercase; }
+      .bar-shell { position: relative; flex: 1; height: 34px; }
+      .bar { position: absolute; left: 0; top: 0; height: 34px; transform-origin: left center; }
+      .s4-foot { position: absolute; left: 124px; top: 900px; font-size: 32px; color: var(--grey); }
+
+      /* Scene 5: LANDFALL */
+      .s5 { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 120px; }
+      .s5-logo { width: 150px; height: 150px; }
+      .s5-kicker { margin-top: 26px; font-size: 24px; letter-spacing: 0.5em; margin-right: -0.5em; color: var(--grey); }
+      .s5-title { margin-top: 24px; font-size: 170px; line-height: 1; letter-spacing: 0.32em; margin-right: -0.32em; }
+      .s5-tag { margin-top: 40px; font-size: 44px; letter-spacing: 0.02em; }
+      .s5-credit { margin-top: 22px; font-size: 26px; letter-spacing: 0.24em; color: var(--grey); text-transform: uppercase; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="23" data-width="1920" data-height="1080">
+      <canvas id="sky" width="1920" height="1080" data-layout-ignore></canvas>
+
+      <!-- Scene 1: first flight -->
+      <section id="s1" class="clip scene" data-start="0" data-duration="4" data-track-index="1">
+        <div class="head">
+          <div><span class="head-pilot wide" id="s1-pilot">Flight 1</span><span class="head-sub">Untrained network</span></div>
+          <div class="head-meta">Normal conditions</div>
+        </div>
+        <div class="glass hud" id="hud1"></div>
+        <div class="flash" id="flash1"></div>
+        <div class="glass card" id="card1">
+          <div class="card-title wide">Vehicle lost</div>
+          <div class="card-stats">
+            <div class="stat"><div class="v" id="c1-time">0.0</div><div class="l">Flight time</div></div>
+            <div class="stat"><div class="v" id="c1-speed">0.0</div><div class="l">Impact speed</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scene 2: it taught itself -->
+      <section id="s2" class="clip scene" data-start="4" data-duration="3.3" data-track-index="2">
+        <div class="s2-title wide" id="s2-title">It taught itself.</div>
+        <div class="s2-cap" id="s2-cap">Official game score while practising. 200 means solved.</div>
+        <div class="counter" id="counter"><div class="v" id="counter-v">0</div><div class="l">Practice steps</div></div>
+        <svg id="chart" viewBox="0 0 1680 620"></svg>
+      </section>
+
+      <!-- Scene 3: the storm -->
+      <section id="s3" class="clip scene" data-start="7.3" data-duration="7.1" data-track-index="3">
+        <div class="head">
+          <div><span class="head-pilot wide">Final AI</span><span class="head-sub">Official test landing 10000</span></div>
+          <div class="head-meta" id="s3-meta">Strong wind, beyond training</div>
+        </div>
+        <div class="glass hud" id="hud3"></div>
+        <div class="glass cond" id="cond">
+          <div class="cond-label wide">Mission control</div>
+          <div class="cond-row"><span class="k">Wind</span><span class="v">16.3</span></div>
+          <div class="track">
+            <span class="zone z-go" style="left: 0; width: 60%"></span>
+            <span class="zone z-beyond" style="left: 60%; width: 40%"></span>
+            <span class="thumb" style="left: 65%"></span>
+          </div>
+          <div class="zone-name"><i></i>Beyond training</div>
+          <div class="small-row"><span>Gravity 10.0</span><span>Turbulence 1.63</span></div>
+          <div class="launch-btn wide" id="launch-btn">Launch</div>
+        </div>
+        <div class="cd wide" id="cd"></div>
+        <div class="cd cd-go wide" id="cd-go">LAUNCH</div>
+        <div class="glass card" id="card3">
+          <div class="card-title wide">Touchdown confirmed</div>
+          <div class="card-stats">
+            <div class="stat"><div class="v" id="c3-time">0.0</div><div class="l">Flight time</div></div>
+            <div class="stat"><div class="v" id="c3-fuel">0</div><div class="l">Fuel used</div></div>
+            <div class="stat"><div class="v" id="c3-speed">0.0</div><div class="l">Landing speed</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scene 4: the proof -->
+      <section id="s4" class="clip scene" data-start="14.4" data-duration="3.5" data-track-index="4">
+        <div class="s4-kicker wide" id="s4-kicker">Final AI, strong wind</div>
+        <div class="s4-big" id="s4-big">0%</div>
+        <div class="s4-label" id="s4-label">Safe landings in strong wind</div>
+        <div class="s4-base" id="s4-base"><div class="k wide">Baseline</div><div class="v">33%</div></div>
+        <div class="bars" id="bars">
+          <div class="bar-row"><span class="who wide">Final AI</span><div class="bar-shell"><div class="bar" id="bar-final" style="width: 73%; background: #ffffff"></div></div></div>
+          <div class="bar-row"><span class="who wide">Baseline</span><div class="bar-shell"><div class="bar" id="bar-base" style="width: 33%; background: #6b6b6b"></div></div></div>
+        </div>
+        <div class="s4-foot" id="s4-foot">Tested once. 300 unseen landings per condition.</div>
+      </section>
+
+      <!-- Scene 5: LANDFALL -->
+      <section id="s5" class="clip scene s5" data-start="17.9" data-duration="5.1" data-track-index="5">
+        <img class="s5-logo" id="s5-logo" src="assets/brand/s4d.png" alt="S4D" />
+        <div class="s5-kicker wide" id="s5-kicker">An S4D project</div>
+        <div class="s5-title wide" id="s5-title">Landfall</div>
+        <div class="s5-tag" id="s5-tag">A rocket lander that taught itself.</div>
+        <div class="s5-credit" id="s5-credit">Designed &amp; built by Saad Hilal</div>
+      </section>
+
+      <!-- Audio: music bed + sparse, motion-matched SFX -->
+      <audio id="bgm" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3" data-start="0" data-duration="23" data-track-index="10" data-volume="0.32"></audio>
+      <audio id="sfx-crash" src="assets/sfx/impact/impactSoft_heavy_003.ogg" data-start="2.39" data-duration="0.55" data-track-index="11" data-volume="0.9"></audio>
+      <audio id="sfx-solved" src="assets/sfx/interface/bong_001.ogg" data-start="4.86" data-duration="0.13" data-track-index="12" data-volume="0.55"></audio>
+      <audio id="sfx-tick1" src="assets/sfx/interface/click_003.ogg" data-start="7.64" data-duration="0.02" data-track-index="13" data-volume="0.5"></audio>
+      <audio id="sfx-tick2" src="assets/sfx/interface/click_003.ogg" data-start="8.19" data-duration="0.02" data-track-index="14" data-volume="0.5"></audio>
+      <audio id="sfx-launch" src="assets/sfx/impact/impactSoft_medium_001.ogg" data-start="8.74" data-duration="0.19" data-track-index="15" data-volume="0.75"></audio>
+      <audio id="sfx-touch" src="assets/sfx/impact/impactSoft_medium_004.ogg" data-start="11.52" data-duration="0.15" data-track-index="16" data-volume="0.7"></audio>
+      <audio id="sfx-success" src="assets/sfx/impact/impactBell_heavy_000.ogg" data-start="13.02" data-duration="1.48" data-track-index="17" data-volume="0.45"></audio>
+      <audio id="sfx-proof" src="assets/sfx/impact/impactSoft_medium_002.ogg" data-start="15.55" data-duration="0.14" data-track-index="18" data-volume="0.55"></audio>
+      <audio id="sfx-logo" src="assets/sfx/impact/impactBell_heavy_003.ogg" data-start="18.56" data-duration="0.66" data-track-index="19" data-volume="0.7"></audio>
+    </div>
+
+    <script>
+      (function () {
+        var D = window.LANDFALL, P = D.physics, WW = P.world.w, WH = P.world.h;
+        var CW = 1920, CH = 1080, FPS = 50, MINUS = "−";
+        // Timeline anchors (seconds). Beat-locked moments use the music preset (109.96 BPM).
+        var T = {
+          crashStart: 0.45,                 // untrained flight starts; impact at 0.45 + 1.94 = 2.39
+          card1: 2.62,
+          s2: 4.0, chartFrom: 4.35, chartTo: 6.75,
+          s3: 7.3, tMinus2: 7.64, tMinus1: 8.19, press: 8.36,
+          stormStart: 8.74,                 // beat-locked: 8.74s (strong cue)
+          card3: 13.02,                     // beat-locked: 13.11s (strong cue, -0.09s)
+          s4: 14.4, s5: 17.9,
+          logo: 18.56,                      // beat-locked: 18.56s (strong cue)
+          end: 23.0,
+        };
+
+        // ---- deterministic helpers ------------------------------------------------------
+        function hash(n) {                  // integer -> [0,1), no Math.random
+          n = (n ^ 61) ^ (n >>> 16); n = (n + (n << 3)) | 0; n = n ^ (n >>> 4);
+          n = Math.imul(n, 0x27d4eb2d); n = n ^ (n >>> 15);
+          return ((n >>> 0) % 100000) / 100000;
+        }
+        function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+        function easeOut(p) { return 1 - Math.pow(1 - p, 3); }
+        function audioAt(t, key) {
+          var a = D.audio, f = clamp(Math.floor(t * a.fps), 0, a[key].length - 1);
+          return a[key][f];
+        }
+
+        // ---- glow sprite (drawn once) -----------------------------------------------------
+        var GLOW = document.createElement("canvas");
+        GLOW.width = GLOW.height = 128;
+        (function () {
+          var g = GLOW.getContext("2d"), grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+          grad.addColorStop(0, "rgba(255,255,255,1)"); grad.addColorStop(0.18, "rgba(255,255,255,0.65)");
+          grad.addColorStop(0.45, "rgba(255,255,255,0.18)"); grad.addColorStop(1, "rgba(255,255,255,0)");
+          g.fillStyle = grad; g.fillRect(0, 0, 128, 128);
+        })();
+
+        // ---- stars (seeded), drifting slowly upward; brightness breathes with the music -----
+        var STARS = [];
+        for (var i = 0; i < 260; i++) {
+          STARS.push({ x: hash(i * 3 + 1) * CW, y: hash(i * 3 + 2) * CH, r: 0.5 + hash(i * 3 + 3) * 1.4,
+                       a: 0.15 + hash(i * 7 + 5) * 0.55, k: 6 + hash(i * 11 + 9) * 14 });
+        }
+        var cv = document.getElementById("sky"), ctx = cv.getContext("2d");
+        function drawStars(t) {
+          var lift = 0.75 + 0.55 * audioAt(t, "bass");
+          ctx.fillStyle = "#ffffff";
+          for (var i = 0; i < STARS.length; i++) {
+            var s = STARS[i], y = ((s.y - t * s.k) % CH + CH) % CH;
+            ctx.globalAlpha = clamp(s.a * lift, 0, 1);
+            ctx.beginPath(); ctx.arc(s.x, y, s.r, 0, 6.2832); ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        // ---- flight view: world -> screen ---------------------------------------------------
+        function makeView(fl) {
+          var ter = fl.terrain, floor = Infinity;
+          for (var i = 0; i < ter.length; i++) floor = Math.min(floor, ter[i][1]);
+          floor = Math.max(0, floor - 0.5);
+          var top = 170, bottom = CH - 236, s = (bottom - top) / (WH - floor);
+          var ox = (CW - WW * s) / 2, base = bottom + floor * s;
+          return { s: s, X: function (x) { return ox + x * s; }, Y: function (y) { return base - y * s; } };
+        }
+        function groundAt(ter, x) {
+          if (x <= ter[0][0]) return ter[0][1];
+          for (var k = 1; k < ter.length; k++) {
+            if (x <= ter[k][0]) { var a = ter[k - 1], b = ter[k]; return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]); }
+          }
+          return ter[ter.length - 1][1];
+        }
+        function lerpKey(f, key, i, frac, n) { var v = f[key]; return i + 1 < n ? v[i] + (v[i + 1] - v[i]) * frac : v[i]; }
+        function poly(V, shape, x, y, a) {
+          var c = Math.cos(a), sn = Math.sin(a);
+          ctx.beginPath();
+          for (var k = 0; k < shape.length; k++) {
+            var px = V.X(x + shape[k][0] * c - shape[k][1] * sn), py = V.Y(y + shape[k][0] * sn + shape[k][1] * c);
+            if (k) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+          }
+          ctx.closePath(); ctx.fill();
+        }
+        // cumulative wind displacement, for streaks that move with the actual gusts
+        function cumWind(fl) {
+          var w = fl.frames.wind, out = [0];
+          for (var k = 1; k < w.length; k++) out.push(out[k - 1] + w[k] / FPS);
+          return out;
+        }
+        var CRASH = { fl: D.crash, V: makeView(D.crash) };
+        var STORM = { fl: D.storm, V: makeView(D.storm), cum: cumWind(D.storm) };
+        STORM.firstTouch = D.storm.frames.legs.findIndex(function (l) { return l > 0; });
+        CRASH.firstTouch = D.crash.frames.legs.findIndex(function (l) { return l > 0; });
+
+        // Draw one flight at flight-time ft (seconds since launch, can be < 0 = on the countdown)
+        function drawFlight(F, ft, t, opts) {
+          var fl = F.fl, f = fl.frames, n = f.x.length, V = F.V, s = V.s;
+          var pos = clamp(ft * FPS, 0, n - 1), i = Math.floor(pos), frac = pos - i;
+          var tEnd = (n - 1) / FPS, frame = Math.floor(t * 30);
+          // camera shake: small on touchdown, big on a crash
+          var sx = 0, sy = 0, amp = 0;
+          if (fl.outcome === "crashed" && ft >= tEnd && ft - tEnd < 0.9) amp = 18 * Math.pow(1 - (ft - tEnd) / 0.9, 2);
+          var tTouch = F.firstTouch >= 0 ? F.firstTouch / FPS : 1e9;
+          if (fl.outcome !== "crashed" && ft >= tTouch && ft - tTouch < 0.35) amp = 5 * Math.pow(1 - (ft - tTouch) / 0.35, 2);
+          if (amp) { sx = (hash(frame * 2 + 1) * 2 - 1) * amp; sy = (hash(frame * 2 + 2) * 2 - 1) * amp; }
+          ctx.save(); ctx.translate(sx, sy);
+
+          // wind streaks moving with the real gusts
+          if (F.cum) {
+            var k = Math.min(i, n - 1), wsum = 0, cnt = 0;
+            for (var j = Math.max(0, k - 10); j <= k; j++) { wsum += Math.abs(f.wind[j]); cnt++; }
+            var wAvg = wsum / cnt, wNow = f.wind[k], disp = F.cum[k] + (frac * f.wind[Math.min(k + 1, n - 1)]) / FPS;
+            if (ft < 0) { wAvg = Math.abs(f.wind[0]); wNow = f.wind[0]; disp = ft * f.wind[0]; }
+            if (wAvg > 0.05) {
+              ctx.strokeStyle = "rgba(255,255,255," + clamp(0.08 + wAvg / 25, 0, 0.42) + ")";
+              ctx.lineWidth = 1.5; ctx.beginPath();
+              var padTop = V.Y(fl.pad[2]) - 30;
+              for (var q = 0; q < 90; q++) {
+                var y = 150 + hash(q * 5 + 11) * (padTop - 150), sp = 40 * (0.6 + hash(q * 5 + 12) * 0.8);
+                var x = ((hash(q * 5 + 13) * (CW + 160) + disp * sp) % (CW + 160) + (CW + 160)) % (CW + 160) - 80;
+                var len = 26 + hash(q * 5 + 14) * 70;
+                ctx.moveTo(x, y); ctx.lineTo(x - Math.sign(wNow || 1) * len * clamp(wAvg / 10 + 0.3, 0, 1), y);
+              }
+              ctx.stroke();
+            }
+          }
+
+          // ground (black, hides the stars) and terrain line
+          var ter = fl.terrain;
+          ctx.beginPath(); ctx.moveTo(-60, V.Y(ter[0][1]));
+          for (var a = 0; a < ter.length; a++) ctx.lineTo(V.X(ter[a][0]), V.Y(ter[a][1]));
+          ctx.lineTo(CW + 60, V.Y(ter[ter.length - 1][1])); ctx.lineTo(CW + 60, CH + 60); ctx.lineTo(-60, CH + 60); ctx.closePath();
+          ctx.fillStyle = "#000000"; ctx.fill();
+          ctx.beginPath(); ctx.moveTo(-60, V.Y(ter[0][1]));
+          for (a = 0; a < ter.length; a++) ctx.lineTo(V.X(ter[a][0]), V.Y(ter[a][1]));
+          ctx.lineTo(CW + 60, V.Y(ter[ter.length - 1][1]));
+          ctx.strokeStyle = "rgba(255,255,255," + (opts.dim ? 0.35 : 1) + ")"; ctx.lineWidth = 2; ctx.stroke();
+
+          // pad and flags
+          var p1 = fl.pad[0], p2 = fl.pad[1], py = fl.pad[2];
+          ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(V.X(p1), V.Y(py)); ctx.lineTo(V.X(p2), V.Y(py)); ctx.stroke();
+          ctx.lineWidth = 2; ctx.fillStyle = "rgba(255,255,255," + (opts.dim ? 0.35 : 1) + ")";
+          [p1, p2].forEach(function (fx) {
+            var topY = py + 50 / 30;
+            ctx.beginPath(); ctx.moveTo(V.X(fx), V.Y(py)); ctx.lineTo(V.X(fx), V.Y(topY)); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(V.X(fx), V.Y(topY)); ctx.lineTo(V.X(fx), V.Y(topY - 10 / 30));
+            ctx.lineTo(V.X(fx + 25 / 30), V.Y(topY - 5 / 30)); ctx.closePath(); ctx.fill();
+          });
+
+          if (!opts.dim) {
+            // flight path so far
+            ctx.fillStyle = "rgba(255,255,255,0.35)";
+            for (var k2 = 0; k2 <= i; k2 += 4) ctx.fillRect(V.X(f.x[k2]) - 1.5, V.Y(f.y[k2]) - 1.5, 3, 3);
+          }
+
+          var x = lerpKey(f, "x", i, frac, n), y0 = lerpKey(f, "y", i, frac, n), ang = lerpKey(f, "a", i, frac, n);
+          var flying = ft >= 0 && ft < tEnd, act = flying ? f.act[i] : 0, flick = 0.85 + hash(frame * 7 + 3) * 0.3;
+          ctx.globalCompositeOperation = "lighter";
+          // engine light on the ground
+          if (act === 2) {
+            var alt = y0 - groundAt(ter, x);
+            if (alt < 4.5) { var gw = 3.4 * s; ctx.globalAlpha = (1 - alt / 4.5) * 0.55 * flick; ctx.drawImage(GLOW, V.X(x) - gw / 2, V.Y(groundAt(ter, x)) - gw * 0.12, gw, gw * 0.24); ctx.globalAlpha = 1; }
+          }
+          // exhaust: only from steps where the simulation fired that engine (deterministic)
+          if (ft >= 0) {
+            for (var kk = Math.max(1, i - 32); kk <= i; kk++) {
+              var ak = f.act[kk]; if (!ak) continue;
+              var age = ft - kk / FPS; if (age < 0) continue;
+              var cnt2 = ak === 2 ? 5 : 2;
+              for (var e = 0; e < cnt2; e++) {
+                var h = kk * 37 + e * 7919 + (F === STORM ? 100000 : 0);
+                var life = ak === 2 ? 0.28 + hash(h) * 0.32 : 0.15 + hash(h) * 0.1;
+                if (age > life) continue;
+                var aa = f.a[kk], px, py2, vx, vy;
+                if (ak === 2) {
+                  var dx = Math.sin(aa), dy = -Math.cos(aa), sp2 = 6 + hash(h + 1) * 5, spread = (hash(h + 2) - 0.5) * 2.6;
+                  px = f.x[kk] + dx * 0.32; py2 = f.y[kk] + dy * 0.32;
+                  vx = f.vx[kk] + dx * sp2 - dy * spread; vy = f.vy[kk] + dy * sp2 + dx * spread;
+                } else {
+                  var d = ak - 2, ox = -d * Math.cos(aa), oy = -d * Math.sin(aa);
+                  px = f.x[kk] + ox * 0.4 - Math.sin(aa) * 0.567; py2 = f.y[kk] + oy * 0.4 + Math.cos(aa) * 0.467;
+                  vx = f.vx[kk] + ox * 3.6; vy = f.vy[kk] + oy * 3.6;
+                }
+                var c = 1.5, m = (1 - Math.exp(-c * age)) / c;
+                var qx = px + vx * m, qy = py2 + vy * m, g = groundAt(ter, qx);
+                if (qy < g + 0.04) qy = g + 0.04;
+                var kfade = 1 - age / life, rad = Math.max(1, (0.05 + hash(h + 3) * 0.08) * s * (0.6 + kfade * 0.7));
+                ctx.fillStyle = "rgba(255,255,255," + (0.55 * kfade) + ")";
+                ctx.beginPath(); ctx.arc(V.X(qx), V.Y(qy), rad, 0, 6.2832); ctx.fill();
+              }
+            }
+          }
+          // main engine glow and flame
+          if (act === 2) {
+            var ddx = Math.sin(ang), ddy = -Math.cos(ang), nx = x + ddx * 0.33, ny = y0 + ddy * 0.33, gs = 1.6 * s * flick;
+            ctx.globalAlpha = 0.9; ctx.drawImage(GLOW, V.X(nx + ddx * 0.25) - gs / 2, V.Y(ny + ddy * 0.25) - gs / 2, gs, gs); ctx.globalAlpha = 1;
+            var len = 0.6 + hash(frame * 13 + 5) * 0.35, half = 0.13;
+            ctx.fillStyle = "rgba(255,255,255,0.95)";
+            ctx.beginPath(); ctx.moveTo(V.X(nx - ddy * half), V.Y(ny + ddx * half)); ctx.lineTo(V.X(nx + ddy * half), V.Y(ny - ddx * half));
+            ctx.lineTo(V.X(nx + ddx * len), V.Y(ny + ddy * len)); ctx.closePath(); ctx.fill();
+          } else if (act === 1 || act === 3) {
+            var dd = act - 2, sox = -dd * Math.cos(ang), soy = -dd * Math.sin(ang), gsz = 0.6 * s * flick;
+            ctx.globalAlpha = 0.7;
+            ctx.drawImage(GLOW, V.X(x + sox * 0.45 - Math.sin(ang) * 0.567) - gsz / 2, V.Y(y0 + soy * 0.45 + Math.cos(ang) * 0.467) - gsz / 2, gsz, gsz);
+            ctx.globalAlpha = 1;
+          }
+          // touchdown dust
+          if (F.firstTouch >= 0 && ft >= F.firstTouch / FPS) {
+            var tk = F.firstTouch, ageD = ft - tk / FPS;
+            for (var u = 0; u < 24; u++) {
+              var hd = 5000 + u * 13, lifeD = 0.5 + hash(hd) * 0.5; if (ageD > lifeD) continue;
+              var leg = u < 12 ? "l0" : "l1", dir = hash(hd + 1) < 0.5 ? -1 : 1, v0 = dir * (0.8 + hash(hd + 2) * 2.6);
+              var mm = (1 - Math.exp(-2.5 * ageD)) / 2.5;
+              ctx.globalCompositeOperation = "source-over";
+              ctx.fillStyle = "rgba(170,170,170," + (0.6 * (1 - ageD / lifeD)) + ")";
+              ctx.beginPath(); ctx.arc(V.X(f[leg + "x"][tk] + v0 * mm), V.Y(f[leg + "y"][tk] - 0.2 + hash(hd + 3) * 0.3 * mm), Math.max(1, (0.03 + hash(hd + 4) * 0.04) * s), 0, 6.2832); ctx.fill();
+            }
+          }
+          // crash sparks
+          if (fl.outcome === "crashed" && ft >= tEnd) {
+            var ageS = ft - tEnd, ex = f.x[n - 1], ey = f.y[n - 1];
+            ctx.globalCompositeOperation = "lighter";
+            for (var sI = 0; sI < 70; sI++) {
+              var hs = 9000 + sI * 17, lifeS = 0.7 + hash(hs) * 1.0; if (ageS > lifeS) continue;
+              var angS = hash(hs + 1) * Math.PI, spS = 2 + hash(hs + 2) * 8, sgn = hash(hs + 3) < 0.5 ? -1 : 1;
+              var sxp = ex + Math.cos(angS) * spS * sgn * ageS, syp = ey + Math.sin(angS) * spS * ageS - 4.5 * ageS * ageS;
+              ctx.fillStyle = "rgba(255,255,255," + (0.9 * (1 - ageS / lifeS)) + ")";
+              ctx.beginPath(); ctx.arc(V.X(sxp), V.Y(syp), Math.max(1.2, (0.03 + hash(hs + 4) * 0.05) * s), 0, 6.2832); ctx.fill();
+            }
+          }
+          ctx.globalCompositeOperation = "source-over";
+
+          // the lander: legs, then body (grey once lost)
+          var lost = fl.outcome === "crashed" && ft >= tEnd;
+          ctx.fillStyle = opts.dim ? "rgba(255,255,255,0.45)" : lost ? "#6f6f6f" : "#ffffff";
+          ["l0", "l1"].forEach(function (lg) { poly(V, P.leg_shape, lerpKey(f, lg + "x", i, frac, n), lerpKey(f, lg + "y", i, frac, n), lerpKey(f, lg + "a", i, frac, n)); });
+          poly(V, P.lander_shape, x, y0, ang);
+          ctx.restore();
+          return { i: i, frac: frac, n: n };
+        }
+
+        // ---- glass telemetry bar with rolling digits ----------------------------------------
+        var GLEN = 2 * Math.PI * 56 * 0.75;
+        function gaugeHTML(id, label, unit) {
+          return '<div class="gauge"><svg viewBox="0 0 126 126" data-layout-ignore><circle class="gauge-track" cx="63" cy="63" r="56" stroke-dasharray="' + GLEN + ' 999" transform="rotate(135 63 63)"/>' +
+            '<circle class="gauge-arc" id="' + id + '-arc" cx="63" cy="63" r="56" stroke-dasharray="' + GLEN + ' 999" stroke-dashoffset="' + GLEN + '" transform="rotate(135 63 63)"/></svg>' +
+            '<span class="num roll" id="' + id + '"></span><span class="unit">' + label + " " + unit + "</span></div>";
+        }
+        function hudHTML(p) {
+          return '<div class="gauges">' + gaugeHTML(p + "-spd", "Speed", "m/s") + gaugeHTML(p + "-alt", "Alt", "m") + "</div>" +
+            '<div class="readouts"><div class="readout"><span class="num"><span class="roll" id="' + p + '-vs"></span><small>m/s</small></span><span class="lbl">Vertical speed</span></div>' +
+            '<div class="readout"><span class="num"><span class="roll" id="' + p + '-hs"></span><small>m/s</small></span><span class="lbl">Horizontal speed</span></div></div>' +
+            '<div class="clock"><span class="tplus" id="' + p + '-clock">T+ 00:00.00</span><span class="phase" id="' + p + '-phase">Ready</span></div>' +
+            '<div class="readouts"><div class="readout"><span class="num"><span class="roll" id="' + p + '-tilt"></span><small>deg</small></span><span class="lbl">Tilt</span></div>' +
+            '<div class="readout"><span class="num"><span class="roll" id="' + p + '-fuel"></span></span><span class="lbl">Fuel used</span></div>' +
+            '<div class="readout"><span class="num"><svg class="arrow" id="' + p + '-arrow" viewBox="0 0 34 16"><path d="M1 8h28M22 2l8 6-8 6" fill="none" stroke="#fff" stroke-width="2"/></svg><span class="roll" id="' + p + '-wind"></span></span><span class="lbl">Wind</span></div></div>';
+        }
+        document.getElementById("hud1").innerHTML = hudHTML("h1");
+        document.getElementById("hud3").innerHTML = hudHTML("h3");
+
+        var STRIP = ""; for (var dg = 0; dg < 10; dg++) STRIP += "<span>" + dg + "</span>";
+        var rollers = {};
+        function roller(id) {
+          if (!rollers[id]) rollers[id] = { el: document.getElementById(id), shape: null, strips: [] };
+          return rollers[id];
+        }
+        function shapeOf(s) { return s.replace(/\d/g, "0"); }
+        // show text `cur`, rolling each digit from `prev` with progress p (pure function of time)
+        function rollTo(id, prev, cur, p) {
+          var R = roller(id), sh = shapeOf(cur);
+          if (sh !== R.shape) {
+            R.shape = sh;
+            R.el.innerHTML = cur.split("").map(function (ch) {
+              return /\d/.test(ch) ? '<span class="rd" data-layout-allow-overflow><span class="rs" data-layout-allow-overflow>' + STRIP + "</span></span>" : '<span class="rc">' + (ch === " " ? "&#8199;" : ch) + "</span>";
+            }).join("");
+            R.strips = Array.prototype.slice.call(R.el.querySelectorAll(".rs"));
+          }
+          var same = shapeOf(prev) === sh, k = 0, e = easeOut(clamp(p, 0, 1));
+          for (var c = 0; c < cur.length; c++) {
+            if (!/\d/.test(cur[c])) continue;
+            var to = +cur[c], from = same ? +prev[c] : to;
+            R.strips[k++].style.transform = "translateY(" + -(from + (to - from) * e) * 10 + "%)";
+          }
+        }
+        function slot(v, d) { return (v < -0.05 ? MINUS : " ") + Math.abs(v).toFixed(d); }
+        function teleText(F, i) {
+          var f = F.fl.frames, n = f.x.length; i = clamp(i, 0, n - 1);
+          var vx = f.vx[i], vy = f.vy[i], alt = Math.max(0, f.y[i] - F.fl.pad[2] - P.rest_height);
+          var deg = ((f.a[i] * 180 / Math.PI + 180) % 360 + 360) % 360 - 180;
+          return { spd: Math.hypot(vx, vy).toFixed(1), alt: alt.toFixed(1), vs: slot(vy, 1), hs: slot(vx, 1), tilt: slot(deg, 0),
+                   fuel: String(Math.round(f.fuel[i])), wind: Math.abs(f.wind[i]).toFixed(1), w: f.wind[i], spdN: Math.hypot(vx, vy), altN: alt };
+        }
+        function renderHud(p, F, ft) {
+          var f = F.fl.frames, n = f.x.length, tEnd = (n - 1) / FPS;
+          var tickT = Math.floor(Math.max(0, ft) * 12.5) / 12.5;          // the flight computer ticks 12.5x a second
+          var cur = teleText(F, Math.round(tickT * FPS)), prev = teleText(F, Math.round(Math.max(0, tickT - 0.08) * FPS));
+          var prog = ft < 0 ? 1 : (ft - tickT) / 0.07;
+          ["spd", "alt", "vs", "hs", "tilt", "fuel", "wind"].forEach(function (k) { rollTo(p + "-" + k, prev[k], cur[k], prog); });
+          var pos = clamp(ft * FPS, 0, n - 1), i = Math.floor(pos), fr = pos - i;
+          var vx = lerpKey(f, "vx", i, fr, n), vy = lerpKey(f, "vy", i, fr, n);
+          var alt = Math.max(0, lerpKey(f, "y", i, fr, n) - F.fl.pad[2] - P.rest_height), spd = Math.hypot(vx, vy);
+          document.getElementById(p + "-spd-arc").setAttribute("stroke-dashoffset", GLEN * (1 - clamp(spd / 14, 0, 1)));
+          document.getElementById(p + "-alt-arc").setAttribute("stroke-dashoffset", GLEN * (1 - clamp(alt / 11, 0, 1)));
+          var sec = Math.abs(ft), neg = ft < -0.001;
+          document.getElementById(p + "-clock").textContent = "T" + (neg ? MINUS : "+") + " 00:" + String(Math.floor(sec)).padStart(2, "0") + "." + String(Math.floor((sec % 1) * 100)).padStart(2, "0");
+          var act = f.act[i], ph = neg ? "Countdown" : ft >= tEnd ? "Signal end" : f.legs[i] > 0 ? "Ground contact" : act === 2 ? "Main engine" : act ? "Steering thrusters" : "Coasting";
+          document.getElementById(p + "-phase").textContent = ph;
+          var ar = document.getElementById(p + "-arrow");
+          ar.style.transform = "scaleX(" + (cur.w < 0 ? -1 : 1) + ")";
+          ar.style.opacity = Math.abs(cur.w) < 0.05 ? 0.3 : 1;
+        }
+
+        // ---- the per-frame painter (seek-safe: everything is a function of t) --------------
+        function paint(t) {
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, CW, CH);
+          drawStars(t);
+          document.getElementById("root").style.setProperty("--glow", (0.08 + 0.32 * audioAt(t, "rms")).toFixed(3));
+          if (t < T.s2) {
+            var ft1 = t - T.crashStart;
+            drawFlight(CRASH, ft1, t, {});
+            renderHud("h1", CRASH, ft1);
+          } else if (t >= T.s3 && t < T.s4) {
+            var ft3 = t - T.stormStart;
+            drawFlight(STORM, ft3, t, {});
+            renderHud("h3", STORM, ft3);
+          } else if (t >= T.s5) {
+            ctx.save(); ctx.translate(0, 190);                           // callback: the landed lander, dimmed, below the titles
+            drawFlight(STORM, 99, t, { dim: true });
+            ctx.restore();
+          }
+        }
+
+        // ---- scene 2 chart (built once) -----------------------------------------------------
+        var C = D.curve, svgNS = "http://www.w3.org/2000/svg", chart = document.getElementById("chart");
+        var CWd = 1680, CHt = 620, YMIN = -700, YMAX = 340, XMAX = 2.0;
+        function cxp(v) { return (v / XMAX) * CWd; }
+        function cyp(v) { return (1 - (Math.max(YMIN, v) - YMIN) / (YMAX - YMIN)) * CHt; }
+        function el(tag, attrs, text) { var n = document.createElementNS(svgNS, tag); for (var k in attrs) n.setAttribute(k, attrs[k]); if (text) n.textContent = text; return n; }
+        [-600, -300, 0].forEach(function (v) {
+          chart.appendChild(el("line", { x1: 0, x2: CWd, y1: cyp(v), y2: cyp(v), stroke: "rgba(255,255,255,0.14)", "stroke-width": 2 }));
+          chart.appendChild(el("text", { x: -14, y: cyp(v) + 8, "text-anchor": "end", class: "axis-lbl" }, v < 0 ? MINUS + -v : String(v)));
+        });
+        chart.appendChild(el("line", { x1: 0, x2: CWd, y1: cyp(200), y2: cyp(200), stroke: "rgba(255,255,255,0.75)", "stroke-width": 2, "stroke-dasharray": "10 10" }));
+        chart.appendChild(el("text", { x: 0, y: cyp(200) - 16, class: "solved-lbl" }, "SOLVED 200"));
+        [0, 1, 2].forEach(function (v) { chart.appendChild(el("text", { x: cxp(v), y: CHt + 40, "text-anchor": v === 0 ? "start" : v === 2 ? "end" : "middle", class: "axis-lbl" }, v + "M steps")); });
+        var defs = el("defs", {}), clip = el("clipPath", { id: "reveal" }), clipRect = el("rect", { x: -20, y: -60, width: 0, height: CHt + 120 });
+        clip.appendChild(clipRect); defs.appendChild(clip); chart.appendChild(defs);
+        var g = el("g", { "clip-path": "url(#reveal)" });
+        var band = C.high.map(function (v, k) { return cxp(C.steps[k]) + "," + cyp(v); }).concat(C.low.map(function (v, k) { return cxp(C.steps[k]) + "," + cyp(v); }).reverse());
+        g.appendChild(el("polygon", { points: band.join(" "), fill: "rgba(255,255,255,0.16)" }));
+        g.appendChild(el("polyline", { points: C.mean.map(function (v, k) { return cxp(C.steps[k]) + "," + cyp(v); }).join(" "), fill: "none", stroke: "#ffffff", "stroke-width": 4, "stroke-linejoin": "round" }));
+        chart.appendChild(g);
+        var dot = el("circle", { r: 10, fill: "#ffffff", stroke: "#000000", "stroke-width": 4, cx: 0, cy: cyp(C.mean[0]) });
+        chart.appendChild(dot);
+        var endLbl = el("text", { x: cxp(C.steps[C.steps.length - 1]) - 20, y: cyp(C.mean[C.mean.length - 1]) - 30, "text-anchor": "end", class: "end-lbl", opacity: 0 }, String(Math.round(C.mean[C.mean.length - 1])));
+        chart.appendChild(endLbl);
+        function chartAt(p) {
+          var xNow = p * cxp(C.steps[C.steps.length - 1]);
+          clipRect.setAttribute("width", xNow + 20);
+          var stepsNow = (xNow / CWd) * XMAX, k = 0;
+          while (k < C.steps.length - 2 && C.steps[k + 1] < stepsNow) k++;
+          var a = C.steps[k], b = C.steps[k + 1], fr = clamp((stepsNow - a) / (b - a), 0, 1);
+          dot.setAttribute("cx", xNow); dot.setAttribute("cy", cyp(C.mean[k] + (C.mean[k + 1] - C.mean[k]) * fr));
+          var n = Math.round(p * 2000000);
+          document.getElementById("counter-v").textContent = n.toLocaleString("en-US");
+        }
+
+        // split titles into glyphs so their spacing can animate with transforms only
+        function splitChars(id) {
+          var node = document.getElementById(id), text = node.textContent;
+          node.innerHTML = text.split("").map(function (ch) { return '<span class="ch">' + ch + "</span>"; }).join("");
+          return Array.prototype.slice.call(node.querySelectorAll(".ch"));
+        }
+        var goChars = splitChars("cd-go"), titleChars = splitChars("s5-title");
+
+        // ---- the timeline ---------------------------------------------------------------------
+        var tl = gsap.timeline({ paused: true });
+        var clockProxy = { t: 0 };
+        tl.to(clockProxy, { t: T.end, duration: T.end, ease: "none", onUpdate: function () { paint(clockProxy.t); } }, 0);
+
+        // Scene 1: first flight
+        tl.fromTo("#s1 .head", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+        tl.fromTo("#hud1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
+        tl.fromTo("#flash1", { opacity: 0.28 }, { opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, 2.39);
+        tl.fromTo("#card1", { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" }, T.card1);
+        var c1 = { v: 0 };
+        tl.to(c1, { v: 1, duration: 0.6, ease: "power2.out", onUpdate: function () {
+          document.getElementById("c1-time").innerHTML = (D.crash.seconds * c1.v).toFixed(1) + "<small>s</small>";
+          document.getElementById("c1-speed").innerHTML = (D.crash.contact_speed * c1.v).toFixed(1) + "<small>m/s</small>";
+        } }, T.card1 + 0.1);
+
+        // Scene 2: it taught itself
+        tl.fromTo("#s2-title", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, T.s2 + 0.08);
+        tl.fromTo("#s2-cap", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out" }, T.s2 + 0.35);
+        tl.fromTo("#counter", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, T.s2 + 0.2);
+        tl.fromTo("#chart", { opacity: 0 }, { opacity: 1, duration: 0.4 }, T.s2 + 0.15);
+        var cp = { p: 0 };
+        tl.to(cp, { p: 1, duration: T.chartTo - T.chartFrom, ease: "power1.inOut", onUpdate: function () { chartAt(cp.p); } }, T.chartFrom);
+        tl.fromTo(endLbl, { opacity: 0 }, { opacity: 1, duration: 0.3 }, T.chartTo);
+
+        // Scene 3: the storm
+        tl.fromTo("#s3 .head", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, T.s3 + 0.05);
+        tl.fromTo("#hud3", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, T.s3 + 0.1);
+        tl.fromTo("#cond", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, T.s3 + 0.05);
+        // countdown on the beat grid: 7.64, 8.19, then LAUNCH on the 8.74 strong cue
+        tl.set("#cd", { textContent: "T" + MINUS + "2" }, T.tMinus2);
+        tl.fromTo("#cd", { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power3.out" }, T.tMinus2);
+        tl.set("#cd", { textContent: "T" + MINUS + "1" }, T.tMinus1);
+        tl.fromTo("#cd", { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power3.out", immediateRender: false }, T.tMinus1);
+        tl.to("#launch-btn", { scale: 0.96, backgroundColor: "rgba(255,255,255,0.4)", duration: 0.1, ease: "power2.out" }, T.press);
+        tl.to("#launch-btn", { scale: 1, backgroundColor: "rgba(255,255,255,0.16)", duration: 0.25, ease: "power2.out" }, T.press + 0.12);
+        tl.to("#cd", { opacity: 0, duration: 0.12 }, T.stormStart - 0.06);
+        // LAUNCH: letters spread in from wide to their resting spacing (per-glyph x, no reflow)
+        tl.fromTo("#cd-go", { opacity: 0 }, { opacity: 1, duration: 0.15 }, T.stormStart);                 // beat-locked: 8.74s
+        tl.fromTo(goChars, { x: function (k) { return (k - (goChars.length - 1) / 2) * 70; } }, { x: 0, duration: 0.7, ease: "power3.out" }, T.stormStart);
+        tl.to("#cd-go", { opacity: 0, duration: 0.3, ease: "power1.in" }, T.stormStart + 0.42);
+        tl.to("#cond", { opacity: 0, x: 60, duration: 0.24, ease: "power2.in" }, T.press + 0.12);   // clear the frame before LAUNCH
+        tl.fromTo("#card3", { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" }, T.card3);   // beat-locked: 13.11s
+        var c3 = { v: 0 };
+        tl.to(c3, { v: 1, duration: 0.7, ease: "power2.out", onUpdate: function () {
+          document.getElementById("c3-time").innerHTML = (D.storm.seconds * c3.v).toFixed(1) + "<small>s</small>";
+          document.getElementById("c3-fuel").textContent = Math.round(D.storm.fuel * c3.v);
+          document.getElementById("c3-speed").innerHTML = (D.storm.contact_speed * c3.v).toFixed(1) + "<small>m/s</small>";
+        } }, T.card3 + 0.1);
+
+        // Scene 4: the proof (beat grid: 73% count 14.55-15.55, baseline 15.29, footnote 15.84)
+        tl.fromTo("#s4-kicker", { opacity: 0 }, { opacity: 1, duration: 0.4 }, T.s4 + 0.1);
+        tl.fromTo("#s4-big", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, T.s4 + 0.12);
+        var big = { v: 0 };
+        tl.to(big, { v: Math.round(D.results.final_strong_wind * 100), duration: 1.0, ease: "power2.out", onUpdate: function () {
+          document.getElementById("s4-big").textContent = Math.round(big.v) + "%";
+        } }, T.s4 + 0.15);
+        tl.fromTo("#s4-label", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, T.s4 + 0.25);
+        tl.fromTo("#bar-final", { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: "power3.out" }, T.s4 + 0.15);
+        tl.fromTo("#s4-base", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 15.29);
+        tl.fromTo("#bar-base", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 15.29);
+        tl.fromTo("#s4-foot", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 15.84);
+
+        // Scene 5: LANDFALL (title slam beat-locked to 18.56s)
+        tl.fromTo("#s5-logo", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, T.s5 + 0.05);
+        tl.fromTo("#s5-kicker", { opacity: 0 }, { opacity: 1, duration: 0.5 }, T.s5 + 0.2);
+        tl.fromTo("#s5-title", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out" }, T.logo);
+        tl.fromTo(titleChars, { x: function (k) { return (k - (titleChars.length - 1) / 2) * 90; } }, { x: 0, duration: 1.1, ease: "expo.out" }, T.logo);   // beat-locked: 18.56s
+        tl.fromTo("#s5-tag", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 19.25);
+        tl.fromTo("#s5-credit", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 19.75);
+        // music fades under the logo
+        tl.fromTo("#bgm", { volume: 0.32 }, { volume: 0, duration: 1.2, ease: "power1.in", immediateRender: false }, 21.8);
+
+        paint(0);
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

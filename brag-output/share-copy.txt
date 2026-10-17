@@ -1,0 +1,1 @@
+Its first flight crashed. Two million practice steps later, it lands in storms it never trained for: 73% safe landings in strong wind, vs 33% for the baseline. LANDFALL, an S4D project.
