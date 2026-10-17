@@ -463,7 +463,7 @@ earlier (like `runs/final/results.json`) still name the old IDs:
 
 ## Still open (needs the user)
 
-1. Create the empty GitHub repository and send the link, then push.
+1. ~~Create the empty GitHub repository and send the link, then push.~~ Done 2026-10-17: https://github.com/saadhilalai/landfall (public; `main` pushed, Hard Mode brought over without its training logs, GitHub login via `gh auth login`).
 
 ---
 
