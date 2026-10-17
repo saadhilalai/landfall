@@ -10,7 +10,7 @@ _Last updated 2026-10-16. Nothing is running. All models, results and logs are s
 | 4. Domain randomization | ✅ Done. Final agent design: randomized + memory |
 | 5. Optuna auto-tuning | ✅ Done. **Final agent: `randomized_memory_tuned`** |
 | 6. Final results, charts, videos | ✅ Done (evaluated once, plan committed first) |
-| 7. Live demo website (LANDFALL) | ✅ Built and tested locally. Hugging Face deploy is next (needs the user's account) |
+| 7. Live demo website (LANDFALL) | ✅ Live at https://s4dai-landfall.static.hf.space (free static Hugging Face Space) |
 | 8. README, packaging, resume bullets | Not started (`requirements.txt` and `.gitignore` exist) |
 
 ---
@@ -31,7 +31,9 @@ python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt
 Useful commands:
 ```bash
 .venv/bin/python app.py                                     # the LANDFALL website → http://127.0.0.1:7860
-.venv/bin/python make_space.py --push USERNAME/landfall     # upload it to Hugging Face (after `hf auth login`)
+.venv/bin/python make_space.py --push s4dAi/landfall       # upload the site to Hugging Face (after `hf auth login`)
+.venv/bin/python export_browser_pilots.py                  # re-export the networks the site flies (after retraining)
+.venv/bin/python check_browser_sim.py                      # browser physics vs Python on 1,500 test landings (~2 min)
 .venv/bin/python train.py --agent shaped_v2                 # train one agent type (3 seeds, ~5 min)
 .venv/bin/python compare.py --agents baseline shaped_v2     # compare agents on 1,000 landings per seed
 .venv/bin/python compare.py --agents baseline shaped_v2 randomized --reference baseline shaped_v2 \
@@ -363,9 +365,7 @@ No video encoding, so it is instant (a two-pilot request is ~70 ms, ~11 KB gzipp
 - **Shareable links:** the address bar always holds the current flight (`?pilot=…&vs=…&wind=…&landing=…`).
 - **Tested** in Chrome (desktop 1440×900, phone 390×844 via device emulation): flights, compare, Surprise me,
   impossible conditions, crash screen, reduced-motion mode. Screenshots in `screenshots/`.
-- **Hosting:** `make_space.py` builds a 1.6 MB Docker Space (CPU-only PyTorch). The bundle was run from its own
-  folder and every route and pilot works. Docker isn't installed on this Mac, so the container build itself
-  is first tested on Hugging Face.
+- **Hosting:** first built as a Docker Space; replaced by a static site (see "Deployed" below).
 
 ### Polish round (2026-10-16): liquid glass, extras, S4D branding
 
@@ -393,12 +393,29 @@ No video encoding, so it is instant (a two-pilot request is ~70 ms, ~11 KB gzipp
   start before updating; the fading loading screen swallowed clicks; panel content showed through the sticky
   Launch row.
 
+### Deployed (2026-10-16): flights now run in the browser
+
+- **Why:** Hugging Face now requires a paid PRO plan for Docker and Gradio Spaces ("402 Payment Required"); only
+  static Spaces are free. So the site no longer needs a server: every landing is flown in the visitor's browser.
+- **How:** `web/sim/` is LunarLander-v3 rewritten in JavaScript (`lander.js`) on planck.js 1.5.0 (a JavaScript
+  Box2D, MIT, vendored in `web/vendor/`), NumPy's random generator rewritten bit-for-bit (`rng.js`: SeedSequence +
+  PCG64, checked equal to NumPy on 10 seeds), and the pilots' networks (`policy.js`, weights exported as float32
+  by `export_browser_pilots.py` into `web/data/pilots.json`, 116 KB). It runs in a background thread
+  (`sim/worker.js`); two pilots take ~22 ms in Chrome. The untrained pilot's random button presses use their
+  own seeded stream, so its flights differ from the Python ones (it crashes either way).
+- **Checked against Python** (`check_browser_sim.py`, `runs/browser_check.json`): 3 trained pilots × 5 test
+  scenarios × the 100 official test landings = 1,500 flights. Same terrain on every landing; **same outcome on
+  99.2%**; landing rates differ by 0.6 points on average (at most 3); 82.1% of flights identical within 1 cm from
+  start to finish (the rest drift apart after a median 4.6 s: planck.js uses 64-bit numbers, Box2D 32-bit).
+  The first flight on the site (Final AI, strong wind, landing 10000) is identical: 3.78 s, 88.9 fuel, 1.55 m/s.
+- **Live:** https://s4dai-landfall.static.hf.space (Space page: https://huggingface.co/spaces/s4dAi/landfall).
+  Tested in headless Chrome on the live site: first flight, Surprise me, compare mode, all four pilots, the four
+  video clips, the footer, phone size with the CPU slowed 4×, and inside the Space page's frame.
+- `app.py` still runs the site locally and keeps the Python flight at `/api/fly` as the reference.
+
 ## What to do next, in order
 
-1. **Deploy:** user creates a Hugging Face account and logs in (`hf auth login`); then
-   `python make_space.py --push USERNAME/landfall`, check the build, and add the live link and the video link
-   to the top of the README.
-2. **Step 8:** README, packaging, and 3 resume bullets with the real numbers. The README should cover:
+1. **Step 8:** README, packaging, and 3 resume bullets with the real numbers. The README should cover:
    - the leg-sensor bug story
    - the v1 → v2 iteration
    - "more practice made it more fragile"

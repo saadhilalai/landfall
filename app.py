@@ -1,15 +1,17 @@
 """
-app.py — Step 7: LANDFALL, the live demo website.
+app.py — Step 7: LANDFALL, the live demo website (local server + Python flight reference).
 
-How it works, in plain words: the web page sends the conditions and the pilot; this
-server flies the landing with the real simulator and the trained AI (a few hundredths
-of a second), and sends back the flight recording: where the lander was, its speed,
-tilt, fuel, engine state and the wind, 50 times per simulated second. The page then
-draws that recording live on a canvas with launch-webcast telemetry.
+How the site works, in plain words: the web page flies every landing itself, in the
+visitor's browser (web/sim: the game rewritten in JavaScript, plus the trained networks
+exported by export_browser_pilots.py), and draws it live on a canvas with launch-webcast
+telemetry. So the public site is just files, hosted free as a static Hugging Face Space
+(make_space.py).
 
-Nothing is pre-recorded. Same landing number + same conditions + same pilot = exactly
-the same flight, every time. Landings 10000-10099 are the official test landings
-from Step 6, and the site replays them exactly.
+This server is for running it on your own computer: it serves the page and the video
+clips, and keeps the original Python flight at POST /api/fly. That Python version is the
+reference: check_browser_sim.py flies the same landings both ways and compares them.
+Same landing number + same conditions + same pilot = exactly the same flight, every time.
+Landings 10000-10099 are the official test landings from Step 6.
 
 Usage:
     python app.py          then open http://127.0.0.1:7860

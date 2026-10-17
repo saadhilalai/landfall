@@ -2,9 +2,10 @@
 make_space.py — packs the LANDFALL website into a folder that runs as a free
 Hugging Face Space, and (optionally) uploads it.
 
-The Space is a "Docker" Space on the free CPU hardware. It only needs the code that
-flies a landing, the three trained pilots it shows, the web page, and the four video
-clips on the page. Training logs, the other models and the test data stay out.
+The site needs no server: every landing is flown in the visitor's browser (web/sim), so
+the Space is a free "static" Space, just files. It holds the web page, the physics and the
+four pilots' networks (web/data/pilots.json, from export_browser_pilots.py), and the four
+video clips on the page. Training logs, models and test data stay out.
 
 Usage:
     python make_space.py                          # build build/hf_space/ only
@@ -16,43 +17,15 @@ import shutil
 from pathlib import Path
 
 OUT = Path("build") / "hf_space"
-CODE = ["app.py", "config.py", "envs.py", "domain_randomization.py", "landing_stats.py", "reward_shaping.py", "render.py"]
-MODELS = ["baseline_seed42.zip", "randomized_2m_seed42.zip", "randomized_memory_tuned_seed42.zip"]
 CLIPS = ["side_by_side_heavy_gravity.mp4", "untrained_crash.mp4", "baseline_landing.mp4", "final_strong_wind_arrow.mp4"]
-
-# Same versions as requirements.txt, but the small CPU-only build of PyTorch (no graphics-card code).
-REQUIREMENTS = """\
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.14.1+cpu
-gymnasium[box2d]==1.4.0
-Box2D==2.3.10
-stable-baselines3==2.9.0
-numpy==2.4.6
-pillow==11.3.0
-fastapi==0.143.2
-uvicorn==0.54.0
-"""
-
-DOCKERFILE = """\
-FROM python:3.11-slim
-RUN useradd -m -u 1000 user
-USER user
-ENV PATH="/home/user/.local/bin:$PATH" HOST=0.0.0.0 PORT=7860 PYTHONUNBUFFERED=1
-WORKDIR /app
-COPY --chown=user requirements.txt requirements.txt
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
-COPY --chown=user . /app
-EXPOSE 7860
-CMD ["python", "app.py"]
-"""
 
 SPACE_CARD = """\
 ---
 title: LANDFALL
 colorFrom: gray
 colorTo: gray
-sdk: docker
-app_port: 7860
+sdk: static
+app_file: index.html
 pinned: false
 short_description: A rocket lander AI that taught itself, flying live
 ---
@@ -60,44 +33,38 @@ short_description: A rocket lander AI that taught itself, flying live
 # LANDFALL
 
 A reinforcement learning agent that taught itself to land a rocket in randomized gravity,
-wind, turbulence and engine power. Set the conditions, press Launch, and the server flies
+wind, turbulence and engine power. Set the conditions, press Launch, and your browser flies
 the landing live with the trained network; the page draws it with webcast-style telemetry.
 
 Designed & built by Saad Hilal · S4D.
 
-Simulator: Gymnasium LunarLander-v3. Learning: PPO (Stable-Baselines3). Tuning: Optuna.
-Typeface: D-DIN by Datto (SIL Open Font License, see web/fonts/OFL.txt).
+Simulator: Gymnasium LunarLander-v3, rewritten in JavaScript on planck.js (MIT, see
+vendor/planck-LICENSE.txt). Learning: PPO (Stable-Baselines3). Tuning: Optuna.
+Typeface: D-DIN by Datto (SIL Open Font License, see fonts/OFL.txt).
 """
 
 
 def build():
     if OUT.exists():
         shutil.rmtree(OUT)
-    (OUT / "models").mkdir(parents=True)
+    shutil.copytree("web", OUT, ignore=shutil.ignore_patterns(".DS_Store"))
     (OUT / "videos").mkdir()
-    for f in CODE:
-        shutil.copy(f, OUT / f)
-    for f in MODELS:
-        shutil.copy(Path("models") / f, OUT / "models" / f)
     for f in CLIPS:
         shutil.copy(Path("videos") / f, OUT / "videos" / f)
-    shutil.copytree("web", OUT / "web")
-    (OUT / "requirements.txt").write_text(REQUIREMENTS)
-    (OUT / "Dockerfile").write_text(DOCKERFILE)
     (OUT / "README.md").write_text(SPACE_CARD)
-    size = sum(p.stat().st_size for p in OUT.rglob("*") if p.is_file())
-    print(f"Built {OUT}/ ({sum(1 for p in OUT.rglob('*') if p.is_file())} files, {size / 1e6:.1f} MB)")
+    files = [p for p in OUT.rglob("*") if p.is_file()]
+    print(f"Built {OUT}/ ({len(files)} files, {sum(p.stat().st_size for p in files) / 1e6:.1f} MB)")
 
 
 def push(repo_id):
     from huggingface_hub import HfApi
     api = HfApi()
-    api.create_repo(repo_id, repo_type="space", space_sdk="docker", exist_ok=True)
+    api.create_repo(repo_id, repo_type="space", space_sdk="static", exist_ok=True)
     api.upload_folder(folder_path=str(OUT), repo_id=repo_id, repo_type="space",
-                      commit_message="Deploy LANDFALL")
+                      commit_message="Deploy LANDFALL", delete_patterns="*")
     user, name = repo_id.split("/")
-    print(f"Uploaded. Build log: https://huggingface.co/spaces/{repo_id}")
-    print(f"Live site (after the build, ~5 min): https://{user.lower()}-{name.lower().replace('_', '-')}.hf.space")
+    print(f"Uploaded. Space page: https://huggingface.co/spaces/{repo_id}")
+    print(f"Live site: https://{user.lower()}-{name.lower().replace('_', '-')}.hf.space")
 
 
 if __name__ == "__main__":

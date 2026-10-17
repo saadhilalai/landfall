@@ -1,0 +1,115 @@
+{
+ "landings": "10000-10099",
+ "cells": [
+  {
+   "scenario": "normal",
+   "pilot": "final",
+   "same_outcome": 1.0,
+   "python_landed": 1.0,
+   "browser_landed": 1.0
+  },
+  {
+   "scenario": "normal",
+   "pilot": "careful",
+   "same_outcome": 1.0,
+   "python_landed": 1.0,
+   "browser_landed": 1.0
+  },
+  {
+   "scenario": "normal",
+   "pilot": "baseline",
+   "same_outcome": 1.0,
+   "python_landed": 0.99,
+   "browser_landed": 0.99
+  },
+  {
+   "scenario": "strong_wind",
+   "pilot": "final",
+   "same_outcome": 0.98,
+   "python_landed": 0.76,
+   "browser_landed": 0.78
+  },
+  {
+   "scenario": "strong_wind",
+   "pilot": "careful",
+   "same_outcome": 0.94,
+   "python_landed": 0.33,
+   "browser_landed": 0.3
+  },
+  {
+   "scenario": "strong_wind",
+   "pilot": "baseline",
+   "same_outcome": 0.97,
+   "python_landed": 0.24,
+   "browser_landed": 0.27
+  },
+  {
+   "scenario": "heavy_gravity",
+   "pilot": "final",
+   "same_outcome": 0.99,
+   "python_landed": 0.9,
+   "browser_landed": 0.89
+  },
+  {
+   "scenario": "heavy_gravity",
+   "pilot": "careful",
+   "same_outcome": 1.0,
+   "python_landed": 0.99,
+   "browser_landed": 0.99
+  },
+  {
+   "scenario": "heavy_gravity",
+   "pilot": "baseline",
+   "same_outcome": 1.0,
+   "python_landed": 0.97,
+   "browser_landed": 0.97
+  },
+  {
+   "scenario": "weak_engine",
+   "pilot": "final",
+   "same_outcome": 1.0,
+   "python_landed": 0.81,
+   "browser_landed": 0.81
+  },
+  {
+   "scenario": "weak_engine",
+   "pilot": "careful",
+   "same_outcome": 1.0,
+   "python_landed": 0.97,
+   "browser_landed": 0.97
+  },
+  {
+   "scenario": "weak_engine",
+   "pilot": "baseline",
+   "same_outcome": 1.0,
+   "python_landed": 0.96,
+   "browser_landed": 0.96
+  },
+  {
+   "scenario": "harsh",
+   "pilot": "final",
+   "same_outcome": 1.0,
+   "python_landed": 0.13,
+   "browser_landed": 0.13
+  },
+  {
+   "scenario": "harsh",
+   "pilot": "careful",
+   "same_outcome": 1.0,
+   "python_landed": 0.02,
+   "browser_landed": 0.02
+  },
+  {
+   "scenario": "harsh",
+   "pilot": "baseline",
+   "same_outcome": 1.0,
+   "python_landed": 0.02,
+   "browser_landed": 0.02
+  }
+ ],
+ "same_outcome": 0.992,
+ "identical_whole_flight": 0.8206666666666667,
+ "median_seconds_before_drift": 4.64,
+ "max_rate_gap": 0.030000000000000027,
+ "mean_rate_gap": 0.006000000000000005
+}

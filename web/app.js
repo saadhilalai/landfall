@@ -1,8 +1,10 @@
 /* LANDFALL — front end. An S4D project by Saad Hilal.
-   The server flies each landing and sends back a recording (50 snapshots per simulated
-   second). This file draws that recording live on a canvas with webcast telemetry, and runs
-   mission control (sliders with physics zones, landing check), the countdown, the result
-   screen and the sections below. Effects live in effects.js, sound in sound.js. */
+   Every landing is flown right here in the browser: sim/ holds the game rewritten in
+   JavaScript and the trained networks, and runs in a background thread (sim/worker.js). It
+   returns a recording (50 snapshots per simulated second). This file draws that recording
+   live on a canvas with webcast telemetry, and runs mission control (sliders with physics
+   zones, landing check), the countdown, the result screen and the sections below. Effects
+   live in effects.js, sound in sound.js. No server needed: the site is plain files. */
 
 import { Sound } from "./sound.js";
 import { reduceMotion, isLite, startStarfield, trackGlassLight, Roller, countUp, revealOnScroll,
@@ -47,6 +49,38 @@ const P = SITE.physics;
 const W = P.world.w, H = P.world.h, FPS = 50;
 const PILOT = Object.fromEntries(SITE.pilots.map(p => [p.id, p]));
 const GLOW = glowSprite();
+
+// ---- Flight computer: flies landings in a background thread (sim/worker.js) ---------------------------
+const flightComputer = (() => {
+  const pending = new Map();
+  let nextId = 0, worker = null, here = null;
+  const flyHere = async request => {      // fallback for browsers that can't run module workers
+    here ??= Promise.all([import("./sim/lander.js"), import("./sim/policy.js").then(m => m.loadPilots())]);
+    const [{ recordFlight }, pilots] = await here;
+    return { ...request, flights: request.pilots.map(p => recordFlight(p, pilots[p], request.sliders, request.landing)) };
+  };
+  try {
+    worker = new Worker(new URL("./sim/worker.js", import.meta.url), { type: "module" });
+    worker.onmessage = ({ data }) => {
+      const job = pending.get(data.id);
+      pending.delete(data.id);
+      if (data.error) job.reject(new Error(data.error));
+      else job.resolve(data.result);
+    };
+    worker.onerror = () => {
+      worker = null;
+      for (const [id, job] of pending) { pending.delete(id); flyHere(job.request).then(job.resolve, job.reject); }
+    };
+  } catch { worker = null; }
+  return request => {
+    if (!worker) return flyHere(request);
+    return new Promise((resolve, reject) => {
+      const id = ++nextId;
+      pending.set(id, { request, resolve, reject });
+      worker.postMessage({ id, ...request });
+    });
+  };
+})();
 
 const state = {
   pilot: SITE.first_flight.pilot,
@@ -755,17 +789,16 @@ async function launch({ newLanding = true, scroll = true, autoplay = true } = {}
   });
   let data;
   try {
-    const res = await fetch("api/fly", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pilots, ...state.sliders, landing: state.landing }) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    data = await res.json();
+    const sliders = Object.fromEntries(Object.entries(SITE.sliders).map(
+      ([name, s]) => [name, Math.min(Math.max(state.sliders[name], s.min), s.max)]));
+    data = await flightComputer({ pilots, sliders, landing: state.landing });
   } catch (err) {
     setPaneCount(1);
     const o = panes[0].outcomeEl;
     o.hidden = false;
     o.classList.add("show");
     $(".outcome-title", o).textContent = "No signal";
-    $(".outcome-sub", o).textContent = "The flight computer didn't answer. If the site was asleep it takes about a minute to wake up; then press Launch again.";
+    $(".outcome-sub", o).textContent = "The flight computer failed to start. Reload the page and press Launch again.";
     $(".outcome-stats", o).hidden = true;
     launchBtn.disabled = false;
     busy = false;
