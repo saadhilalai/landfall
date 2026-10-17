@@ -8,3 +8,6 @@ __pycache__/
 
 # Optuna study databases (Step 5) can grow large
 *.db
+
+# Step 7: the Hugging Face Space bundle is rebuilt by make_space.py
+build/

@@ -1,6 +1,6 @@
 # Rocket Lander: Progress Notes
 
-_Last updated 2026-10-15 (evening). Nothing is running. All models, results and logs are saved and committed._
+_Last updated 2026-10-16. Nothing is running. All models, results and logs are saved and committed._
 
 | Step | Status |
 |---|---|
@@ -10,7 +10,7 @@ _Last updated 2026-10-15 (evening). Nothing is running. All models, results and 
 | 4. Domain randomization | ✅ Done. Final agent design: randomized + memory |
 | 5. Optuna auto-tuning | ✅ Done. **Final agent: `randomized_memory_tuned`** |
 | 6. Final results, charts, videos | ✅ Done (evaluated once, plan committed first) |
-| 7. Gradio demo | Not started |
+| 7. Live demo website (LANDFALL) | ✅ Built and tested locally. Hugging Face deploy is next (needs the user's account) |
 | 8. README, packaging, resume bullets | Not started (`requirements.txt` and `.gitignore` exist) |
 
 ---
@@ -30,6 +30,8 @@ python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
 Useful commands:
 ```bash
+.venv/bin/python app.py                                     # the LANDFALL website → http://127.0.0.1:7860
+.venv/bin/python make_space.py --push USERNAME/landfall     # upload it to Hugging Face (after `hf auth login`)
 .venv/bin/python train.py --agent shaped_v2                 # train one agent type (3 seeds, ~5 min)
 .venv/bin/python compare.py --agents baseline shaped_v2     # compare agents on 1,000 landings per seed
 .venv/bin/python compare.py --agents baseline shaped_v2 randomized --reference baseline shaped_v2 \
@@ -52,6 +54,12 @@ Useful commands:
 | `make_charts.py` | Draws `charts/*.png` from saved results (safe to re-run) |
 | `make_videos.py` | Renders `videos/*.mp4` at 1920×1280, replaying recorded test landings |
 | `compare.py` | Compares agents on identical landings, with a paired significance test (`--seeds`, `--scenarios`, `--reference`) |
+| `app.py` | Step 7: the website's server. Flies each landing with the real simulator and sends back the flight recording |
+| `web/` | Step 7: the website itself (`index.html`, `style.css`, `app.js`, D-DIN fonts, `data/site.json`) |
+| `export_site_data.py` | Writes `web/data/site.json`: pilots, slider ranges, measured physics, Step 6 results, learning curves |
+| `make_space.py` | Packs the site into `build/hf_space/` (a free Docker Space) and optionally uploads it |
+| `render.py` | Sharp redraw of the game at any size (used by `make_videos.py`) and the wind readout |
+| `screenshots/` | Step 7 screenshots of the site at desktop (1440×900) and phone (390×844) size |
 | `check_setup.py` | Step 1 simulator check |
 | `models/<agent>_seed<N>.zip` | 12 trained models (~150 KB each) |
 | `runs/` | Per-run info, learning-curve data (`evaluations.npz`), episode logs, TensorBoard, training logs, comparison JSONs |
@@ -321,9 +329,49 @@ The network size didn't change.
   - `broll_1.mp4` to `broll_5.mp4`
 - The side-by-side is an **illustrative example**: across all heavy-gravity test landings the rates are 80.0% vs 91.7%.
 
+## Step 7: The live demo website, "LANDFALL" (built)
+
+**First version (replaced):** a Gradio app that encoded each landing as an MP4. It worked, but the user judged the
+design too generic. **Redesign brief:** inspired by launch webcasts (style only, no names or logos), black and white,
+thin lines, sharp edges, wide uppercase D-DIN headings, huge numbers, mission-control feel, works on phones.
+Mission name chosen by the user: **LANDFALL**.
+
+**How it works:** `app.py` (FastAPI) flies the landing with the real simulator and the chosen pilot (~26 ms) and
+returns the recording: position, legs, speed, tilt, engine state, wind and fuel, 50 per simulated second. The page
+(`web/`, plain HTML/CSS/JS, no framework) draws it on a full-screen canvas at 60 fps with a telemetry overlay.
+No video encoding, so it is instant (a two-pilot request is ~70 ms, ~11 KB gzipped).
+
+- **Faithful:** flights use exactly the Step 6 test setup. Checked: 45/45 replays (3 pilots × 5 scenarios × 3 test
+  landings) match `runs/final/episodes.csv` (outcome, score, steps, fuel).
+- **Pilots:** Final AI (`randomized_memory_tuned`), Careful (`randomized_2m`), Baseline, Untrained (seed-42 models).
+- **Telemetry:** T+ clock, speed and altitude gauges, vertical/horizontal speed, tilt, fuel used, wind direction and
+  strength, engine phase. Wind is also drawn as streaks moving with the gust.
+- **Result screen:** TOUCHDOWN CONFIRMED / VEHICLE LOST (plus off-target and no-touchdown), with flight time, fuel
+  used and landing speed (speed just before first ground contact). Compare mode: split screen, same landing.
+- **Slider zones:** green = the range the AI trained in, amber = beyond training, red dotted = physically impossible.
+  The red zones come from physics **measured in the simulator** (`export_site_data.py`): main engine 17.24 m/s² at
+  100% (thrust-to-weight 1.72 at gravity 10), side thruster 2.48 m/s², side-thruster spin 4.97 rad/s² vs 1.10 per
+  unit of turbulence. Red = thrust < weight, or gusts/turbulence stronger than the engines can counter.
+  Sanity check (analysis seeds, not the test set): below thrust = weight both trained pilots landed 0/30; at
+  thrust/weight 1.03 the careful pilot landed 3/30.
+- **Landing check:** live thrust-to-weight, verdict, and the expected landing rate taken from the **nearest Step 6
+  test condition** (labelled "measured", "closest test" or "untested" by distance; 0% when physics rules it out).
+- **Colours:** only the three zone colours (teal #29c7ac, amber #f5b83d, red #ff5f57), checked with the dataviz
+  colourblind validator; each zone also has its own line style and a text label. Charts are greyscale.
+- **Sections:** mission story (3 parts), big results, the "where it is worse" trade-off, all four charts redrawn in
+  the site style (HTML/SVG from `web/data/site.json`), and four flight-record clips (shown in black and white).
+- **Shareable links:** the address bar always holds the current flight (`?pilot=…&vs=…&wind=…&landing=…`).
+- **Tested** in Chrome (desktop 1440×900, phone 390×844 via device emulation): flights, compare, Surprise me,
+  impossible conditions, crash screen, reduced-motion mode. Screenshots in `screenshots/`.
+- **Hosting:** `make_space.py` builds a 1.6 MB Docker Space (CPU-only PyTorch). The bundle was run from its own
+  folder and every route and pilot works. Docker isn't installed on this Mac, so the container build itself
+  is first tested on Hugging Face.
+
 ## What to do next, in order
 
-1. **Step 7:** Gradio demo with gravity, wind and engine sliders and a Launch button, using the final agent (`models/randomized_memory_tuned_seed42.zip`). It can reuse `make_videos.render_hires`.
+1. **Deploy:** user creates a Hugging Face account and logs in (`hf auth login`); then
+   `python make_space.py --push USERNAME/landfall`, check the build, and add the live link and the video link
+   to the top of the README.
 2. **Step 8:** README, packaging, and 3 resume bullets with the real numbers. The README should cover:
    - the leg-sensor bug story
    - the v1 → v2 iteration

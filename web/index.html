@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LANDFALL: a rocket lander that taught itself</title>
+<meta name="description" content="A self-taught AI lands a rocket in randomized gravity, wind and engine power. Set the conditions, launch, and watch it fly live.">
+<meta name="theme-color" content="#000000">
+<link rel="preload" href="fonts/D-DIN.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/D-DINExp-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar" id="topbar">
+  <a class="wordmark" href="#top" aria-label="LANDFALL, back to the live landing">Landfall</a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#mission">Mission</a>
+    <a href="#results">Results</a>
+    <a href="#data">Data</a>
+    <a href="#records">Flight records</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero" aria-label="Live landing">
+    <div class="stage" id="stage" data-panes="1">
+      <div class="stage-actions" id="stage-actions" hidden>
+        <button type="button" class="btn btn-solid" data-act="relaunch">Relaunch</button>
+        <button type="button" class="btn" data-act="new">New landing</button>
+      </div>
+    </div>
+
+    <aside class="console" id="console" aria-label="Mission control">
+      <h2 class="console-title">Mission control</h2>
+
+      <fieldset class="group">
+        <legend class="group-label">Pilot</legend>
+        <div class="pilots" id="pilots" role="radiogroup" aria-label="Pilot"></div>
+        <p class="pilot-about" id="pilot-about"></p>
+        <div class="compare">
+          <label class="check-label"><input type="checkbox" id="compare"><span class="box" aria-hidden="true"></span>Compare with a second pilot</label>
+          <select id="pilot2" aria-label="Second pilot" disabled></select>
+        </div>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend class="group-label">Conditions</legend>
+        <div id="sliders"></div>
+        <ul class="zone-key" aria-label="Slider zones">
+          <li><span class="zone-glyph zone-trained" aria-hidden="true"></span>Trained</li>
+          <li><span class="zone-glyph zone-beyond" aria-hidden="true"></span>Beyond training</li>
+          <li><span class="zone-glyph zone-impossible" aria-hidden="true"></span>Physically impossible</li>
+        </ul>
+      </fieldset>
+
+      <section class="group check" id="check" aria-live="polite" aria-label="Landing check">
+        <h3 class="group-label">Landing check</h3>
+        <div class="check-row">
+          <span class="check-key">Thrust to weight</span>
+          <span class="check-val" id="twr">1.72</span>
+        </div>
+        <p class="check-verdict" id="verdict"></p>
+        <div id="expected"></div>
+      </section>
+
+      <div class="group launch-group">
+        <label class="landing-field">
+          <span class="group-label">Landing no.</span>
+          <input type="number" id="landing" min="0" max="999999" step="1" inputmode="numeric">
+        </label>
+        <p class="hint">Same landing number, same conditions, same pilot: the exact same flight. Landings 10000 to 10099 are the official test set.</p>
+      </div>
+      <div class="launch-row">
+        <button type="button" class="btn btn-launch" id="launch">Launch</button>
+        <button type="button" class="btn" id="surprise">Surprise me</button>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section" id="mission" aria-labelledby="mission-title">
+    <h2 class="h2" id="mission-title">The mission</h2>
+    <p class="lead">Land a rocket on a pad, in weather it has never seen, with no human pilot. The AI above taught itself how, by trial and error.</p>
+    <ol class="story">
+      <li>
+        <span class="story-no" aria-hidden="true">01</span>
+        <h3 class="h3">Learn by crashing</h3>
+        <p>It started with no idea how to fly. Every attempt earned points for landing gently and lost points for crashing, tilting or wasting fuel. Over two million practice steps it adjusted itself to earn more points. That is reinforcement learning.</p>
+      </li>
+      <li>
+        <span class="story-no" aria-hidden="true">02</span>
+        <h3 class="h3">Practise in a thousand worlds</h3>
+        <p>An AI that practises in one world learns tricks that only work there. So every practice flight rolled new gravity, wind, turbulence and engine power. Robotics teams use the same idea, domain randomization, to move robots from simulation into the real world.</p>
+      </li>
+      <li>
+        <span class="story-no" aria-hidden="true">03</span>
+        <h3 class="h3">Feel the wind, then tune</h3>
+        <p>Wind is invisible, so the final AI remembers its last four moments and can feel which way it is being pushed. An automatic search then tuned its training settings, judged on practice landings only, never on the final test.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="section" id="results" aria-labelledby="results-title">
+    <h2 class="h2" id="results-title">Results</h2>
+    <p class="lead">Tested once, on 300 landings per condition that no AI had seen before. The test plan was committed to git before the test ran, and nothing was changed after.</p>
+    <div class="bignums" id="bignums"></div>
+    <div class="tradeoff" id="tradeoff"></div>
+  </section>
+
+  <section class="section" id="data" aria-labelledby="data-title">
+    <h2 class="h2" id="data-title">The data</h2>
+    <figure class="chart">
+      <figcaption><h3 class="h3">Landing safely, by test condition</h3><p>Share of 300 unseen test landings that came to rest on the pad. The two columns on the right are the limits: beyond what any agent lands reliably.</p></figcaption>
+      <div class="table-wrap" id="heatmap"></div>
+    </figure>
+    <figure class="chart">
+      <figcaption><h3 class="h3">Learning curves</h3><p>Official game score during practice, checked every 33,000 steps in the normal game. Line: average of 3 training runs. Band: best to worst run. 200 is the "solved" mark. The axis stops at −650; a few of the very first check-ups scored lower.</p></figcaption>
+      <div class="curves" id="curves"></div>
+    </figure>
+    <figure class="chart">
+      <figcaption><h3 class="h3">More practice in one world made it more fragile</h3><p>The same agent trained in the normal game only, for 1 million and then 2 million steps. Twice the practice, worse in conditions it never saw.</p></figcaption>
+      <div id="fragile"></div>
+    </figure>
+    <figure class="chart">
+      <figcaption><h3 class="h3">Memory in wind</h3><p>Randomized practice, the same 2 million steps, with and without memory of the last 4 moments. With 300 landings per bar, the gap in plain strong wind could still be chance.</p></figcaption>
+      <div id="memory"></div>
+    </figure>
+  </section>
+
+  <section class="section" id="records" aria-labelledby="records-title">
+    <h2 class="h2" id="records-title">Flight records</h2>
+    <p class="lead">Real test landings, recorded from the simulator at 1920 by 1280.</p>
+    <div class="clips" id="clips"></div>
+  </section>
+</main>
+
+<footer class="footer">
+  <span class="wordmark">Landfall</span>
+  <p>Simulator: Gymnasium LunarLander. Learning: PPO, Stable-Baselines3. Tuning: Optuna. Typeface: D-DIN by Datto, SIL Open Font License.</p>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>

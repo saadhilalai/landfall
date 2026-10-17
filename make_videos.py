@@ -1,11 +1,10 @@
 """
 make_videos.py — renders the promo/README videos as high-resolution MP4s.
 
-Resolution: the simulator itself only draws at 600x400, and its physics is tied to
-that drawing scale, so we can't just turn the resolution up. Instead, render_hires()
-redraws the same physics objects (terrain, lander, legs, flags, engine flames) as
-vector shapes at 1920x1280 (3.2x). Real detail, not blurry upscaling, and the same
-look and colors as the game. 50 frames per second = the simulator's real time.
+Resolution: the simulator itself only draws at 600x400, so render.py redraws the same
+physics objects as sharp vector shapes at 1920x1280 (3.2x). Real detail, not blurry
+upscaling, and the same look and colors as the game. 50 frames per second = the
+simulator's real time.
 
 Which landings (fixed rules, written down before the final evaluation ran; see final_eval.py):
 the seed-42 model of each agent, and the FIRST test landing (seeds 10000-10099, in order)
@@ -26,7 +25,6 @@ Usage:
 """
 
 import csv
-import math
 from pathlib import Path
 
 import imageio.v2 as imageio
@@ -34,12 +32,11 @@ import numpy as np
 import pygame
 import torch
 from gymnasium.envs.box2d import lunar_lander as ll
-from PIL import Image, ImageDraw, ImageFont
-from pygame import gfxdraw
 from stable_baselines3 import PPO
 
 import config
 from envs import make_test_env, make_vec_env, model_memory
+from render import current_wind, draw_wind_arrow, label, render_hires
 
 OUT = Path("videos")
 K = 3.2                       # 600x400 -> 1920x1280
@@ -48,86 +45,6 @@ HOLD_START, HOLD_END = 0.5, 1.5   # seconds of still frame before and after each
 FINAL = "randomized_memory_tuned"
 NO_RANDOMIZATION = "shaped_v2_2m"
 SEED = 42
-FONT = "/System/Library/Fonts/HelveticaNeue.ttc"
-
-
-# ---- Rendering ------------------------------------------------------------------
-def render_hires(game, k=K):
-    """LunarLander's own render(), redrawn at k times the size. Like the original, it also
-    ages the engine-flame particles (they never touch the lander, so physics is unaffected)."""
-    S = ll.SCALE * k
-    surf = pygame.Surface((int(ll.VIEWPORT_W * k), int(ll.VIEWPORT_H * k)))
-    surf.fill((255, 255, 255))
-
-    for obj in game.particles:
-        obj.ttl -= 0.15
-        color = (int(max(0.2, 0.15 + obj.ttl) * 255), int(max(0.2, 0.5 * obj.ttl) * 255),
-                 int(max(0.2, 0.5 * obj.ttl) * 255))
-        obj.color1 = obj.color2 = color
-    game._clean_particles(False)
-
-    for poly in game.sky_polys:
-        points = [(x * S, y * S) for x, y in poly]
-        pygame.draw.polygon(surf, (0, 0, 0), points)
-        gfxdraw.aapolygon(surf, points, (0, 0, 0))
-
-    for obj in game.particles + game.drawlist:
-        for f in obj.fixtures:
-            trans = f.body.transform
-            if isinstance(f.shape, ll.circleShape):
-                c = trans * f.shape.pos * S
-                r = f.shape.radius * S
-                pygame.draw.circle(surf, obj.color1, (c[0], c[1]), r)
-            else:
-                path = [tuple(trans * v * S) for v in f.shape.vertices]
-                pygame.draw.polygon(surf, obj.color1, path)
-                gfxdraw.aapolygon(surf, path, obj.color1)
-                pygame.draw.aalines(surf, obj.color2, True, path)
-
-    for x in (game.helipad_x1, game.helipad_x2):
-        x *= S
-        y1 = game.helipad_y * S
-        y2 = y1 + 50 * k
-        pygame.draw.line(surf, (255, 255, 255), (x, y1), (x, y2), max(1, round(k)))
-        flag = [(x, y2), (x, y2 - 10 * k), (x + 25 * k, y2 - 5 * k)]
-        pygame.draw.polygon(surf, (204, 204, 0), flag)
-        gfxdraw.aapolygon(surf, flag, (204, 204, 0))
-
-    surf = pygame.transform.flip(surf, False, True)
-    return np.transpose(np.array(pygame.surfarray.pixels3d(surf)), axes=(1, 0, 2)).copy()
-
-
-def current_wind(game):
-    """The sideways wind force the game applied on the last step (0 when landed or wind off)."""
-    if not game.enable_wind or game.legs[0].ground_contact or game.legs[1].ground_contact:
-        return 0.0
-    i = game.wind_idx - 1
-    return math.tanh(math.sin(0.02 * i) + math.sin(math.pi * 0.01 * i)) * game.wind_power
-
-
-def draw_wind_arrow(frame, wind, wind_power):
-    """Small white arrow at the top centre: direction and strength of the wind right now."""
-    img = Image.fromarray(frame)
-    d = ImageDraw.Draw(img)
-    w = img.width
-    cx, cy = w // 2, 120
-    font = ImageFont.truetype(FONT, 40)
-    d.text((cx, cy - 70), "WIND", fill=(255, 255, 255), font=font, anchor="mm")
-    length = 260 * wind / max(wind_power, 1e-6)
-    if abs(length) > 8:
-        tip = cx + length
-        d.line([(cx - length * 0.0, cy), (tip, cy)], fill=(255, 255, 255), width=8)
-        head = 26 if length > 0 else -26
-        d.polygon([(tip + head, cy), (tip - head * 0.2, cy - 20), (tip - head * 0.2, cy + 20)], fill=(255, 255, 255))
-    else:
-        d.ellipse([cx - 6, cy - 6, cx + 6, cy + 6], fill=(255, 255, 255))
-    return np.array(img)
-
-
-def label(frame, text, size=48, xy=(40, 36)):
-    img = Image.fromarray(frame)
-    ImageDraw.Draw(img).text(xy, text, fill=(255, 255, 255), font=ImageFont.truetype(FONT, size))
-    return np.array(img)
 
 
 # ---- Flying ---------------------------------------------------------------------
@@ -145,13 +62,13 @@ def fly(model, scenario, landing_seed, deterministic=True, wind_arrow=False):
     game = env.unwrapped
     torch.manual_seed(landing_seed)            # only matters for the untrained (random) pilot
     obs, _ = env.reset(seed=landing_seed)
-    frames, score, done = [render_hires(game)], 0.0, False
+    frames, score, done = [render_hires(game, K)], 0.0, False
     while not done:
         action, _ = model.predict(obs, deterministic=deterministic)
         obs, reward, terminated, truncated, info = env.step(action)
         score += reward
         done = terminated or truncated
-        frame = render_hires(game)
+        frame = render_hires(game, K)
         if wind_arrow:
             frame = draw_wind_arrow(frame, current_wind(game), game.wind_power)
         frames.append(frame)
