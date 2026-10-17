@@ -1,0 +1,822 @@
+{
+ "test_seeds": [
+  40000,
+  40299
+ ],
+ "rows": [
+  {
+   "brain": "Final AI (start)",
+   "seed": 42,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.79,
+   "landed_ci95": [
+    0.7403879054849664,
+    0.832278905116347
+   ],
+   "mean_score": 221.90686666666667,
+   "fuel_per_safe_landing": 97.2227848101266,
+   "seconds_per_safe_landing": 4.5484388185654,
+   "ran_out_of_fuel": 0.2866666666666667,
+   "outcomes": {
+    "landed": 237,
+    "crashed": 60,
+    "landed_off_pad": 2,
+    "flew_away": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 42,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.7666666666666667,
+   "landed_ci95": [
+    0.7156176619060443,
+    0.8109725087618301
+   ],
+   "mean_score": 216.7198,
+   "fuel_per_safe_landing": 98.11521739130434,
+   "seconds_per_safe_landing": 4.574521739130435,
+   "ran_out_of_fuel": 0.2833333333333333,
+   "outcomes": {
+    "landed": 230,
+    "crashed": 66,
+    "landed_off_pad": 3,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 42,
+   "level": 3,
+   "landings": 300,
+   "landed_rate": 0.69,
+   "landed_ci95": [
+    0.6355381623460284,
+    0.7396573342548319
+   ],
+   "mean_score": 184.8158,
+   "fuel_per_safe_landing": 98.3705314009662,
+   "seconds_per_safe_landing": 4.620772946859904,
+   "ran_out_of_fuel": 0.25,
+   "outcomes": {
+    "landed": 207,
+    "hit_obstacle": 41,
+    "crashed": 51,
+    "landed_off_pad": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 42,
+   "level": 4,
+   "landings": 300,
+   "landed_rate": 0.0,
+   "landed_ci95": [
+    0.0,
+    0.012643429997735661
+   ],
+   "mean_score": 105.17026666666668,
+   "fuel_per_safe_landing": null,
+   "seconds_per_safe_landing": null,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "hit_obstacle": 192,
+    "out_of_time": 3,
+    "stuck_on_first_pad": 95,
+    "crashed": 10
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 42,
+   "level": "4a",
+   "landings": 300,
+   "landed_rate": 0.013333333333333334,
+   "landed_ci95": [
+    0.005196877684679467,
+    0.03377606084644991
+   ],
+   "mean_score": 166.95426666666665,
+   "fuel_per_safe_landing": 148.575,
+   "seconds_per_safe_landing": 13.745,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "stuck_on_first_pad": 276,
+    "landed_off_pad": 1,
+    "crashed": 18,
+    "landed": 4,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Level 1 brain",
+   "seed": 42,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.8833333333333333,
+   "landed_ci95": [
+    0.8420660083343473,
+    0.9149073620007219
+   ],
+   "mean_score": 252.35040000000004,
+   "fuel_per_safe_landing": 88.61018867924528,
+   "seconds_per_safe_landing": 4.168830188679245,
+   "ran_out_of_fuel": 0.11666666666666667,
+   "outcomes": {
+    "landed": 265,
+    "crashed": 32,
+    "landed_off_pad": 3
+   }
+  },
+  {
+   "brain": "Level 2 brain",
+   "seed": 42,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.93,
+   "landed_ci95": [
+    0.8953632441625534,
+    0.953763406039394
+   ],
+   "mean_score": 263.2899,
+   "fuel_per_safe_landing": 88.07455197132617,
+   "seconds_per_safe_landing": 4.250250896057348,
+   "ran_out_of_fuel": 0.08,
+   "outcomes": {
+    "landed": 279,
+    "crashed": 20,
+    "flew_away": 1
+   }
+  },
+  {
+   "brain": "Level 2 brain",
+   "seed": 42,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.87,
+   "landed_ci95": [
+    0.8272186992368379,
+    0.9034251625648376
+   ],
+   "mean_score": 250.3374,
+   "fuel_per_safe_landing": 89.09310344827587,
+   "seconds_per_safe_landing": 4.246666666666667,
+   "ran_out_of_fuel": 0.12666666666666668,
+   "outcomes": {
+    "landed": 261,
+    "crashed": 36,
+    "landed_off_pad": 2,
+    "flew_away": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 142,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.9033333333333333,
+   "landed_ci95": [
+    0.8646174890590971,
+    0.9318501440760628
+   ],
+   "mean_score": 254.77566666666667,
+   "fuel_per_safe_landing": 92.72287822878229,
+   "seconds_per_safe_landing": 4.198819188191882,
+   "ran_out_of_fuel": 0.12333333333333334,
+   "outcomes": {
+    "landed": 271,
+    "crashed": 24,
+    "landed_off_pad": 5
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 142,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.8666666666666667,
+   "landed_ci95": [
+    0.8235273610289742,
+    0.9005341236393531
+   ],
+   "mean_score": 239.47849999999997,
+   "fuel_per_safe_landing": 93.725,
+   "seconds_per_safe_landing": 4.397307692307693,
+   "ran_out_of_fuel": 0.13333333333333333,
+   "outcomes": {
+    "landed": 260,
+    "crashed": 31,
+    "out_of_time": 2,
+    "landed_off_pad": 5,
+    "flew_away": 2
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 142,
+   "level": 3,
+   "landings": 300,
+   "landed_rate": 0.7266666666666667,
+   "landed_ci95": [
+    0.6736064082504327,
+    0.7739952368172605
+   ],
+   "mean_score": 191.9925333333333,
+   "fuel_per_safe_landing": 93.3334862385321,
+   "seconds_per_safe_landing": 4.262201834862385,
+   "ran_out_of_fuel": 0.11666666666666667,
+   "outcomes": {
+    "landed": 218,
+    "hit_obstacle": 53,
+    "crashed": 24,
+    "landed_off_pad": 3,
+    "flew_away": 1,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 142,
+   "level": 4,
+   "landings": 300,
+   "landed_rate": 0.03333333333333333,
+   "landed_ci95": [
+    0.018204749873650852,
+    0.0602624514575691
+   ],
+   "mean_score": 101.661,
+   "fuel_per_safe_landing": 123.80999999999999,
+   "seconds_per_safe_landing": 9.196,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "hit_obstacle": 189,
+    "stuck_on_first_pad": 95,
+    "crashed": 5,
+    "landed": 10,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 142,
+   "level": "4a",
+   "landings": 300,
+   "landed_rate": 0.21333333333333335,
+   "landed_ci95": [
+    0.1707518836854917,
+    0.26316368284654346
+   ],
+   "mean_score": 219.369,
+   "fuel_per_safe_landing": 148.23593749999998,
+   "seconds_per_safe_landing": 10.969375,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "stuck_on_first_pad": 214,
+    "landed": 64,
+    "crashed": 16,
+    "out_of_time": 3,
+    "flew_away": 1,
+    "landed_off_pad": 2
+   }
+  },
+  {
+   "brain": "Level 1 brain",
+   "seed": 142,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.9033333333333333,
+   "landed_ci95": [
+    0.8646174890590971,
+    0.9318501440760628
+   ],
+   "mean_score": 254.77566666666667,
+   "fuel_per_safe_landing": 92.72287822878229,
+   "seconds_per_safe_landing": 4.198819188191882,
+   "ran_out_of_fuel": 0.12333333333333334,
+   "outcomes": {
+    "landed": 271,
+    "crashed": 24,
+    "landed_off_pad": 5
+   }
+  },
+  {
+   "brain": "Level 2 brain",
+   "seed": 142,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.9533333333333334,
+   "landed_ci95": [
+    0.9232019646862172,
+    0.9720013254491692
+   ],
+   "mean_score": 269.2709333333333,
+   "fuel_per_safe_landing": 89.96573426573426,
+   "seconds_per_safe_landing": 4.284825174825175,
+   "ran_out_of_fuel": 0.09,
+   "outcomes": {
+    "landed": 286,
+    "crashed": 10,
+    "landed_off_pad": 3,
+    "flew_away": 1
+   }
+  },
+  {
+   "brain": "Level 2 brain",
+   "seed": 142,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.8766666666666667,
+   "landed_ci95": [
+    0.8346254157811881,
+    0.9091832002871845
+   ],
+   "mean_score": 248.97143333333332,
+   "fuel_per_safe_landing": 91.42433460076045,
+   "seconds_per_safe_landing": 4.413688212927757,
+   "ran_out_of_fuel": 0.14,
+   "outcomes": {
+    "landed": 263,
+    "crashed": 33,
+    "landed_off_pad": 2,
+    "flew_away": 1,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Level 3 brain",
+   "seed": 142,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.9666666666666667,
+   "landed_ci95": [
+    0.9397375485424309,
+    0.9817952501263492
+   ],
+   "mean_score": 271.73306666666673,
+   "fuel_per_safe_landing": 89.03517241379312,
+   "seconds_per_safe_landing": 4.345034482758621,
+   "ran_out_of_fuel": 0.03333333333333333,
+   "outcomes": {
+    "landed": 290,
+    "crashed": 7,
+    "out_of_time": 2,
+    "landed_off_pad": 1
+   }
+  },
+  {
+   "brain": "Level 3 brain",
+   "seed": 142,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.93,
+   "landed_ci95": [
+    0.8953632441625534,
+    0.953763406039394
+   ],
+   "mean_score": 266.8267,
+   "fuel_per_safe_landing": 91.12544802867383,
+   "seconds_per_safe_landing": 4.524874551971326,
+   "ran_out_of_fuel": 0.07666666666666666,
+   "outcomes": {
+    "landed": 279,
+    "crashed": 16,
+    "landed_off_pad": 4,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Level 3 brain",
+   "seed": 142,
+   "level": 3,
+   "landings": 300,
+   "landed_rate": 0.8266666666666667,
+   "landed_ci95": [
+    0.7797729263389721,
+    0.865300032729174
+   ],
+   "mean_score": 233.4537,
+   "fuel_per_safe_landing": 90.9891129032258,
+   "seconds_per_safe_landing": 4.337096774193548,
+   "ran_out_of_fuel": 0.13,
+   "outcomes": {
+    "landed": 248,
+    "crashed": 28,
+    "hit_obstacle": 21,
+    "out_of_time": 3
+   }
+  },
+  {
+   "brain": "Mission 4a brain",
+   "seed": 142,
+   "level": "4a",
+   "landings": 300,
+   "landed_rate": 0.7933333333333333,
+   "landed_ci95": [
+    0.7439440144288735,
+    0.8353051733057882
+   ],
+   "mean_score": 377.0633666666667,
+   "fuel_per_safe_landing": 170.73865546218485,
+   "seconds_per_safe_landing": 11.015966386554622,
+   "ran_out_of_fuel": 0.0033333333333333335,
+   "outcomes": {
+    "landed": 238,
+    "crashed": 12,
+    "stuck_on_first_pad": 19,
+    "landed_off_pad": 16,
+    "out_of_time": 13,
+    "flew_away": 2
+   }
+  },
+  {
+   "brain": "Mission 4a brain",
+   "seed": 142,
+   "level": 4,
+   "landings": 300,
+   "landed_rate": 0.2866666666666667,
+   "landed_ci95": [
+    0.238445210315098,
+    0.3402826531506026
+   ],
+   "mean_score": 170.01233333333332,
+   "fuel_per_safe_landing": 167.7639534883721,
+   "seconds_per_safe_landing": 10.516046511627907,
+   "ran_out_of_fuel": 0.0033333333333333335,
+   "outcomes": {
+    "hit_obstacle": 185,
+    "out_of_time": 8,
+    "landed": 86,
+    "crashed": 9,
+    "stuck_on_first_pad": 6,
+    "landed_off_pad": 5,
+    "flew_away": 1
+   }
+  },
+  {
+   "brain": "Mission 4a brain, overtime",
+   "seed": 142,
+   "level": "4a",
+   "landings": 300,
+   "landed_rate": 0.8733333333333333,
+   "landed_ci95": [
+    0.8309179640519985,
+    0.9063082748830255
+   ],
+   "mean_score": 412.83529999999996,
+   "fuel_per_safe_landing": 148.26717557251908,
+   "seconds_per_safe_landing": 10.17557251908397,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "landed": 262,
+    "crashed": 9,
+    "stuck_on_first_pad": 19,
+    "landed_off_pad": 5,
+    "out_of_time": 5
+   }
+  },
+  {
+   "brain": "Mission 4a brain, overtime",
+   "seed": 142,
+   "level": 4,
+   "landings": 300,
+   "landed_rate": 0.2966666666666667,
+   "landed_ci95": [
+    0.2478105484553788,
+    0.35066444641036704
+   ],
+   "mean_score": 195.00383333333338,
+   "fuel_per_safe_landing": 144.6134831460674,
+   "seconds_per_safe_landing": 10.052134831460675,
+   "ran_out_of_fuel": 0.0033333333333333335,
+   "outcomes": {
+    "hit_obstacle": 197,
+    "out_of_time": 4,
+    "landed": 89,
+    "crashed": 2,
+    "stuck_on_first_pad": 6,
+    "landed_off_pad": 2
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 242,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.74,
+   "landed_ci95": [
+    0.6875509670609357,
+    0.7863801865401512
+   ],
+   "mean_score": 210.3737,
+   "fuel_per_safe_landing": 99.46981981981983,
+   "seconds_per_safe_landing": 4.63954954954955,
+   "ran_out_of_fuel": 0.4,
+   "outcomes": {
+    "landed": 222,
+    "crashed": 76,
+    "landed_off_pad": 2
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 242,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.6866666666666666,
+   "landed_ci95": [
+    0.6320966534895827,
+    0.7365164659779293
+   ],
+   "mean_score": 197.94219999999999,
+   "fuel_per_safe_landing": 99.57281553398059,
+   "seconds_per_safe_landing": 4.662912621359223,
+   "ran_out_of_fuel": 0.38666666666666666,
+   "outcomes": {
+    "landed": 206,
+    "crashed": 91,
+    "landed_off_pad": 3
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 242,
+   "level": 3,
+   "landings": 300,
+   "landed_rate": 0.5833333333333334,
+   "landed_ci95": [
+    0.5268345519290606,
+    0.6377248764046503
+   ],
+   "mean_score": 161.3777,
+   "fuel_per_safe_landing": 99.11142857142858,
+   "seconds_per_safe_landing": 4.5752,
+   "ran_out_of_fuel": 0.33666666666666667,
+   "outcomes": {
+    "landed": 175,
+    "hit_obstacle": 44,
+    "crashed": 80,
+    "landed_off_pad": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 242,
+   "level": 4,
+   "landings": 300,
+   "landed_rate": 0.05333333333333334,
+   "landed_ci95": [
+    0.03309162538404202,
+    0.08486983874726851
+   ],
+   "mean_score": 117.61396666666667,
+   "fuel_per_safe_landing": 161.03125,
+   "seconds_per_safe_landing": 10.8275,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "hit_obstacle": 196,
+    "stuck_on_first_pad": 77,
+    "crashed": 10,
+    "landed": 16,
+    "landed_off_pad": 1
+   }
+  },
+  {
+   "brain": "Final AI (start)",
+   "seed": 242,
+   "level": "4a",
+   "landings": 300,
+   "landed_rate": 0.2966666666666667,
+   "landed_ci95": [
+    0.2478105484553788,
+    0.35066444641036704
+   ],
+   "mean_score": 251.5862666666667,
+   "fuel_per_safe_landing": 174.76516853932586,
+   "seconds_per_safe_landing": 13.428314606741573,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "stuck_on_first_pad": 180,
+    "landed": 89,
+    "out_of_time": 5,
+    "crashed": 16,
+    "landed_off_pad": 10
+   }
+  },
+  {
+   "brain": "Level 1 brain",
+   "seed": 242,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.91,
+   "landed_ci95": [
+    0.8722221947968226,
+    0.9374101926050341
+   ],
+   "mean_score": 258.83299999999997,
+   "fuel_per_safe_landing": 90.83772893772894,
+   "seconds_per_safe_landing": 4.271941391941392,
+   "ran_out_of_fuel": 0.15,
+   "outcomes": {
+    "landed": 273,
+    "crashed": 25,
+    "landed_off_pad": 2
+   }
+  },
+  {
+   "brain": "Level 2 brain",
+   "seed": 242,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.95,
+   "landed_ci95": [
+    0.9191522802928904,
+    0.9694686327091473
+   ],
+   "mean_score": 266.71216666666663,
+   "fuel_per_safe_landing": 90.74456140350877,
+   "seconds_per_safe_landing": 4.251929824561404,
+   "ran_out_of_fuel": 0.08666666666666667,
+   "outcomes": {
+    "landed": 285,
+    "crashed": 14,
+    "landed_off_pad": 1
+   }
+  },
+  {
+   "brain": "Level 2 brain",
+   "seed": 242,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.8633333333333333,
+   "landed_ci95": [
+    0.8198437047874653,
+    0.8976354027475134
+   ],
+   "mean_score": 248.32696666666666,
+   "fuel_per_safe_landing": 91.53706563706564,
+   "seconds_per_safe_landing": 4.277220077220077,
+   "ran_out_of_fuel": 0.17333333333333334,
+   "outcomes": {
+    "landed": 259,
+    "crashed": 36,
+    "landed_off_pad": 4,
+    "flew_away": 1
+   }
+  },
+  {
+   "brain": "Level 3 brain",
+   "seed": 242,
+   "level": 1,
+   "landings": 300,
+   "landed_rate": 0.96,
+   "landed_ci95": [
+    0.9313951365400219,
+    0.9769729078620613
+   ],
+   "mean_score": 273.3749666666667,
+   "fuel_per_safe_landing": 89.47083333333335,
+   "seconds_per_safe_landing": 4.244791666666667,
+   "ran_out_of_fuel": 0.05333333333333334,
+   "outcomes": {
+    "landed": 288,
+    "crashed": 8,
+    "landed_off_pad": 4
+   }
+  },
+  {
+   "brain": "Level 3 brain",
+   "seed": 242,
+   "level": 2,
+   "landings": 300,
+   "landed_rate": 0.9233333333333333,
+   "landed_ci95": [
+    0.8875891334382622,
+    0.9483727624969882
+   ],
+   "mean_score": 267.0047,
+   "fuel_per_safe_landing": 91.40361010830325,
+   "seconds_per_safe_landing": 4.3535740072202165,
+   "ran_out_of_fuel": 0.11333333333333333,
+   "outcomes": {
+    "landed": 277,
+    "crashed": 18,
+    "landed_off_pad": 3,
+    "flew_away": 1,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Level 3 brain",
+   "seed": 242,
+   "level": 3,
+   "landings": 300,
+   "landed_rate": 0.8566666666666667,
+   "landed_ci95": [
+    0.8124985303950185,
+    0.8918158228732633
+   ],
+   "mean_score": 245.29149999999998,
+   "fuel_per_safe_landing": 91.34591439688717,
+   "seconds_per_safe_landing": 4.450428015564202,
+   "ran_out_of_fuel": 0.14,
+   "outcomes": {
+    "landed": 257,
+    "crashed": 27,
+    "landed_off_pad": 1,
+    "hit_obstacle": 14,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Mission 4a brain",
+   "seed": 242,
+   "level": "4a",
+   "landings": 300,
+   "landed_rate": 0.76,
+   "landed_ci95": [
+    0.7085778152541881,
+    0.8048476011469895
+   ],
+   "mean_score": 390.2701,
+   "fuel_per_safe_landing": 148.31578947368422,
+   "seconds_per_safe_landing": 10.986578947368422,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "stuck_on_first_pad": 65,
+    "landed": 228,
+    "crashed": 4,
+    "out_of_time": 3
+   }
+  },
+  {
+   "brain": "Mission 4a brain",
+   "seed": 242,
+   "level": 4,
+   "landings": 300,
+   "landed_rate": 0.22,
+   "landed_ci95": [
+    0.17682672204095912,
+    0.2702535987577729
+   ],
+   "mean_score": 209.4592,
+   "fuel_per_safe_landing": 142.22121212121212,
+   "seconds_per_safe_landing": 10.293030303030303,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "hit_obstacle": 193,
+    "stuck_on_first_pad": 37,
+    "crashed": 2,
+    "landed": 66,
+    "landed_off_pad": 1,
+    "out_of_time": 1
+   }
+  },
+  {
+   "brain": "Mission 4a brain, overtime",
+   "seed": 242,
+   "level": "4a",
+   "landings": 300,
+   "landed_rate": 0.7966666666666666,
+   "landed_ci95": [
+    0.747504723102555,
+    0.8383268417654551
+   ],
+   "mean_score": 391.6008666666667,
+   "fuel_per_safe_landing": 158.62384937238497,
+   "seconds_per_safe_landing": 11.291966527196653,
+   "ran_out_of_fuel": 0.0033333333333333335,
+   "outcomes": {
+    "stuck_on_first_pad": 48,
+    "landed": 239,
+    "out_of_time": 5,
+    "crashed": 6,
+    "landed_off_pad": 2
+   }
+  },
+  {
+   "brain": "Mission 4a brain, overtime",
+   "seed": 242,
+   "level": 4,
+   "landings": 300,
+   "landed_rate": 0.27666666666666667,
+   "landed_ci95": [
+    0.22910976871830163,
+    0.3298709633473536
+   ],
+   "mean_score": 206.54996666666665,
+   "fuel_per_safe_landing": 155.40240963855425,
+   "seconds_per_safe_landing": 11.496144578313254,
+   "ran_out_of_fuel": 0.0,
+   "outcomes": {
+    "hit_obstacle": 199,
+    "landed": 83,
+    "crashed": 4,
+    "landed_off_pad": 4,
+    "stuck_on_first_pad": 8,
+    "out_of_time": 2
+   }
+  }
+ ]
+}

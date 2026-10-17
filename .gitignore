@@ -16,3 +16,9 @@ build/
 # brag-output/CREDITS.md; it's already mixed into brag.mp4, so the separate file isn't needed here)
 brag-output/composition/.hyperframes/
 brag-output/composition/assets/music/*.mp3
+
+# Hard Mode training logs (64 MB) stay off main; they live on the local hard-mode branch.
+# Main keeps only the one-time hidden test results and the summary table.
+runs_hard/*
+!runs_hard/final_test/
+!runs_hard/report.md

@@ -464,3 +464,366 @@ earlier (like `runs/final/results.json`) still name the old IDs:
 ## Still open (needs the user)
 
 1. Create the empty GitHub repository and send the link, then push.
+
+---
+
+# Hard Mode (branch `hard-mode`, started overnight 2026-10-17)
+
+> **On `main`:** the Hard Mode code, every trained brain (`models_hard/`), the chart, the videos and the one-time
+> hidden test results (`runs_hard/final_test/`, `runs_hard/report.md`) were brought over on 2026-10-17. The 64 MB of
+> training logs (validation checks, practice logs, TensorBoard) stay on the local `hard-mode` branch, so paths below
+> like `runs_hard/attempt…/` or `runs_hard/level…/` only exist there.
+
+**Goal:** keep training and make the AI better at harder challenges with **curriculum learning**: master one level
+before moving to the next, carrying the same brain forward. Nothing on `main`, the final results, the README or the
+live website changes; this branch is for the user to review.
+
+**Sharing the Mac:** the walking-robot project trains at the same time and comes first. Hard Mode uses at most 2 CPU
+cores (one training process per core, PyTorch on 1 thread, the 16 practice landers stepped one after another) and
+runs at the lowest priority (`nice -n 19`).
+
+## Morning summary (read this first)
+
+**How far it got.** Levels 1 (fuel tank) and 2 (moving pad) were mastered by all 3 seeds. Level 3 (rocks and
+walls) was mastered by 2 of 3 seeds, but only after teaching it in stages (short walls first). Level 4 (the
+two-pad mission) was not mastered by anyone. The best mission brains complete 76–79% of missions without
+obstacles; that is "a fair try fell short", so by the rules the curriculum stops there and the best brains are
+saved. Seed 42 stopped one stage earlier, at the 3.5 m walls (89.0%, one point short).
+
+**Hidden test, run once** (300 landings per cell that no brain had ever flown, seeds 40000–40299, random weather and
+engine power on every landing; `runs_hard/final_test/results.json`, `runs_hard/report.md`). Landed safely:
+
+| Level | The Final AI as it was (seeds 42 / 142 / 242) | After the curriculum (seeds 42 / 142 / 242) |
+|---|---|---|
+| 1 · Fuel tank (110) | 79.0% / 90.3% / 74.0% (avg **81.1%**) | 88.3% / 90.3%¹ / 91.0% (avg **89.9%**) |
+| 2 · Pad in a random spot | 76.7% / 86.7% / 68.7% (avg **77.3%**) | 87.0% / 87.7% / 86.3% (avg **87.0%**) |
+| 3 · Rocks and walls | 69.0% / 72.7% / 58.3% (avg **66.7%**) | – / 82.7% / 85.7% (avg of 2: **84.2%**)² |
+| 4a · Mission, no obstacles | 1.3% / 21.3% / 29.7% | – / 79.3% / 76.0% (not mastered)³ |
+| 4 · Mission with obstacles | 0.0% / 3.3% / 5.3% | – / 28.7% / 22.0% (never practised missions with obstacles) |
+
+¹ Seed 142's Final AI already passed Level 1 on validation, so its Level 1 brain is the Final AI itself.
+² Seed 42 stopped at the 3.5 m-wall stage. ³ In overtime (outside the rules, see below): 87.3% / 79.7%.
+
+**The biggest wins.**
+- Running out of fuel: the Final AI ran its 110 tank dry on 12–40% of Level 1 landings; the Level 1 brains on
+  12–15%, the Level 3 brains on 3–5%.
+- **No forgetting; the opposite.** Each new level made the brain *better* at the old ones. On Level 1: Level 1
+  brains 89.9% on average, Level 2 brains 94.4%, Level 3 brains 96.3%. On Level 2: Level 2 brains 87.0%, Level 3
+  brains 92.7%. Learning to fly around walls and to far pads made it a better pilot overall.
+- Level 3: from 66.7% to 84.2% (the two seeds that got there). On the mission without obstacles: from ~17% to 76–79%.
+
+**Honest caveats.**
+- "Mastered" meant 90% on 200 validation landings. On the hidden test the mastered brains came out 1–8 points lower
+  (86–91% on Levels 1–2, 83–86% on Level 3): picking the first checkpoint that crosses 90% on a noisy 200-landing
+  check favours lucky checkpoints. A bigger validation set (or requiring two checks in a row) would fix that.
+- Several fixes were made during the night, all on validation landings, with the hidden test untouched until the
+  end: a lower learning rate for fine-tuning; obstacle sensors rebuilt as cones (the laser beams had a blind spot);
+  practice with more walls; a mission reward loophole (sitting still) closed; take-off made learnable. Each one is
+  explained in the log below, and every abandoned attempt is kept in `runs_hard/attempt*` and `models_hard/attempt*`.
+- The mission brains were never trained with obstacles (they stopped at stage 4a), which is why they hit an
+  obstacle on most Level 4 missions.
+
+**What's here (branch `hard-mode`, folder `~/rocket-lander-hard-mode`).** Code: `hard_mode/`. Brains:
+`models_hard/` (best + last per level and seed). Logs and every validation check: `runs_hard/`. Chart:
+`charts/hard_mode_curriculum.png`. Videos: `videos/hard_mode/` (Levels 1–2 seed 42, Level 3 seed 142, and the
+mission's best attempt, seed 142). Nothing on `main`, the README or the live site changed.
+
+**If you want to go further,** the mission is the open problem: the overtime runs show it levels off around 80–87%
+without obstacles. Next ideas: a bigger network for the mission, requiring 2 validation passes in a row, then
+mission stages with obstacles (low walls first), the same way Level 3 was cracked.
+
+## The levels (each keeps everything from the levels before it)
+
+Every level keeps Step 4's random weather and engine power (`config.TRAIN_CONDITIONS`): gravity 8–11, wind 0–15,
+turbulence 0–1.5, engine 85–115%, re-rolled every landing.
+
+| Level | What's new | Time limit |
+|---|---|---|
+| 1 | **Fuel tank of 110 units.** Main engine 1 unit per step, side thruster 0.1. At empty, the engines stop. | 20 s |
+| 2 | **The pad moves**: one of 7 spots across the ground, a new one every landing | 20 s |
+| 3 | **Obstacles**: 1–2 rocks beside the pad, and a tall wall between the start and a far-away pad. Touching one = crash | 20 s |
+| 4 | **Mission**: land on pad A and come to rest, take off, fly to pad B (at least 6 m away), land again. Tank 275 | 40 s |
+
+**Why a 110 tank** (`hard_mode/calibrate.py`, 500 calibration landings, seeds 8000–8499): with an endless tank the
+Final AI burns 101 fuel per safe landing on average (median 100, 90th percentile 120). With 110 it would have run
+dry on 23% of its landings, so it has to learn to save fuel. But it stays fair: even in the hardest training
+weather (gravity 11, engine 85%), a perfect "fall, then full brake" landing needs about 98.
+
+## How the AI senses the new things (plain English)
+
+The Final AI saw 8 numbers, 50 times a second: where it is, how fast it's moving, its tilt and spin, and whether
+each leg touches the ground. In Hard Mode it sees **19** (and, like the Final AI, remembers the last 4 moments):
+
+- **Fuel gauge (1 number).** How much of the tank is used up, from 0 (full) to 1 (empty), like the needle on a
+  car's fuel gauge read backwards. It has to learn on its own that a needle near 1 means "stop wasting thrust".
+- **Pad position (2 numbers changed, 1 added).** Its position is now measured *from the pad*, like a beacon on the
+  pad saying "you are 3 m to my left and 8 m up". It still flies toward "zero", which is exactly what the Final AI
+  learned. Because the pad can now be near the edge of the screen, it is also told where the pad is on the screen
+  (0 = middle, −1 or +1 = an edge), so it can tell how close it is to flying off the side.
+- **Obstacle sensors (8 numbers).** Eight proximity sensors, like the parking sensors on a car but reaching 6 m.
+  Each one watches a slice of directions, centred on left, down-left (two angles), straight down, down-right (two
+  angles), right and up, and reports how close the nearest rock or wall is anywhere in its slice (0 = nothing
+  within 6 m, 1 = touching). The slices always point the same way relative to the ground, whichever way the
+  lander leans. They ignore the ground itself, which the AI already handles. (The first version used 8 thin laser
+  beams instead; see the log below for why that failed.)
+- **Mission phase (1 number).** 0 while heading for the first pad, 1 after landing on it. When it flips, the
+  "beacon" numbers switch to the second pad.
+
+**Every new number reads 0 when there's no news** (full tank, pad in the middle, nothing nearby, first pad).
+This came from the first training try: the first design had readings stuck at 1 when there was nothing to report
+(e.g. "nothing within 6 m" = 1 on all 8 sensors × 4 moments). To the network, 32 inputs stuck at 1 act like one
+extra "bias" that gets pushed 32 times harder than anything else, and after 500,000 practice steps the carried-over
+brain had dropped from 83.5% to 59% on validation. Stopped, re-encoded, restarted from the Final AI.
+
+**Carrying the brain over** (`hard_mode/brain.py`): the Final AI's first layer gets new connections for the 11 new
+numbers, all starting at zero. So on its first Hard Mode flight it ignores them and flies exactly like the Final AI.
+Checked: on 20 landings with an endless tank, Hard Mode Level 1 matches the original game exactly (5,114 steps,
+zero difference) and the widened brain presses the same button as the Final AI at every step.
+
+## Rules (decided before any Hard Mode training)
+
+- **Move on at 90%:** a level is mastered when the brain lands safely on **90%+ of 200 validation landings**
+  (seeds 7000–7199) in that level, with random weather. Checked every 500,000 practice steps (and once before any
+  practice). The best brain so far is kept.
+- **Keep training from the previous brain** (never start over). Level 1 starts from the Final AI.
+- **Fair try:** up to 12 million practice steps per level (6× the 2 million budget of the main project). If a level
+  isn't mastered by then, the curriculum stops there, and the reason and the best brain are recorded.
+- **Hidden test:** 300 landings per level (seeds 40000–40299), never flown during training or validation, run
+  **once** at the end with `hard_mode/final_test.py` (committed now, before training; it refuses to run twice).
+  It also checks every brain on the earlier levels, to see whether it forgot them.
+- **Seeds:** seed 42 first; 142 and 242 if there's time, each its own full curriculum from its own Final AI.
+- **Same settings as the Final AI:** the tuned PPO settings, the v2 reward rules (`hard_mode/worlds.py`, measured
+  to the target pad), the same "landed safely" rule (at rest on the pad, judged by the physics engine).
+- A short video for every mastered level.
+
+## Hard Mode log (overnight)
+
+**Level 1 (fuel tank 110).**
+- Seed 42: started at 83.5% on validation (the Final AI as is), **mastered at 91.5% after 1.5 million steps**
+  (6 minutes). It learned to save fuel: 88 per safe landing instead of 98, and running the tank dry fell from
+  25% to 8% of landings.
+- Seed 142: its Final AI already landed 93.0% of the validation landings with the 110 tank, so it counted as
+  mastered before any practice and went straight to Level 2.
+
+**Level 2, first attempt (moving pad), learning rate 4.75e-4 as pre-registered.** Both seeds stalled and
+swung up and down: seed 42 went 88% → 75.5% → 82.5% → 85% → 86.5% → 80% over 2.5 million steps; seed 142 stayed
+between 81.5% and 87.5% for 3.5 million. Two checks before changing anything:
+- *Is the level fair?* On 350 calibration landings (seeds 8000–8349), with an endless tank, the Level 1 brain
+  stays under 100 fuel on 90% of its landings even for the farthest pads (6 m from the middle). So 110 is enough;
+  the failures are crashes while flying sideways in wind, not impossible fuel budgets.
+- *Why the swinging?* TensorBoard: on every update 10–16% of the samples hit PPO's limit on how far the policy
+  may move (clip fraction 0.10–0.16 with clip range 0.1). The brain was being shoved around by every batch.
+
+**Decision:** from Level 2 on, fine-tune with a quarter of the learning rate (1.2e-4); all other settings unchanged.
+The tuned rate was chosen for learning from scratch, where big steps help; polishing a good brain needs small
+ones. Level 2 restarted for both seeds from their Level 1 brains (the curriculum rule: always continue from the
+previous level's brain). The first attempt is kept in `runs_hard/attempt1_level2_lr4.75e-4/` and
+`models_hard/attempt1_level2_lr4.75e-4/`. This decision used validation landings only; the hidden test is untouched.
+
+**Level 2, second attempt (learning rate 1.2e-4).** Both seeds mastered it:
+- Seed 142: 86% at the start → **91.0% after 2 million steps** (6 minutes).
+- Seed 42: 88% at the start, 83–89% for a while → **91.0% after 5 million steps** (15 minutes).
+Validation still wobbles by a few points from check to check (200 landings: ±2 points is noise), so a pass at
+91% may be a little lucky; the hidden test will tell.
+
+**Level 3 (obstacles), plain.** Both seeds started at ~78% (the Level 2 brains), and seed 142 stayed flat at
+75–78% for 3.5 million steps. Where it fails (seed 142's brain, 300 calibration landings): 36 of 41 obstacle hits
+are **walls, in mid-air**; only 5 are rocks near the ground. (Rocks aren't unfair: on safe landings the legs stay
+within 2.4 m of the pad centre, and every rock starts at least 2.6 m out.) A wall stands about 3 m before a
+far-away pad, 2.5–5 m tall, so the AI must learn a new move: stay high, clear the wall, then drop almost straight
+down. The Final AI's habit is a fast diagonal descent, which runs straight into it.
+
+**Decision: an experiment on the two cores.**
+- Seed 42 keeps learning plain Level 3 (as planned).
+- Seed 142 switches to a **staged curriculum inside Level 3**: the same rocks, but the walls grow in steps, with
+  the same 90% rule at every step: 3a walls 0.5–2 m → 3b walls 1.5–3.5 m → the real Level 3 (2.5–5 m) → Level 4.
+  Its plain attempt is kept in `runs_hard/attempt_plain_level3_seed142/`.
+That's curriculum learning applied once more, inside the hardest level: teach "stay above the wall" with walls
+low enough that the current habit almost works, then raise them.
+
+**Level 3 kept failing for a reason the AI couldn't fix: a sensor blind spot.** Both experiments stayed flat
+(plain seed 42: 77–80%; staged seed 142 on 2 m walls: 84–89%), and in 14,391 practice landings of the plain run
+the obstacle-hit rate stayed at 15% from start to finish: no learning at all. Tracing the sensor readings in two
+wall crashes showed why. The sensors were 8 thin laser beams, 30° apart, and a wall is only 0.5–0.9 m wide. As the
+lander comes down toward a wall from above, the wall's top sits in the gap between two beams: in one crash, none
+of the 8 beams touched the wall until the lander was directly over it. The AI was being punished for hitting
+something it could not see.
+
+**Fix: cone-shaped sensors** (`env.py`, `_rays`). Same 8 numbers, same meaning (closeness 0–1, same 8
+directions), but each sensor now covers a whole slice of directions and reports the nearest point of any obstacle
+in it (obstacle outlines are sampled every 10 cm). In the same two crashes, the wall now shows up from about 4 m
+away and its reading rises steadily as the lander closes in. Levels 1–2 never had obstacles, so their sensor
+readings were always 0 and their brains are unaffected. All three Level 3 attempts with the laser beams are kept
+in `runs_hard/attempt_laser_sensors_level3/` and `models_hard/attempt_laser_sensors_level3/`. Both experiments
+restart from their Level 2 brains: seed 42 on plain Level 3, seed 142 on the staged walls (3a → 3b → 3).
+
+**Plain vs staged Level 3, with the cone sensors.**
+- Seed 42, plain (walls 2.5–5 m from the start): 77.5% → 77–81% over 4.5 million steps, and in 22,545 practice
+  landings the obstacle-hit rate only went 15.7% → 14.7%. Stopped there (kept in
+  `runs_hard/attempt_plain_level3_cone_sensors/`): it was barely learning, while the staged run beside it was.
+- Seed 142, staged: stage 3a (walls 0.5–2 m) 87.5% → **mastered at 90.5% after 3.5 million steps**, with
+  practice obstacle hits falling 10.4% → 5.8%. On to 3b (walls 1.5–3.5 m), where hits started falling too.
+- So seed 42 now takes the staged route too, from its Level 2 brain. Lesson: with the walls at full height, a
+  brain that flies diagonally almost never stumbles on the "stay high" move by chance, so there's little to learn
+  from. With low walls, staying a bit higher works sometimes, gets rewarded, and the habit grows with the walls.
+
+**Stage 3b (walls 1.5–3.5 m): walls are rare, so practise with more of them.** Seed 142 sat at 83.5–88% for
+3 million steps; seed 42 started at 86.5%. As wall hits fell (13 → 9 of 200), fuel crashes rose (ran dry 10% →
+20%): it was clearing walls by hovering high. Two measurements on 300 calibration landings (the 3a brain, endless
+tank):
+- **Walls are rare:** only 16% of landings have one. A wall only stands in front of the 2 far pad spots (of 7),
+  and only when it fits clear of the pad. Without a wall the brain lands 95.6%; with a full-height wall, 25%.
+  Reaching 90% overall needs roughly 60% on the wall landings.
+- **The tank is fair:** every successful wall landing used at most 101 fuel. So running dry means crossing the
+  wall inefficiently, which is learnable.
+**Decision:** in *practice* only, half the landings use a far pad, so walls show up in 36% of practice landings
+instead of 14% (`levels.py`, `practice_far_pads`). Validation and the hidden test keep the real, even spread of
+pad spots (checked: identical layouts). Both seeds restart stage 3b from their 3a brains; the first 3b attempts are
+kept in `runs_hard/attempt_stage3b_no_wall_practice_boost/`.
+
+**Stage 3b with more practice walls.**
+- Seed 142: 86.5% → **mastered at 90.0% after 5.5 million steps** (17 minutes). Practice landings showed the
+  learning: obstacle hits fell from 23.7% to 18.5% while practice walls were 3× as common as in the real level.
+- Seed 42: 86.5% at the start, 85–89% throughout, **best 89.0%: not mastered within the 12 million-step fair
+  try.** By the rule, seed 42's curriculum stops here; its best brain is `models_hard/level3b_seed42_best.zip`.
+  Why: it was close (1 point; one validation check moves ±2–3 points by luck), but 24 checks in a row stayed
+  under 90%.
+
+**The real Level 3 (walls 2.5–5 m), seed 142.** Thanks to the stages it started at **87.5%** (the Level 2 brain
+started this level at 77.5%), then hovered around 82–87% for 6 million steps. Where the 3b brain fails, on 500
+calibration landings:
+
+| Landings | Share | Landed | Main failure |
+|---|---|---|---|
+| Pad near the middle (no wall) | 74% | 89.4% | crashes (7%), often after running dry |
+| Far pad, no wall | 11% | 87.0% | crashes |
+| Far pad with a wall | 16% | 50.0% | hitting the wall (36%) |
+
+With a wall, the weather decides a lot: with a weak engine and heavy gravity (thrust/weight 1.2–1.6) it lands
+15% of them; with a strong engine (2.0+) 81%. 90% overall needs roughly 95% on the near pads and 70% with walls.
+
+**Second method, side by side (the free core).** Seed 142, same starting brain (3b), Level 3, with bigger
+practice batches (2,048 steps × 16 landers per round instead of 512, batches of 512 instead of 128) and a
+learning rate that starts at 2.4e-4 and shrinks to 0 over the 12 million steps. The idea: smaller, steadier steps
+as it gets close, to stop the ±3-point wobble and squeeze out the last points. Tagged `bigbatch` (its own
+models, logs and TensorBoard runs). Whichever run masters Level 3 first goes on to Level 4.
+
+**Level 3 mastered (seed 142): 90.5% after 8.5 million steps** (25 minutes), with the original settings. The
+big-batch second method was stopped after 1.5 million steps (84–87.5%) since it was no longer needed; it's kept in
+`runs_hard/attempt_level3_bigbatch_seed142_stopped/`.
+
+**Third seed.** With a core free, seed 242 runs the same recipe from the start: Level 1 at the tuned learning rate
+(**mastered: 92.0% after 1 million steps**), then 2 → 3a → 3b → 3 → 4 at the fine-tuning rate, with the cone
+sensors and the extra practice walls.
+
+**Level 4 (mission), first try: the AI found a loophole.** It started at 0% (128 of 200 missions hit an obstacle,
+70 never took off from pad A). Within 1.5 million steps it had "fixed" the obstacle hits by never taking off:
+176 of 200 missions ended sitting on pad A. Landing on A pays +100, and sitting out the 5-second takeoff window
+cost nothing, while taking off risked a −100 crash. So doing nothing was the safest choice: my reward design's
+fault, not the AI's. Kept in `runs_hard/attempt1_level4_free_exit/`.
+**Fixes:** (1) sitting out the takeoff window now scores −100, like a crash: abandoning the mission is a failure,
+not a free exit. (2) Learn the mission in stages, like Level 3: **4a** is the mission without rocks and walls
+("land, take off, fly 6+ m, land again"), then the real Level 4. Seed 142 restarts from its Level 3 brain.
+
+**Mission stage 4a (no obstacles): teaching it to take off.** Even with the −100 for giving up, 186–197 of 200
+validation missions still ended sitting on pad A. Looking inside the brain explained it: on pad A, with the target
+switched to B, it fires the side thruster toward B 99% of the time and the main engine about 0.1%. Side thrusters
+can't lift it, and at 0.1% it essentially never tries the main engine long enough to discover lift-off. Two things
+in the game's own score also pushed against trying:
+- **Leg points:** the game gives +10 per leg on the ground, so lifting off cost −20 right away.
+- **Speed points:** the game's score charges for speed (that's what makes landings gentle), so each puff of the
+  main engine on the pad cost about −2 points at once: more than the small "try the main engine" nudge (+0.5).
+  In 3,070 practice missions, 96% stayed stuck (`runs_hard/attempt3_level4a_speed_penalty_on_pad/`).
+**Fixes (mission only):** after pad A the leg points no longer count; while waiting on pad A the distance/speed
+score is paused and restarts from zero once airborne; and a small nudge for trying the main engine there (+0.5 per
+step, at most 10 points). Checked by hand: sitting still now nets 0 after pad A (+100 for landing, −100 for never
+leaving), while 30 steps of main engine nets about +123. Tries without these fixes are kept in
+`runs_hard/attempt2_level4a_no_takeoff_help/` and `attempt3_level4a_speed_penalty_on_pad/`.
+
+**Stage 4a, more exploration.** With the scoring fixed, practice missions were still 95% stuck after 1.5 million
+steps: the brain was so sure of itself on pad A that it almost never sampled the main engine, and one puff alone
+doesn't lift it, so there was almost nothing to learn from (`runs_hard/attempt4_level4a_low_exploration/`).
+PPO has a knob for this, the *entropy bonus* (points for keeping its options open). The Final AI's tuned value is
+tiny (0.0004); for the mission it's raised to 0.01, the starting value from Step 2, and the main-engine nudge to
++1 per step (still at most 20 steps). Result: the AI discovered take-off. Validation missions completed went from
+0–2.5% to **20.5% after 500,000 steps**. In practice, once airborne it usually finished the mission (about 20%
+completed vs 2–4% crashed): flying to pad B and landing again already worked. **The bottleneck was only the
+decision to lift off.** But it hovered at 11–20% for the rest of the 12 million steps: not mastered
+(`runs_hard/attempt5_level4a_exploration_only/`, best brain kept there).
+
+**Final attempt at the mission: practise the take-off more often.** Same trick as the extra practice walls in
+Level 3. In practice only, half the missions now start parked on pad A (just above it, no push, target already
+switched to B, 80–130 fuel already used), so the "take off now" moment comes up about 10× as often. Validation and
+the hidden test are unchanged. It continues from the best 4a brain (20.5%), with the exploration bonus 0.01, and
+if it masters 4a, the real Level 4 follows with the same settings. This is the last attempt at Level 4: if it falls
+short, the curriculum stops there.
+
+**Seed 242 (third seed):** Level 1 mastered (92.0%, 1 million steps), Level 2 (91.0%, 2.5 million), 3a (91.0%,
+3 million), 3b (90.0%, 4 million), and **Level 3 mastered: 90.5% after 10.5 million steps**. So two of three
+seeds mastered the real Level 3, both through the staged walls. Seed 242 then goes straight to the same mission
+recipe as seed 142 (stage 4a with the exploration bonus and parked practice starts, then Level 4).
+
+**Videos so far** (`videos/hard_mode/`): Level 1 and 2 (seed 42), Level 3 (seed 142, since seed 42 didn't master
+it): validation landing 7016, over a wall and onto the pad with 7 of 110 fuel left. (Housekeeping: the Level 3
+render was meant to pause one training run to stay within 2 cores, but the pause command missed, so for about a
+minute 3 processes ran. Fixed for later renders.)
+
+**Final mission attempt (parked practice starts), seed 142: best 75.5%, not mastered.** Validation missions
+completed, every 500,000 steps: 20.5% → 36% → 20.5% → 27.5% → 10% → … down to 0–10% between 4 and 8 million
+steps (it went through a bad patch while re-learning) … → 16% → 35.5% → 50% → 41.5% → 39.5% → 41% → 48.5% →
+**75.5% at 12 million**, the very last check. By the rule, **seed 142's curriculum stops at the mission's first
+stage (4a)**, with its best brain saved (`models_hard/level4a_seed142_best.zip`). Why: discovering take-off and
+then making it reliable took most of the budget; the last 3.5 million steps show it was getting there.
+
+**Overtime (outside the rules, for information).** Because the curve was still climbing steeply, seed 142 keeps
+training from the 75.5% brain for up to another 12 million steps (tagged `overtime`, kept apart in
+`runs_hard/level4a_overtime/` and `models_hard/level4a_overtime_*`). If it masters 4a in overtime, the real Level 4
+follows, also in overtime. None of this changes the official result above; it just shows what more practice buys.
+
+**Hidden test plan, extended before it runs:** besides the pre-registered rows, it also tests each seed's best
+mission-stage (4a) brain on 4a and on the real Level 4, and any overtime brain, labelled as overtime
+(`hard_mode/final_test.py`).
+
+**Seed 242, mission stage 4a (same recipe): best 68.5%, not mastered.** Validation missions completed: 14.5% →
+2.5% → … 15% → 36% → 43% → 61% → **68.5% at 4 million steps** → then it slid back down: 38%, 15–33% … 3.5% at 12
+million. **So seed 242's curriculum also stops at mission stage 4a**, best brain saved
+(`models_hard/level4a_seed242_best.zip`).
+
+**What both seeds show:** the exploration bonus that let the AI discover take-off then kept shaking the skill
+loose. Both seeds climbed to 68–76% and fell back (seed 142's first overtime try, still with the high bonus, went
+75.5% → 73% → 62.5% → 37% → 45% in 2 million steps; kept in `runs_hard/overtime_try1_high_exploration/`).
+
+**Overtime, second try (outside the rules, for information):** both seeds restart from their best mission brains
+(75.5% and 68.5%) with the exploration bonus back at the Final AI's normal 0.0004 (take-off is already
+discovered) and a learning rate that shrinks from 1.2e-4 to 0 over 12 million steps, so the skill can settle
+instead of drifting. If either masters 4a in overtime, the real Level 4 follows, also in overtime.
+
+**Is the mission brain only lucky in practice?** In practice the AI picks buttons partly by chance; in validation it
+always presses its top button. If the take-off depended on lucky picks, validation would underrate it. Checked on
+100 calibration missions: seed 142's best mission brain completes 71% (top button) vs 72% (picked by chance), seed
+242's 75% vs 80%. So no: the best brains genuinely complete about 70–75% of missions, and what keeps going wrong
+is the training itself, which climbs to that level and then gets knocked back down.
+
+**Overtime round 1 (normal exploration, shrinking learning rate):**
+- Seed 142 (from 75.5%): 67% → 38% → … wobbling 40–67% for 6 million steps … then, as the learning rate shrank,
+  75% → 80% → 58–72% → 78% → 83% → **84.0%** → 83%. Best 84.0%, and the steadiest mission run so far.
+- Seed 242 (from 68.5%): 39.5–78.5%, mostly 63–74%. Best 78.5%.
+Neither reached 90%. **Overtime round 2** continues each from its best overtime brain (84.0% and 78.5%) with the
+same settling recipe for another 12 million steps (tag `overtime2`), then the hidden test runs once.
+
+**Overtime round 2:** no gain. Seed 142 wobbled 53–84% (best stayed at its starting 84.0%), seed 242 47–78.5%
+(best stayed at 78.5%). Its "best" brains are the round-1 brains, so they're filed in
+`models_hard/overtime_round2_no_gain/` and not tested twice. **Training ends here** (05:46).
+
+## Pause for moving the Mac (2026-10-17, 12:59)
+
+The user asked to safely pause everything for ~45 minutes (power and internet off, lid closed).
+- **Nothing from this project was running**, so nothing needed a checkpoint or a freeze. Hard Mode training ended
+  at 05:46 (last runs: overtime round 2), the one-time hidden test ran at 05:47–05:50, and every result, brain,
+  log, chart and video is committed on this branch (`hard-mode`). `main` is committed too (b655a02).
+- Still open: the local LANDFALL web server (`python app.py` in `~/rocket-lander`, port 7860) was left as it was.
+  It's idle and just sleeps with the Mac; if it's gone after the move, restart it with `.venv/bin/python app.py`.
+- Not touched: the walking-robot project's training (`~/robot-walker`, `train.py --run a`), which belongs to a
+  different session. Closing the lid puts the Mac to sleep, which pauses it, and it continues on wake.
+- **To resume:** there's nothing to unfreeze for this project. Next steps are waiting on the user: the GitHub repo
+  link (to push `main`) and which parts of Hard Mode, if any, to bring onto `main`.

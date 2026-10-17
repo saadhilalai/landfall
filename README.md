@@ -44,6 +44,7 @@ Built in about a day and a half (October 15–17, 2026) on a MacBook Air: Apple 
 - A **16,800-landing** final test, pre-registered and run exactly once (in 1.7 minutes)
 - A **1,500-landing** cross-check between the Python simulator and its JavaScript port
 - About **4,800 lines** of Python, JavaScript, HTML and CSS
+- Then an overnight **[Hard Mode](#hard-mode-harder-levels-with-curriculum-learning)** experiment: **180 million** more practice steps (625,850 practice landings) on just 2 CPU cores at the lowest priority, sharing the Mac with another training job
 
 **Techniques**
 - **Deep reinforcement learning:** PPO, an actor-critic method with generalized advantage estimation and clipped policy updates (Stable-Baselines3, PyTorch)
@@ -211,6 +212,52 @@ Differences were checked with **paired tests** on the same landings (`runs/final
 
 ---
 
+## Hard Mode: harder levels with curriculum learning
+
+After the main project, an overnight experiment: keep training the Final AI on four harder levels using **curriculum learning**. It had to master each level (90% safe landings on 200 validation landings) before moving on, and always continued from the previous level's brain instead of starting over. Each level keeps everything from the ones before, and Step 4's random weather and engine power stay on throughout. The headline results above are unchanged; this is an extension.
+
+| Level | New challenge | What the AI senses for it |
+|---|---|---|
+| 1 | **Fuel tank of 110 units**: at empty, the engines stop. (The Final AI burns about 100 per landing.) | A fuel gauge |
+| 2 | **The pad moves** to one of 7 spots each landing | Its position measured from the pad, like a beacon, plus where the pad is on screen |
+| 3 | **Rocks and walls**: a wall stands in front of far pads, and touching anything is a crash | 8 cone-shaped proximity sensors (like a car's parking sensors, 6 m range) |
+| 4 | **Mission**: land on pad A, take off, fly to pad B, land again | Which pad it's heading for |
+
+The brain grew from 8 to 19 inputs per moment. The new inputs started with zero weights, so on its first Hard Mode flight it flew exactly like the Final AI (checked: identical buttons at every step).
+
+**Hidden test, run once** on 300 landings per cell that no brain had seen (landed safely):
+
+| Level | Final AI, before | After the curriculum | Seeds that mastered it |
+|---|---|---|---|
+| 1 · Fuel tank | 81.1% | **89.9%** | 3 of 3 |
+| 2 · Moving pad | 77.3% | **87.0%** | 3 of 3 |
+| 3 · Rocks and walls | 66.7% | **84.2%** (2 seeds) | 2 of 3 |
+| 4 · Mission, without obstacles | 17.4% | **77.7%** (2 seeds) | **0 of 3: not mastered** |
+| 4 · Mission, with obstacles | 2.9% | 25.3% (2 seeds) | never reached |
+
+Averages over the seeds shown; per-seed numbers with 95% confidence intervals are in [`runs_hard/report.md`](runs_hard/report.md).
+
+![Hard Mode curriculum: validation landing rate for every level and seed](charts/hard_mode_curriculum.png)
+
+**What the curriculum showed**
+- **Learning new levels made it better at the old ones, not worse.** On Level 1, the Level 1 brains land 89.9% on average, the Level 2 brains 94.4%, and the Level 3 brains 96.3%. On Level 2: 87.0%, then 92.7%. Flying around walls and to far pads made it a better pilot overall.
+- **The hardest level needed a curriculum of its own.** With full-height walls from the start, obstacle hits barely moved (15.7% → 14.7% over 22,545 practice landings). Starting with 2 m walls, then 3.5 m, then the real 2.5–5 m walls cracked it. In practice it also met walls about 2.5 times as often as in the real level (36% of practice landings vs 14%).
+- **Watching the AI's behaviour exposed my own design bugs**:
+  - The first obstacle sensors were thin laser beams, and a thin wall hid in the gap between two of them.
+  - The mission paid the AI more to sit on pad A than to risk taking off, and it found that loophole fast.
+  - The game's built-in speed points made every attempt to lift off look bad.
+
+  Each was found from validation data, fixed, and logged in [`PROGRESS.md`](PROGRESS.md), with the hidden test untouched until the end.
+- **Running out of fuel** fell from 12–40% of Level 1 landings (the Final AI) to 3–5% (the Level 3 brains).
+
+**Honest caveats**
+- **The mission level was not mastered.** The best mission brains complete 76–79% of missions without obstacles. The AI could fly to pad B and land once airborne, but it took most of the night just to discover taking off. Those brains never practised missions with obstacles, so with obstacles they complete only 22–29%. Extra "overtime" training, outside the rules and reported separately, reached 87.3% and 79.7% without obstacles.
+- "Mastered" meant 90% on 200 validation landings, and on the hidden test those brains came out 1–8 points lower: 86–91% on Levels 1–2, 83–86% on Level 3. Stopping at the first check over 90% favours lucky checkpoints; a larger validation set or two passes in a row would fix it.
+- One of the three seeds stopped at the 3.5 m walls (89.0%, one point short of the bar).
+- Several settings changed during the night (a smaller learning rate for fine-tuning, a bigger exploration bonus for the mission), always decided on validation data. Every abandoned attempt is kept and explained in `PROGRESS.md`.
+
+Videos (1920×1280, each the first matching validation landing, not cherry-picked): [Level 1](videos/hard_mode/level1.mp4) · [Level 2](videos/hard_mode/level2.mp4) · [Level 3: over the wall, landing with 7 fuel left](videos/hard_mode/level3.mp4) · [the mission's best attempt: pad A, take off, pad B](videos/hard_mode/level4a_mission_best_attempt.mp4).
+
 ## The website
 
 LANDFALL (`web/`) is hand-written HTML, CSS and JavaScript in a mission-control style: a webcast telemetry bar, a T−3 countdown, live wind, glass panels, and a result card (TOUCHDOWN CONFIRMED or VEHICLE LOST) with flight time, fuel used and landing speed.
@@ -260,6 +307,9 @@ python3.11 -m venv .venv
 | `.venv/bin/python make_videos.py` | Re-render the videos |
 | `.venv/bin/python check_browser_sim.py` | Browser physics vs Python on 1,500 test landings (needs Node.js) |
 | `.venv/bin/python make_space.py --push USER/landfall` | Upload the website to a free Hugging Face Space |
+| `nice -n 19 .venv/bin/python -m hard_mode.curriculum --seed 42` | Hard Mode: train the levels in order (each runs until 90% or 12M steps) |
+| `.venv/bin/python -m hard_mode.evaluate models_hard/level3_seed142_best.zip --level 3` | Fly a Hard Mode brain on 200 validation landings |
+| `.venv/bin/python -m hard_mode.video --level 3 --seed 142` | Record a Hard Mode video |
 
 Agent types: `baseline`, `shaped_v1`, `shaped_v2`, `randomized`, `shaped_v2_2m`, `randomized_2m`, `randomized_memory`, `randomized_memory_tuned`. Training is bit-for-bit reproducible on the same computer: the same seed gives the same model.
 
@@ -280,6 +330,9 @@ Agent types: `baseline`, `shaped_v1`, `shaped_v2`, `randomized`, `shaped_v2_2m`,
 | `export_site_data.py`, `export_browser_pilots.py` | Data and trained networks for the website |
 | `models/` | All trained models (3 seeds per agent, ~150 KB each) |
 | `runs/` | Training logs, learning curves, TensorBoard logs, every test landing (`runs/final/episodes.csv`) |
+| `hard_mode/` | Hard Mode: the harder game (`env.py`), levels, brain carry-over, curriculum trainer, hidden test, videos |
+| `models_hard/` | Every Hard Mode brain (best and last per level and seed, plus abandoned attempts) |
+| `runs_hard/` | Hard Mode hidden test results (the full training logs stay on the `hard-mode` branch) |
 | `PROGRESS.md` | The full build log, step by step, with every decision |
 
 ## Credits
