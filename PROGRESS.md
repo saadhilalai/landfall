@@ -451,10 +451,16 @@ earlier (like `runs/final/results.json`) still name the old IDs:
 | `3892e7b` | `8c86533` | Step 8 |
 | `b2ec844` | `7d328b8` | make_space fix |
 
+## Done before the first push (2026-10-17)
+
+- Commit author on every commit: "Saad Hilal" with GitHub's no-reply email (see the ID table above).
+- `LICENSE`: MIT, © 2026 Saad Hilal. Third-party files keep their own licenses (listed in the README).
+- Trailer music checked: "Happy Beats & Business Moves Vol. 12" by Sascha Ende (ende.app), CC BY 4.0: free for
+  public and commercial use with credit. Kept, and credited in the README, `brag-output/CREDITS.md` and
+  `brag-output/share-copy.txt`. Sound effects: Kenney, CC0.
+- Site footer: GitHub link (https://github.com/saadhilalai). LinkedIn left out for now. Redeployed and checked live.
+- README: "How this was built" section.
+
 ## Still open (needs the user)
 
-1. GitHub and LinkedIn links for the site footer (`LINKS` at the top of `web/app.js`).
-2. Create the GitHub repository and push (the repo has no remote yet).
-3. Before the repo is public, decide:
-   - `brag-output/brag.mp4` contains the /brag plugin's bundled music (ende.app); its licence isn't verified.
-   - A licence for the code (none yet; MIT is the usual choice for a portfolio project).
+1. Create the empty GitHub repository and send the link, then push.

@@ -12,6 +12,7 @@ __pycache__/
 # Step 7: the Hugging Face Space bundle is rebuilt by make_space.py
 build/
 
-# /brag video project: tool caches, and the bundled music (check its licence before redistributing)
+# /brag video project: tool caches, and the source music track (CC BY 4.0, credited in README.md and
+# brag-output/CREDITS.md; it's already mixed into brag.mp4, so the separate file isn't needed here)
 brag-output/composition/.hyperframes/
 brag-output/composition/assets/music/*.mp3

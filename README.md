@@ -4,6 +4,7 @@
 
 **Live demo:** https://s4dai-landfall.static.hf.space
 **Video:** [same landing in gravity 12, normal-only AI vs the final AI](https://s4dai-landfall.static.hf.space/videos/side_by_side_heavy_gravity.mp4)
+**Trailer:** [23-second launch trailer](brag-output/brag.mp4)
 
 ![LANDFALL demo: the final AI lands in strong wind it never trained in](docs/landfall_demo.gif)
 
@@ -29,6 +30,33 @@ Tested **once**, on 100 landings no agent had ever seen, for each of 3 independe
 | Lands safely, weak engine (beyond training) | **91.0%** | 79.7% |
 
 The last two rows matter: the final AI is **not** better everywhere. It is a fast, lean flyer, and that leaves less safety margin when gravity is stronger or the engine weaker than anything it practised with. More on that [below](#what-surprised-me).
+
+---
+
+## How this was built
+
+Built in about a day and a half (October 15–17, 2026) on a MacBook Air: Apple M2, **CPU only, no GPU**. Every idea was measured on its own before the next one was added, and the final test was locked in git before it ran.
+
+**By the numbers**
+- **80+ million** practice steps of training: 28 training runs (8 agent designs × 3 seeds, plus 4 specialists) totalling 44.7 million steps in 97 minutes, and a 28-trial auto-tuning search of up to 2 million steps per trial
+- **16 simulators** running in parallel at about **13,500 simulation steps per second**
+- **100,000+ evaluation landings** across comparisons, stress tests and the final test
+- A **16,800-landing** final test, pre-registered and run exactly once (in 1.7 minutes)
+- A **1,500-landing** cross-check between the Python simulator and its JavaScript port
+- About **4,800 lines** of Python, JavaScript, HTML and CSS
+
+**Techniques**
+- **Deep reinforcement learning:** PPO, an actor-critic method with generalized advantage estimation and clipped policy updates (Stable-Baselines3, PyTorch)
+- **Reward shaping**, with the reward itself unit-tested by a random pilot before any training (that caught two incentive bugs)
+- **Domain randomization** over 4 physics parameters, the technique robotics labs use to move robots from simulation to the real world
+- **Frame stacking** as short-term memory, so the agent can infer invisible wind from its own motion
+- **Bayesian hyperparameter optimization:** Optuna's TPE sampler with median pruning of weak trials, plus a parameter-importance analysis
+- **Rigorous evaluation:** fixed seeds and bit-for-bit reproducible training; separate validation, analysis and test sets; McNemar's exact test on paired landings; Wilson 95% confidence intervals; a landability rule decided before seeing results; a pre-registered, one-shot final test
+- **Debugging the simulator itself:** found a ground-contact sensor bug in Gymnasium's LunarLander by querying the Box2D physics engine directly
+- **Data visualization:** colourblind-validated charts; the physics re-rendered as vector graphics at 3.2× for 1920×1280 video
+- **Porting:** the simulator rewritten in JavaScript on planck.js, NumPy's PCG64 random-number generator reproduced bit for bit, and the neural network running in a Web Worker
+- **Front end:** hand-written HTML, CSS and JavaScript; 60 fps canvas rendering; synthesized Web Audio sound; an automatic lite mode for slower devices
+- **Deployment:** free static hosting on Hugging Face Spaces; launch trailer made with Hyperframes (HTML-to-video), timed to the beat of the music
 
 ---
 
@@ -205,6 +233,7 @@ Real test landings, redrawn sharply at 1920×1280 from the recorded physics (`ma
 | [baseline_landing.mp4](videos/baseline_landing.mp4) | The baseline in the normal game |
 | [final_strong_wind_arrow.mp4](videos/final_strong_wind_arrow.mp4) | The final AI in strong wind, with a live wind arrow |
 | [side_by_side_heavy_gravity.mp4](videos/side_by_side_heavy_gravity.mp4) | Gravity 12, the same landing: trained in the normal game only (crashes) vs the final AI (lands). One example; across all 300 landings the rates are 80% and 92% |
+| [brag-output/brag.mp4](brag-output/brag.mp4) | The 23-second launch trailer (music credited below) |
 
 ---
 
@@ -256,5 +285,11 @@ Agent types: `baseline`, `shaped_v1`, `shaped_v2`, `randomized`, `shaped_v2_2m`,
 ## Credits
 
 Simulator: [Gymnasium](https://gymnasium.farama.org) LunarLander-v3 (Box2D). Learning: [Stable-Baselines3](https://stable-baselines3.readthedocs.io) PPO, starting from the [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselines3-zoo) LunarLander settings. Tuning: [Optuna](https://optuna.org). Browser physics: [planck.js](https://github.com/piqnt/planck.js) (MIT). Typeface: D-DIN by Datto (SIL Open Font License, `web/fonts/OFL.txt`).
+
+Launch trailer: made with [Hyperframes](https://hyperframes.heygen.com/) and GSAP. Music: "Happy Beats & Business Moves Vol. 12" by Sascha Ende ([ende.app](https://ende.app/en/song/12881-happy-beats-business-moves-vol-12)), License: [CC BY 4.0](https://ende.app/en/standard-license). Sound effects: [Kenney](https://kenney.nl/assets/impact-sounds) (CC0).
+
+## License
+
+The code is released under the [MIT License](LICENSE), © 2026 Saad Hilal. The font, the browser physics library, the music and the sound effects keep their own licenses, listed above.
 
 *Designed & built by Saad Hilal · S4D*

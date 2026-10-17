@@ -11,7 +11,7 @@ import { reduceMotion, isLite, startStarfield, trackGlassLight, Roller, countUp,
          FrameMonitor, glowSprite } from "./effects.js";
 
 // Saad's profiles for the footer. Paste the full URLs here; empty ones stay hidden.
-const LINKS = { GitHub: "", LinkedIn: "" };
+const LINKS = { GitHub: "https://github.com/saadhilalai", LinkedIn: "" };
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const el = (tag, attrs = {}, html = "") => {
