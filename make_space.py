@@ -63,6 +63,8 @@ A reinforcement learning agent that taught itself to land a rocket in randomized
 wind, turbulence and engine power. Set the conditions, press Launch, and the server flies
 the landing live with the trained network; the page draws it with webcast-style telemetry.
 
+Designed & built by Saad Hilal · S4D.
+
 Simulator: Gymnasium LunarLander-v3. Learning: PPO (Stable-Baselines3). Tuning: Optuna.
 Typeface: D-DIN by Datto (SIL Open Font License, see web/fonts/OFL.txt).
 """

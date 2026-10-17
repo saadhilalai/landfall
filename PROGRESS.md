@@ -367,6 +367,32 @@ No video encoding, so it is instant (a two-pilot request is ~70 ms, ~11 KB gzipp
   folder and every route and pilot works. Docker isn't installed on this Mac, so the container build itself
   is first tested on Hugging Face.
 
+### Polish round (2026-10-16): liquid glass, extras, S4D branding
+
+- **Branding:** S4D logo (cropped from the user's file into `web/brand/`) in the header, loading screen
+  ("AN S4D PROJECT", then LANDFALL), favicon and footer ("Designed & built by Saad Hilal · S4D").
+  Footer link slots: fill `LINKS` at the top of `web/app.js` (GitHub, LinkedIn); empty ones stay hidden.
+- **Liquid glass** on the telemetry, mission-control panel, pilot picker, buttons and result cards: real
+  background blur, a thin bright edge and a shine that follows the mouse. Mission control now floats over the
+  live landing on desktop.
+- **Extras:** T−3 / T−2 / T−1 / LAUNCH countdown (click, Space or Esc skips); telemetry digits roll and tick
+  12.5 times a second; engine glow, flame and exhaust only on steps where the simulation fired that engine,
+  with exhaust turning into dust when it hits the ground and engine light on the ground near touchdown; small
+  shake on touchdown, bigger shake and flash on a crash; slow starfield behind everything (stars hidden behind
+  the ground); sections fade and slide in; big numbers and result stats count up; optional synthesized sound
+  (engine rumble, thruster hiss, countdown beeps, touchdown thud, crash), OFF by default.
+- **Performance:** a "lite" mode (no real blur, fewer particles, one star layer, lower canvas resolution) is picked
+  automatically on phones and low-core/low-memory devices, and switched on mid-flight if frames get slow.
+  Measured with Chrome on this Mac (headless, GPU): desktop full effects 60 fps (median 16.7 ms, 90th percentile
+  16.8 ms); phone size with the CPU slowed 4× in lite mode 60 fps. `?fx=full` / `?fx=lite` force a mode.
+- **Reduced motion:** no autoplay on load, no shake or flash, static stars, no zoom on the countdown, no
+  count-ups or rolling digits; flights still play when the visitor presses Launch.
+- **Checked:** screenshots at desktop and phone size and two 60 fps screen recordings of a full launch
+  (`screenshots/landfall_launch_desktop.mp4`, `landfall_launch_phone.mp4`). Bugs found and fixed: compare mode
+  sized its telemetry for the whole pane instead of the visible part; the sound button waited for audio to
+  start before updating; the fading loading screen swallowed clicks; panel content showed through the sticky
+  Launch row.
+
 ## What to do next, in order
 
 1. **Deploy:** user creates a Hugging Face account and logs in (`hf auth login`); then

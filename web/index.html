@@ -3,34 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LANDFALL: a rocket lander that taught itself</title>
-<meta name="description" content="A self-taught AI lands a rocket in randomized gravity, wind and engine power. Set the conditions, launch, and watch it fly live.">
+<title>LANDFALL | An S4D project</title>
+<meta name="description" content="A self-taught AI lands a rocket in randomized gravity, wind and engine power. Set the conditions, launch, and watch it fly live. Designed and built by Saad Hilal.">
+<meta name="author" content="Saad Hilal">
 <meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" href="brand/favicon.png">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 <link rel="preload" href="fonts/D-DIN.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/D-DINExp-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
+<script>
+  /* Before anything is drawn: pick the effect level and respect "reduce motion". */
+  (function () {
+    var root = document.documentElement, q = new URLSearchParams(location.search).get("fx");
+    var lite = matchMedia("(pointer: coarse)").matches || (navigator.hardwareConcurrency || 8) <= 4 ||
+      (navigator.deviceMemory || 8) <= 4 || Math.min(screen.width, screen.height) < 600;
+    root.dataset.fx = q === "lite" || q === "full" ? q : lite ? "lite" : "full";
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) root.classList.add("reduce-motion");
+  })();
+</script>
 </head>
 <body>
+<div class="loader" id="loader" aria-hidden="true">
+  <img class="loader-logo" src="brand/s4d.png" alt="" width="76" height="76">
+  <p class="loader-kicker">An S4D project</p>
+  <p class="loader-title">Landfall</p>
+  <div class="loader-bar"><span></span></div>
+</div>
+
+<div class="starfield" aria-hidden="true"><div class="stars far"></div><div class="stars near"></div></div>
+
 <header class="topbar" id="topbar">
-  <a class="wordmark" href="#top" aria-label="LANDFALL, back to the live landing">Landfall</a>
+  <a class="brand" href="#top" aria-label="S4D LANDFALL, back to the live landing">
+    <img src="brand/s4d.png" alt="S4D" width="32" height="32">
+    <span class="brand-sep" aria-hidden="true"></span>
+    <span class="wordmark">Landfall</span>
+  </a>
   <nav class="nav" aria-label="Sections">
     <a href="#mission">Mission</a>
     <a href="#results">Results</a>
     <a href="#data">Data</a>
     <a href="#records">Flight records</a>
   </nav>
+  <button type="button" class="sound-toggle glass" id="sound" aria-pressed="false" aria-label="Sound effects">
+    <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3">
+      <path d="M2 6h3l4-3v10L5 10H2z" fill="currentColor" stroke="none"/>
+      <path class="wave" d="M11.2 5.6a3.4 3.4 0 0 1 0 4.8M12.9 3.9a5.8 5.8 0 0 1 0 8.2"/>
+      <path class="mute" d="M11 6l4 4M15 6l-4 4"/>
+    </svg>
+    <span class="label">Sound off</span>
+  </button>
 </header>
 
 <main id="top">
   <section class="hero" aria-label="Live landing">
     <div class="stage" id="stage" data-panes="1">
+      <div class="countdown" id="countdown" hidden>
+        <span class="cd-text" id="cd-text"></span>
+        <span class="cd-hint">Click to skip</span>
+      </div>
       <div class="stage-actions" id="stage-actions" hidden>
-        <button type="button" class="btn btn-solid" data-act="relaunch">Relaunch</button>
-        <button type="button" class="btn" data-act="new">New landing</button>
+        <button type="button" class="btn glass" data-act="relaunch">Relaunch</button>
+        <button type="button" class="btn glass" data-act="new">New landing</button>
       </div>
     </div>
 
-    <aside class="console" id="console" aria-label="Mission control">
+    <aside class="console glass" id="console" aria-label="Mission control">
       <h2 class="console-title">Mission control</h2>
 
       <fieldset class="group">
@@ -71,8 +109,8 @@
         <p class="hint">Same landing number, same conditions, same pilot: the exact same flight. Landings 10000 to 10099 are the official test set.</p>
       </div>
       <div class="launch-row">
-        <button type="button" class="btn btn-launch" id="launch">Launch</button>
-        <button type="button" class="btn" id="surprise">Surprise me</button>
+        <button type="button" class="btn btn-launch glass-flat" id="launch">Launch</button>
+        <button type="button" class="btn glass-flat" id="surprise">Surprise me</button>
       </div>
     </aside>
   </section>
@@ -134,10 +172,14 @@
 </main>
 
 <footer class="footer">
-  <span class="wordmark">Landfall</span>
-  <p>Simulator: Gymnasium LunarLander. Learning: PPO, Stable-Baselines3. Tuning: Optuna. Typeface: D-DIN by Datto, SIL Open Font License.</p>
+  <div class="footer-brand">
+    <img src="brand/s4d.png" alt="S4D logo" width="44" height="44">
+    <span class="footer-sign">Designed &amp; built by <span class="nowrap">Saad Hilal · S4D</span></span>
+  </div>
+  <nav class="footer-links" id="footer-links" aria-label="Saad Hilal elsewhere" hidden></nav>
+  <p class="footer-credits">Simulator: Gymnasium LunarLander. Learning: PPO, Stable-Baselines3. Tuning: Optuna. Typeface: D-DIN by Datto, SIL Open Font License.</p>
 </footer>
 
-<script src="app.js" defer></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
