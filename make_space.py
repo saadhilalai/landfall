@@ -64,7 +64,7 @@ def push(repo_id):
                       commit_message="Deploy LANDFALL", delete_patterns="*")
     user, name = repo_id.split("/")
     print(f"Uploaded. Space page: https://huggingface.co/spaces/{repo_id}")
-    print(f"Live site: https://{user.lower()}-{name.lower().replace('_', '-')}.hf.space")
+    print(f"Live site: https://{user.lower()}-{name.lower().replace('_', '-')}.static.hf.space")
 
 
 if __name__ == "__main__":
