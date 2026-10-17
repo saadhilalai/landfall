@@ -365,10 +365,13 @@ class Pane {
     // Keep the world clear of the floating mission-control panel (desktop, last pane only).
     const c = consoleEl.getBoundingClientRect();
     const safeRight = desktop.matches && this === panes.at(-1) ? Math.max(0, r.right - c.left + 16) : 0;
-    const usable = r.width - safeRight, compact = usable < 760;
+    const usable = r.width - safeRight;
     this.el.style.setProperty("--safe-right", `${safeRight}px`);
     this.el.style.setProperty("--usable", `${usable}px`);
-    this.el.classList.toggle("compact", compact);
+    this.el.classList.toggle("compact", usable < 760);
+    const teleEl = $(".telemetry", this.el);   // the full webcast bar doesn't fit (e.g. 1280-wide laptops): go compact
+    if (teleEl.scrollWidth > teleEl.clientWidth + 1) this.el.classList.add("compact");
+    const compact = this.el.classList.contains("compact");
     const tele = $(".telemetry", this.el).getBoundingClientRect().height;
     stage.style.setProperty("--tele-h", `${Math.round(tele)}px`);
     const top = compact ? 92 : 124, bottom = tele + (compact ? 22 : 34);

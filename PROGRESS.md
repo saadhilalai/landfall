@@ -11,7 +11,7 @@ _Last updated 2026-10-16. Nothing is running. All models, results and logs are s
 | 5. Optuna auto-tuning | ✅ Done. **Final agent: `randomized_memory_tuned`** |
 | 6. Final results, charts, videos | ✅ Done (evaluated once, plan committed first) |
 | 7. Live demo website (LANDFALL) | ✅ Live at https://s4dai-landfall.static.hf.space (free static Hugging Face Space) |
-| 8. README, packaging, resume bullets | Not started (`requirements.txt` and `.gitignore` exist) |
+| 8. README, packaging, resume bullets | ✅ Done (README, demo GIF, clean-install check, resume bullets) |
 
 ---
 
@@ -413,12 +413,28 @@ No video encoding, so it is instant (a two-pilot request is ~70 ms, ~11 KB gzipp
   video clips, the footer, phone size with the CPU slowed 4×, and inside the Space page's frame.
 - `app.py` still runs the site locally and keeps the Python flight at `/api/fly` as the reference.
 
-## What to do next, in order
+## Step 8: README and packaging (done, 2026-10-17)
 
-1. **Step 8:** README, packaging, and 3 resume bullets with the real numbers. The README should cover:
-   - the leg-sensor bug story
-   - the v1 → v2 iteration
-   - "more practice made it more fragile"
-   - honest tuning and the one-shot final test
-   - the efficiency-vs-margin trade-off
-   - charts, and a demo GIF made from the videos
+- **README.md:** live demo and video links at the top, demo GIF (`docs/landfall_demo.gif`, recorded from the live
+  site), results at a glance, how PPO and reward shaping work in plain words, the v1 → v2 story, the leg-sensor
+  bug, domain randomization (including the failed first round and the landability rule), honest tuning, the
+  one-shot test with the full results table (landed, score, fuel), the four charts, the surprises (more practice
+  made it fragile, efficiency vs margin, memory trade-off, specialists underestimate), the website, videos, how to
+  run, file layout, credits.
+- **requirements.txt:** only what the code imports (removed unused `pandas` and `moviepy`), with comments.
+- **Clean-install check:** cloned the repo into an empty folder, made a fresh Python 3.11 venv from
+  `requirements.txt`, and ran `check_setup.py`, `evaluate.py` (Final AI, 20 test landings: all landed), a short
+  training run, `make_charts.py` (byte-identical charts), the Python flight, `export_browser_pilots.py`
+  (identical output) and `make_space.py`. All worked.
+- **Website fix found while recording the GIF:** at 1280-wide laptop screens the T+ clock wrapped onto two lines.
+  The page now switches to the compact telemetry bar whenever the full one doesn't fit. Checked at 1024, 1280,
+  1366, 1440, 1536 and 1920 wide, and in compare mode.
+
+## Still open (needs the user)
+
+1. GitHub and LinkedIn links for the site footer (`LINKS` at the top of `web/app.js`).
+2. Create the GitHub repository and push (the repo has no remote yet).
+3. Before the repo is public, decide:
+   - `brag-output/brag.mp4` contains the /brag plugin's bundled music (ende.app); its licence isn't verified.
+   - Commits use a personal email; GitHub can show a private "noreply" address instead.
+   - A licence for the code (none yet; MIT is the usual choice for a portfolio project).

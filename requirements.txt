@@ -1,17 +1,15 @@
 # Python 3.11. Box2D needs `swig` to build:  brew install swig
-gymnasium[box2d]==1.4.0
+gymnasium[box2d]==1.4.0      # the LunarLander-v3 simulator (Box2D physics, pygame drawing)
 Box2D==2.3.10
-stable-baselines3==2.9.0
+stable-baselines3==2.9.0     # PPO
 torch==2.14.1
 numpy==2.4.6
-tensorboard==2.21.0
-optuna==5.0.0
-matplotlib==3.11.2
-pandas==3.0.6
-fastapi==0.143.2      # Step 7 website: web server
-uvicorn==0.54.0
-huggingface_hub==2.2.0   # Step 7: upload the website to Hugging Face Spaces
+tensorboard==2.21.0          # training graphs
+optuna==5.0.0                # Step 5: automatic tuning
+matplotlib==3.11.2           # charts
 pillow==11.3.0
-moviepy==2.2.1
-imageio==2.38.1
+imageio==2.38.1              # Step 6: video recording (MP4 via ffmpeg)
 imageio-ffmpeg==0.6.0
+fastapi==0.143.2             # Step 7: local web server for the website
+uvicorn==0.54.0
+huggingface_hub==2.2.0       # Step 7: upload the website to Hugging Face Spaces
