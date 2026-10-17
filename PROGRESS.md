@@ -269,7 +269,7 @@ The network size didn't change.
 
 ## Step 6: Final evaluation, charts, videos (done)
 
-**Run exactly once.** `final_eval.py` (the agents, seeds, scenarios, metrics, paired tests and video rules) was committed in `6ca403d` **before** it ran, and it refuses to run a second time. Before that, it was dry-run on throwaway landings (seeds 25000+) in a single process, so the test landings stayed untouched.
+**Run exactly once.** `final_eval.py` (the agents, seeds, scenarios, metrics, paired tests and video rules) was committed in `e645a7c` (originally `6ca403d`, see below) **before** it ran, and it refuses to run a second time. Before that, it was dry-run on throwaway landings (seeds 25000+) in a single process, so the test landings stayed untouched.
 - 8 agents × 3 seeds × 7 scenarios × 100 test landings (10000–10099) = **16,800 landings**, which took 1.7 minutes.
 - Outputs: `runs/final/episodes.csv` (every landing), `results.json` and `results.md`.
 
@@ -430,11 +430,30 @@ No video encoding, so it is instant (a two-pilot request is ~70 ms, ~11 KB gzipp
   The page now switches to the compact telemetry bar whenever the full one doesn't fit. Checked at 1024, 1280,
   1366, 1440, 1536 and 1920 wide, and in compare mode.
 
+### Commit IDs changed (2026-10-17)
+
+Before the first push, every commit's author was switched to the user's new GitHub identity, `saadhilalai` with
+GitHub's private no-reply email, so a personal email never appears on GitHub. Dates, messages and files are
+unchanged, but every commit ID changed. Files written earlier (like `runs/final/results.json`) still name the old IDs:
+
+| Old | New | Commit |
+|---|---|---|
+| `4fcf3a6` | `13f5bbf` | Setup, baseline, reward shaping v1/v2, domain randomization |
+| `fdab33e` | `1b3fad1` | Step 4 round 2 |
+| `bc27617` | `c0191c4` | Step 5 |
+| `6ca403d` | `e645a7c` | Pre-register the one-time final evaluation |
+| `42527bb` | `ce0fa58` | Step 6 |
+| `734ce03` | `4a59fa0` | Step 7 |
+| `3a5f4eb` | `38bd448` | Step 7 polish |
+| `cf4c242` | `72916cd` | Launch video |
+| `86f87b2` | `2061dad` | Deploy (browser simulator) |
+| `3892e7b` | `135eba9` | Step 8 |
+| `b2ec844` | `1f2e373` | make_space fix |
+
 ## Still open (needs the user)
 
 1. GitHub and LinkedIn links for the site footer (`LINKS` at the top of `web/app.js`).
 2. Create the GitHub repository and push (the repo has no remote yet).
 3. Before the repo is public, decide:
    - `brag-output/brag.mp4` contains the /brag plugin's bundled music (ende.app); its licence isn't verified.
-   - Commits use a personal email; GitHub can show a private "noreply" address instead.
    - A licence for the code (none yet; MIT is the usual choice for a portfolio project).
