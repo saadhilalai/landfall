@@ -102,5 +102,7 @@ def markdown(infos):
 
 if __name__ == "__main__":
     infos = runs()
+    if not infos:   # on main the training logs aren't included, so keep the committed chart and table
+        raise SystemExit("No training logs in runs_hard/ (they're on the hard-mode branch); nothing redrawn.")
     chart(infos)
     markdown(infos)
