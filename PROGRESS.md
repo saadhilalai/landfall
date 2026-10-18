@@ -827,3 +827,23 @@ The user asked to safely pause everything for ~45 minutes (power and internet of
   different session. Closing the lid puts the Mac to sleep, which pauses it, and it continues on wake.
 - **To resume:** there's nothing to unfreeze for this project. Next steps are waiting on the user: the GitHub repo
   link (to push `main`) and which parts of Hard Mode, if any, to bring onto `main`.
+
+## Parked (2026-10-17, 19:40)
+
+**Where it stopped:** at a clean point, with nothing half-done and no training running.
+- All 8 steps are done. The site is live at https://s4dai-landfall.static.hf.space, and the code is on GitHub at
+  https://github.com/saadhilalai/landfall. GitHub's "About" box has the live demo link, the description ("Self-teaching
+  rocket-landing AI with a live demo, built by Saad Hilal · S4D") and the topics reinforcement-learning, pytorch, ppo,
+  domain-randomization and curriculum-learning.
+- Hard Mode is finished and on `main`, without its training logs. The full logs stay on the local `hard-mode` branch
+  (folder `~/rocket-lander-hard-mode`), which isn't pushed.
+- Still running: only the idle local web server (`python app.py`, port 7860). If it's gone, restart it with
+  `.venv/bin/python app.py`.
+- This note is committed locally only, so `main` is one commit ahead of GitHub until the next push.
+
+**What's next (nothing is waiting; all optional):**
+1. Push this note to GitHub (`git push`).
+2. A LinkedIn link for the site footer (`LINKS` at the top of `web/app.js`), then redeploy with
+   `python make_space.py --push s4dAi/landfall`.
+3. Hard Mode, if you want to go further: the mission level. Ideas: mission stages with obstacles (low walls first, like
+   Level 3), a bigger network, and requiring two validation passes in a row.
