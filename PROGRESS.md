@@ -842,8 +842,8 @@ The user asked to safely pause everything for ~45 minutes (power and internet of
 - This note is committed locally only, so `main` is one commit ahead of GitHub until the next push.
 
 **What's next (nothing is waiting; all optional):**
-1. Push this note to GitHub (`git push`).
-2. A LinkedIn link for the site footer (`LINKS` at the top of `web/app.js`), then redeploy with
-   `python make_space.py --push s4dAi/landfall`.
-3. Hard Mode, if you want to go further: the mission level. Ideas: mission stages with obstacles (low walls first, like
+1. ~~Push this note to GitHub.~~ Done.
+2. ~~A LinkedIn link for the site footer.~~ Done 2026-10-17: https://www.linkedin.com/in/saad-hilal-24b989444/
+   next to GitHub; live site redeployed and checked on desktop and phone.
+3. Hard Mode (skipped for now, by choice): the mission level. Ideas: mission stages with obstacles (low walls first, like
    Level 3), a bigger network, and requiring two validation passes in a row.
