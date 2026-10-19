@@ -269,7 +269,7 @@ The network size didn't change.
 
 ## Step 6: Final evaluation, charts, videos (done)
 
-**Run exactly once.** `final_eval.py` (the agents, seeds, scenarios, metrics, paired tests and video rules) was committed in `d144efa` (originally `6ca403d`, see below) **before** it ran, and it refuses to run a second time. Before that, it was dry-run on throwaway landings (seeds 25000+) in a single process, so the test landings stayed untouched.
+**Run exactly once.** `final_eval.py` (the agents, seeds, scenarios, metrics, paired tests and video rules) was committed in `1ec0dcf` (originally `6ca403d`, see below) **before** it ran, and it refuses to run a second time. Before that, it was dry-run on throwaway landings (seeds 25000+) in a single process, so the test landings stayed untouched.
 - 8 agents × 3 seeds × 7 scenarios × 100 test landings (10000–10099) = **16,800 landings**, which took 1.7 minutes.
 - Outputs: `runs/final/episodes.csv` (every landing), `results.json` and `results.md`.
 
@@ -435,21 +435,24 @@ No video encoding, so it is instant (a two-pilot request is ~70 ms, ~11 KB gzipp
 Before the first push, every commit's author was switched to the user's GitHub identity: the name "Saad Hilal"
 with GitHub's private no-reply email (`259462928+saadhilalai@users.noreply.github.com`), so a personal email
 never appears on GitHub. Dates, messages and files are unchanged, but every commit ID changed. Files written
-earlier (like `runs/final/results.json`) still name the old IDs:
+earlier (like `runs/final/results.json`) still name the original IDs.
 
-| Old | New | Commit |
+On 2026-10-19 the history was rewritten once more (commit message trailers removed, the README tidied), which
+changed every ID again. "Current" is the ID today:
+
+| Original | Current | Commit |
 |---|---|---|
-| `4fcf3a6` | `eff414e` | Setup, baseline, reward shaping v1/v2, domain randomization |
-| `fdab33e` | `f0137bd` | Step 4 round 2 |
-| `bc27617` | `3c28ef9` | Step 5 |
-| `6ca403d` | `d144efa` | Pre-register the one-time final evaluation |
-| `42527bb` | `0f28ecf` | Step 6 |
-| `734ce03` | `ba4402e` | Step 7 |
-| `3a5f4eb` | `e4917db` | Step 7 polish |
-| `cf4c242` | `cd2786e` | Launch video |
-| `86f87b2` | `9ae2ee7` | Deploy (browser simulator) |
-| `3892e7b` | `8c86533` | Step 8 |
-| `b2ec844` | `7d328b8` | make_space fix |
+| `4fcf3a6` | `e50ef60` | Setup, baseline, reward shaping v1/v2, domain randomization |
+| `fdab33e` | `434c552` | Step 4 round 2 |
+| `bc27617` | `95d659b` | Step 5 |
+| `6ca403d` | `1ec0dcf` | Pre-register the one-time final evaluation |
+| `42527bb` | `37a5fb5` | Step 6 |
+| `734ce03` | `8c2e6a7` | Step 7 |
+| `3a5f4eb` | `4bb9a1c` | Step 7 polish |
+| `cf4c242` | `eca4065` | Launch video |
+| `86f87b2` | `3095520` | Deploy (browser simulator) |
+| `3892e7b` | `1f22d29` | Step 8 |
+| `b2ec844` | `acaf019` | make_space fix |
 
 ## Done before the first push (2026-10-17)
 
@@ -820,7 +823,7 @@ same settling recipe for another 12 million steps (tag `overtime2`), then the hi
 The user asked to safely pause everything for ~45 minutes (power and internet off, lid closed).
 - **Nothing from this project was running**, so nothing needed a checkpoint or a freeze. Hard Mode training ended
   at 05:46 (last runs: overtime round 2), the one-time hidden test ran at 05:47–05:50, and every result, brain,
-  log, chart and video is committed on this branch (`hard-mode`). `main` is committed too (b655a02).
+  log, chart and video is committed on this branch (`hard-mode`). `main` is committed too (f869e9b).
 - Still open: the local LANDFALL web server (`python app.py` in `~/rocket-lander`, port 7860) was left as it was.
   It's idle and just sleeps with the Mac; if it's gone after the move, restart it with `.venv/bin/python app.py`.
 - Not touched: the walking-robot project's training (`~/robot-walker`, `train.py --run a`), which belongs to a

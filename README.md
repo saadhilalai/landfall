@@ -171,7 +171,7 @@ The winner scored **261.0 vs 227.0** on validation, and won on all 3 training se
 
 ## Final results
 
-Run **exactly once**: `final_eval.py` was committed (`d144efa`) before it ran, and it refuses to run a second time. (`runs/final/results.json` records that commit as `6ca403d`, its ID before the commit author details were updated.) 8 agents × 3 trained copies × 7 conditions × 100 unseen landings = **16,800 test landings**.
+Run **exactly once**: `final_eval.py` was committed (`1ec0dcf`) before it ran, and it refuses to run a second time. (`runs/final/results.json` records that commit as `6ca403d`, its original ID; later edits to the commit history changed the ID.) 8 agents × 3 trained copies × 7 conditions × 100 unseen landings = **16,800 test landings**.
 
 **Success rate, average official score and fuel per landing** (300 landings per cell):
 
