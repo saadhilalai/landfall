@@ -19,6 +19,7 @@ from pathlib import Path
 import torch
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.utils import LinearSchedule
 from stable_baselines3.common.vec_env import DummyVecEnv
 
 import config
@@ -94,7 +95,8 @@ def train_level(level_number, seed, budget, check_every, log=stamped, learning_r
         ppo_kwargs["ent_coef"] = ent_coef
     lr = ppo_kwargs["learning_rate"]
     if lr_decay:                            # shrink the learning rate linearly to 0 over the budget
-        ppo_kwargs["learning_rate"] = lambda remaining: lr * remaining
+        # SB3's own class, not a lambda: a saved brain stores a lambda's code with this file's full path on the Mac
+        ppo_kwargs["learning_rate"] = LinearSchedule(lr, 0.0, 1.0)
     model = PPO(env=env, seed=seed, device="cpu", verbose=0, tensorboard_log=str(RUNS / "tensorboard"), **ppo_kwargs)
     origin = load_start(level_number, seed, model, start)
     log(f"Level {level_number}{' [' + tag + ']' if tag else ''} ({level.name}), seed {seed}. Start: {origin}. "

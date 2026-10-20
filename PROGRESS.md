@@ -269,7 +269,7 @@ The network size didn't change.
 
 ## Step 6: Final evaluation, charts, videos (done)
 
-**Run exactly once.** `final_eval.py` (the agents, seeds, scenarios, metrics, paired tests and video rules) was committed in `1ec0dcf` (originally `6ca403d`, see below) **before** it ran, and it refuses to run a second time. Before that, it was dry-run on throwaway landings (seeds 25000+) in a single process, so the test landings stayed untouched.
+**Run exactly once.** `final_eval.py` (the agents, seeds, scenarios, metrics, paired tests and video rules) was committed in `f0b3a58` (originally `6ca403d`, see below) **before** it ran, and it refuses to run a second time. Before that, it was dry-run on throwaway landings (seeds 25000+) in a single process, so the test landings stayed untouched.
 - 8 agents × 3 seeds × 7 scenarios × 100 test landings (10000–10099) = **16,800 landings**, which took 1.7 minutes.
 - Outputs: `runs/final/episodes.csv` (every landing), `results.json` and `results.md`.
 
@@ -437,22 +437,23 @@ with GitHub's private no-reply email (`259462928+saadhilalai@users.noreply.githu
 never appears on GitHub. Dates, messages and files are unchanged, but every commit ID changed. Files written
 earlier (like `runs/final/results.json`) still name the original IDs.
 
-On 2026-10-19 the history was rewritten once more (commit message trailers removed, the README tidied), which
-changed every ID again. "Current" is the ID today:
+On 2026-10-19 the history was rewritten twice more: once to remove commit message trailers and tidy the
+README, and once for privacy (see "Privacy check" at the end). Each rewrite changed every ID again.
+"Current" is the ID today:
 
 | Original | Current | Commit |
 |---|---|---|
-| `4fcf3a6` | `e50ef60` | Setup, baseline, reward shaping v1/v2, domain randomization |
-| `fdab33e` | `434c552` | Step 4 round 2 |
-| `bc27617` | `95d659b` | Step 5 |
-| `6ca403d` | `1ec0dcf` | Pre-register the one-time final evaluation |
-| `42527bb` | `37a5fb5` | Step 6 |
-| `734ce03` | `8c2e6a7` | Step 7 |
-| `3a5f4eb` | `4bb9a1c` | Step 7 polish |
-| `cf4c242` | `eca4065` | Launch video |
-| `86f87b2` | `3095520` | Deploy (browser simulator) |
-| `3892e7b` | `1f22d29` | Step 8 |
-| `b2ec844` | `acaf019` | make_space fix |
+| `4fcf3a6` | `804d935` | Setup, baseline, reward shaping v1/v2, domain randomization |
+| `fdab33e` | `841c06c` | Step 4 round 2 |
+| `bc27617` | `584d565` | Step 5 |
+| `6ca403d` | `f0b3a58` | Pre-register the one-time final evaluation |
+| `42527bb` | `a2eed8e` | Step 6 |
+| `734ce03` | `1698ab1` | Step 7 |
+| `3a5f4eb` | `ff6c4a3` | Step 7 polish |
+| `cf4c242` | `36e595b` | Launch video |
+| `86f87b2` | `5605a98` | Deploy (browser simulator) |
+| `3892e7b` | `b2645c0` | Step 8 |
+| `b2ec844` | `7ab6f30` | make_space fix |
 
 ## Done before the first push (2026-10-17)
 
@@ -823,7 +824,7 @@ same settling recipe for another 12 million steps (tag `overtime2`), then the hi
 The user asked to safely pause everything for ~45 minutes (power and internet off, lid closed).
 - **Nothing from this project was running**, so nothing needed a checkpoint or a freeze. Hard Mode training ended
   at 05:46 (last runs: overtime round 2), the one-time hidden test ran at 05:47–05:50, and every result, brain,
-  log, chart and video is committed on this branch (`hard-mode`). `main` is committed too (f869e9b).
+  log, chart and video is committed on this branch (`hard-mode`). `main` is committed too (9f32e14).
 - Still open: the local LANDFALL web server (`python app.py` in `~/rocket-lander`, port 7860) was left as it was.
   It's idle and just sleeps with the Mac; if it's gone after the move, restart it with `.venv/bin/python app.py`.
 - Not touched: the walking-robot project's training (`~/robot-walker`, `train.py --run a`), which belongs to a
@@ -868,3 +869,25 @@ The /brag trailer now opens the LANDFALL site, above the live landing (like the 
 - Footer and Space card: music credit, "Happy Beats & Business Moves Vol. 12" by Sascha Ende (ende.app), CC BY 4.0.
 - Checked in headless Chrome at 1470x830 (desktop) and 390x844 (phone): playback, unmute, pause, scroll pause,
   "Fly it live", reduced motion, no sideways scrolling.
+
+## Privacy check (2026-10-19)
+
+Before more people see the project, every file in every commit on both branches, the Hugging Face Space and
+its deploy history were checked for passwords, keys and tokens, personal emails, phone numbers, addresses,
+locations, Mac file paths, the computer's name, and hidden data in images and videos. Nothing secret turned
+up. Three things were cleaned:
+
+- **A Mac folder path inside nine Hard Mode brains** (the overtime and big-batch runs, trained with
+  `--lr-decay`). The shrinking learning rate was a Python `lambda`, and a saved brain stores a lambda's code
+  together with the full path of the file it came from. Each brain was saved again with only that path changed
+  to `hard_mode/train.py`: the weights are byte for byte the same, and 20 validation landings per brain came
+  out identical. `hard_mode/train.py` now uses SB3's `LinearSchedule`, which a saved brain stores by name only.
+- **The computer's name in TensorBoard log file names** (`events.out.tfevents.<time>.<computer>.<process>.<n>`)
+  is now `localhost`. TensorBoard reads them the same way. New training runs will name their log files after
+  the computer again, so rename them the same way before committing.
+- **A Mac folder path in `brag-output/composition-brief.md`** is now relative.
+
+The history was rewritten so no earlier version contains them either, and commit times are now stored in UTC
+(the same moments, without a time zone). Commit IDs changed again (table above). The GitHub repository was
+deleted and created again under the same name, because GitHub keeps serving replaced commits by their old IDs;
+the new repository holds only the clean history.
