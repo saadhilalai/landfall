@@ -850,3 +850,21 @@ The user asked to safely pause everything for ~45 minutes (power and internet of
    next to GitHub; live site redeployed and checked on desktop and phone.
 3. Hard Mode (skipped for now, by choice): the mission level. Ideas: mission stages with obstacles (low walls first, like
    Level 3), a bigger network, and requiring two validation passes in a row.
+
+## Launch film on the website (2026-10-19)
+
+The /brag trailer now opens the LANDFALL site, above the live landing (like the robot project's site).
+- `make_film.py` cuts `brag-output/brag.mp4` for the web into `web/media/`: full HD for computers (2.1 MB) and
+  1280x720 for phones (1.2 MB), each with its first frame as the poster (78 KB / 46 KB). Screens up to 700 px wide get
+  the phone cut.
+- It plays muted and looping once the loading screen is gone. Below it there's a thin bar: a progress line, a T+ clock,
+  pause/play, Unmute (the first unmute restarts the film so the music plays from the top) and "Fly it live", which
+  scrolls to the landing. It pauses whenever it's scrolled out of view. With reduced motion or data saver it waits on
+  its poster for Play.
+- The film is as wide as the screen allows with its control bar still in view: full width on phones and tablets,
+  about 84% on a 16:10 laptop, where its edges fade into the black page.
+- The live landing now waits on the pad and flies when it scrolls into view. The automatic first flight no longer
+  writes a share link into the address bar, so a reload opens on the film. Shared flight links open on the flight.
+- Footer and Space card: music credit, "Happy Beats & Business Moves Vol. 12" by Sascha Ende (ende.app), CC BY 4.0.
+- Checked in headless Chrome at 1470x830 (desktop) and 390x844 (phone): playback, unmute, pause, scroll pause,
+  "Fly it live", reduced motion, no sideways scrolling.

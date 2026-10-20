@@ -4,8 +4,9 @@ Hugging Face Space, and (optionally) uploads it.
 
 The site needs no server: every landing is flown in the visitor's browser (web/sim), so
 the Space is a free "static" Space, just files. It holds the web page, the physics and the
-four pilots' networks (web/data/pilots.json, from export_browser_pilots.py), and the four
-video clips on the page. Training logs, models and test data stay out.
+four pilots' networks (web/data/pilots.json, from export_browser_pilots.py), the launch film
+(web/media, from make_film.py) and the four video clips on the page. Training logs, models
+and test data stay out.
 
 Usage:
     python make_space.py                          # build build/hf_space/ only
@@ -41,6 +42,7 @@ Designed & built by Saad Hilal · S4D.
 Simulator: Gymnasium LunarLander-v3, rewritten in JavaScript on planck.js (MIT, see
 vendor/planck-LICENSE.txt). Learning: PPO (Stable-Baselines3). Tuning: Optuna.
 Typeface: D-DIN by Datto (SIL Open Font License, see fonts/OFL.txt).
+Launch film music: "Happy Beats & Business Moves Vol. 12" by Sascha Ende (ende.app), CC BY 4.0.
 """
 
 

@@ -34,12 +34,13 @@
 <div class="starfield" aria-hidden="true"><div class="stars far"></div><div class="stars near"></div></div>
 
 <header class="topbar" id="topbar">
-  <a class="brand" href="#top" aria-label="S4D LANDFALL, back to the live landing">
+  <a class="brand" href="#top" aria-label="S4D LANDFALL, back to the top">
     <img src="brand/s4d.png" alt="S4D" width="32" height="32">
     <span class="brand-sep" aria-hidden="true"></span>
     <span class="wordmark">Landfall</span>
   </a>
   <nav class="nav" aria-label="Sections">
+    <a class="nav-live" href="#live">Fly it</a>
     <a href="#mission">Mission</a>
     <a href="#results">Results</a>
     <a href="#data">Data</a>
@@ -56,7 +57,34 @@
 </header>
 
 <main id="top">
-  <section class="hero" aria-label="Live landing">
+  <section class="film paused" id="film" aria-label="Launch film">
+    <div class="film-frame">
+      <video id="film-video" muted loop playsinline preload="auto" aria-label="LANDFALL launch film, 23 seconds"></video>
+    </div>
+    <div class="film-bar">
+      <div class="film-progress" aria-hidden="true"><span id="film-progress"></span></div>
+      <p class="film-label"><span class="film-kicker">Launch film</span><span class="film-clock" id="film-clock">T+ 00:00</span></p>
+      <button type="button" class="film-btn glass" id="film-play" aria-label="Play the film">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path class="i-pause" d="M4 3h2.6v10H4zM9.4 3H12v10H9.4z"/>
+          <path class="i-play" d="M4.5 2.6v10.8L13.2 8z"/>
+        </svg>
+      </button>
+      <button type="button" class="film-btn film-sound glass" id="film-sound">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M2 6h3l4-3v10L5 10H2z" fill="currentColor" stroke="none"/>
+          <path class="wave" d="M11.2 5.6a3.4 3.4 0 0 1 0 4.8M12.9 3.9a5.8 5.8 0 0 1 0 8.2"/>
+          <path class="mute" d="M11 6l4 4M15 6l-4 4"/>
+        </svg>
+        <span class="label">Unmute</span>
+      </button>
+      <a class="btn glass film-cta" href="#live">Fly it live
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <section class="hero" id="live" aria-label="Live landing">
     <div class="stage" id="stage" data-panes="1">
       <div class="countdown" id="countdown" hidden>
         <span class="cd-text" id="cd-text"></span>
@@ -178,6 +206,7 @@
   </div>
   <nav class="footer-links" id="footer-links" aria-label="Saad Hilal elsewhere" hidden></nav>
   <p class="footer-credits">Simulator: Gymnasium LunarLander, rewritten in JavaScript on planck.js so it runs in your browser; it gives the same result as the Python original on 99.2% of 1,500 test landings. Learning: PPO, Stable-Baselines3. Tuning: Optuna. Typeface: D-DIN by Datto, SIL Open Font License.</p>
+  <p class="footer-credits">Launch film music: <a href="https://ende.app/en/song/12881-happy-beats-business-moves-vol-12" target="_blank" rel="noopener">“Happy Beats &amp; Business Moves Vol. 12”</a> by Sascha Ende (ende.app), licensed under <a class="nowrap" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Sound effects: Kenney, CC0.</p>
 </footer>
 
 <script type="module" src="app.js"></script>

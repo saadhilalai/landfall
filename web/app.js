@@ -43,6 +43,48 @@ const intro = (async () => {
 
 startStarfield();
 trackGlassLight();
+
+// ---- Launch film: the trailer at the top, muted and looping until the visitor unmutes it -------------
+// It starts once the loading screen is gone, pauses whenever it's scrolled out of view, and waits for
+// the Play button when the visitor asked for reduced motion or data saving.
+const film = $("#film"), filmVideo = $("#film-video"), filmPlayBtn = $("#film-play"), filmSoundBtn = $("#film-sound");
+const filmBar = $("#film-progress"), filmClock = $("#film-clock");
+const filmCut = matchMedia("(max-width: 700px)").matches ? 720 : 1080;   // phones get the lighter cut (1.2 MB)
+filmVideo.poster = `media/film-poster-${filmCut}.jpg`;
+filmVideo.src = `media/film-${filmCut}p.mp4`;
+let filmWanted = !reduceMotion() && !navigator.connection?.saveData;
+let filmStarted = false, filmInView = true, filmHeard = false, filmRaf = 0;
+function filmUpdate() {
+  if (filmWanted && filmStarted && filmInView) {
+    filmVideo.play().catch(() => { filmWanted = false; filmUI(); });   // autoplay blocked (e.g. low power mode)
+  } else filmVideo.pause();
+  filmUI();
+}
+function filmUI() {
+  film.classList.toggle("paused", !filmWanted);
+  filmPlayBtn.setAttribute("aria-label", filmWanted ? "Pause the film" : "Play the film");
+}
+const filmTick = () => {   // the progress line, smooth while it plays
+  filmBar.style.transform = `scaleX(${filmVideo.currentTime / filmVideo.duration || 0})`;
+  filmRaf = filmVideo.paused ? 0 : requestAnimationFrame(filmTick);
+};
+filmVideo.addEventListener("play", () => { if (!filmRaf) filmRaf = requestAnimationFrame(filmTick); });
+filmVideo.addEventListener("timeupdate", () => {
+  filmClock.textContent = `T+ 00:${String(Math.floor(filmVideo.currentTime)).padStart(2, "0")}`;
+});
+filmPlayBtn.addEventListener("click", () => { filmWanted = !filmWanted; filmStarted = true; filmUpdate(); });
+filmSoundBtn.addEventListener("click", () => {
+  const on = filmVideo.muted;
+  filmVideo.muted = !on;
+  filmSoundBtn.classList.toggle("on", on);
+  $(".label", filmSoundBtn).textContent = on ? "Mute" : "Unmute";
+  if (!on) return;
+  if (!filmHeard) { filmHeard = true; filmVideo.currentTime = 0; }   // the first time: from the top, with the music
+  filmWanted = filmStarted = true;
+  filmUpdate();
+});
+new IntersectionObserver(([e]) => { filmInView = e.isIntersecting; filmUpdate(); }, { threshold: 0.25 }).observe(filmVideo);
+
 const sound = new Sound();
 const SITE = await fetch("data/site.json").then(r => r.json());
 const P = SITE.physics;
@@ -270,7 +312,7 @@ function updateCheck() {
 // =====================================================================================
 // The stage: one pane per pilot, each a canvas + glass telemetry + result card
 // =====================================================================================
-const stage = $("#stage"), actions = $("#stage-actions"), consoleEl = $("#console");
+const hero = $("#live"), stage = $("#stage"), actions = $("#stage-actions"), consoleEl = $("#console");
 const desktop = matchMedia("(min-width: 1081px)");
 const GAUGE_R = 40, GAUGE_LEN = 2 * Math.PI * GAUGE_R * 0.75;   // 270-degree gauges
 
@@ -775,7 +817,7 @@ const SURPRISES = {   // each pushes past what the AI practised
 const randomLanding = () => Math.floor(Math.random() * 100000);
 let busy = false;
 
-async function launch({ newLanding = true, scroll = true, autoplay = true } = {}) {
+async function launch({ newLanding = true, scroll = true, autoplay = true, share = true } = {}) {
   if (busy) return;
   busy = true;
   if (newLanding && !state.landingEdited) state.landing = randomLanding();
@@ -785,10 +827,11 @@ async function launch({ newLanding = true, scroll = true, autoplay = true } = {}
   launchBtn.disabled = true;
   actions.hidden = true;
   const scrolled = new Promise(resolve => {   // bring the flight into view before it starts
-    if (!scroll || window.scrollY < 10) return resolve();
+    const top = hero.getBoundingClientRect().top + scrollY;
+    if (!scroll || Math.abs(scrollY - top) < 10) return resolve();
     addEventListener("scrollend", resolve, { once: true });
     setTimeout(resolve, 900);
-    scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" });
+    scrollTo({ top, behavior: reduceMotion() ? "auto" : "smooth" });
   });
   let data;
   try {
@@ -807,7 +850,7 @@ async function launch({ newLanding = true, scroll = true, autoplay = true } = {}
     busy = false;
     return;
   }
-  shareURL();
+  if (share) shareURL();   // the automatic first flight leaves the address alone
   for (const p of panes) p.playing = false;
   setPaneCount(data.flights.length);
   const meta = `Landing ${data.landing}${state.note ? `. ${state.note}` : ""}`;
@@ -1009,14 +1052,26 @@ revealOnScroll(".section > .h2, .section > .lead, .story li, .bignum, .tradeoff,
 });
 
 // =====================================================================================
-// Start: loading screen, then the final AI in the strong-wind test, a landing it has never seen
+// Start: loading screen, then the launch film. The live landing below waits on the pad and flies
+// when it comes into view: the final AI in the strong-wind test, a landing it has never seen.
 // =====================================================================================
 renderPilots();
 updateCheck();
 landingEl.value = state.landing;
 state.landingEdited = true;   // fly exactly this landing first
+if (query.has("landing")) hero.scrollIntoView();   // a shared flight link opens on the flight
 await intro;
 loader.classList.add("out");
 setTimeout(() => loader.remove(), 900);
 await wait(reduceMotion() ? 0 : 350);
-launch({ scroll: false, autoplay: !reduceMotion() });
+filmStarted = true;
+filmUpdate();
+await launch({ scroll: false, autoplay: false, share: false });
+if (!reduceMotion()) {
+  const firstFlight = new IntersectionObserver(([e]) => {
+    if (e.intersectionRatio < 0.5) return;
+    firstFlight.disconnect();
+    launch({ newLanding: false, scroll: false, share: false });
+  }, { threshold: 0.5 });
+  firstFlight.observe(stage);
+}

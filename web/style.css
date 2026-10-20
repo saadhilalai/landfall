@@ -113,7 +113,7 @@ html.reduce-motion .loader * { transition: opacity 0.3s ease !important; }
 .brand img { width: 32px; height: 32px; }
 .brand-sep { width: 1px; height: 18px; background: var(--line-strong); }
 .nav { display: flex; gap: 32px; }
-.nav a { font-family: var(--wide); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; color: var(--grey); transition: color 0.2s; }
+.nav a { white-space: nowrap; font-family: var(--wide); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; color: var(--grey); transition: color 0.2s; }
 .nav a:hover { color: var(--white); }
 .sound-toggle {
   appearance: none; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; padding: 8px 13px;
@@ -124,6 +124,38 @@ html.reduce-motion .loader * { transition: opacity 0.3s ease !important; }
 .sound-toggle .wave { opacity: 0; transition: opacity 0.2s; }
 .sound-toggle[aria-pressed="true"] .wave { opacity: 1; }
 .sound-toggle[aria-pressed="true"] .mute { opacity: 0; }
+
+/* ---- Launch film: the trailer, as wide as the screen allows with its control bar still in view ---- */
+.film { --top-h: 64px; --bar-h: 72px; position: relative; padding-top: var(--top-h); }
+.film-frame {
+  position: relative; margin: 0 auto; aspect-ratio: 16 / 9;
+  width: min(100%, max(60vw, (100vh - var(--top-h) - var(--bar-h)) * 16 / 9));
+  width: min(100%, max(60vw, (100svh - var(--top-h) - var(--bar-h)) * 16 / 9));
+}
+.film-frame video {   /* the edges fade into the page, so a film narrower than the screen has no hard border */
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; background: var(--black);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 2.5%, #000 97.5%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 2.5%, #000 97.5%, transparent);
+}
+html[data-fx="lite"] .film-frame video { -webkit-mask: none; mask: none; }
+.film-bar { position: relative; height: var(--bar-h); display: flex; align-items: center; gap: 10px; padding: 0 var(--gutter); }
+.film-progress { position: absolute; top: 0; left: var(--gutter); right: var(--gutter); height: 1px; background: var(--line); overflow: hidden; }
+.film-progress span { display: block; height: 100%; background: var(--white); transform: scaleX(0); transform-origin: left; }
+.film-label { margin: 0 auto 0 0; display: flex; align-items: baseline; gap: 20px; white-space: nowrap; }
+.film-kicker { font-family: var(--wide); font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--grey); }
+.film-clock { font-size: 15px; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+.film-btn {
+  appearance: none; border: 0; cursor: pointer; height: 40px; min-width: 40px; padding: 0 12px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px; color: var(--white);
+  font-family: var(--wide); font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+}
+.film-btn:hover { --glass-fill: rgba(255, 255, 255, 0.14); }
+.film-btn svg { width: 16px; height: 16px; flex: none; }
+.film:not(.paused) .i-play, .film.paused .i-pause { display: none; }
+.film-sound .wave, .film-sound.on .mute { opacity: 0; }
+.film-sound.on .wave { opacity: 1; }
+.film-cta { margin-left: 14px; height: 40px; display: inline-flex; align-items: center; gap: 12px; padding: 0 18px; text-decoration: none; }
+.film-cta svg { width: 14px; height: 14px; }
 
 /* ---- Hero: live landing with mission control floating on the right ---------------- */
 .hero { position: relative; height: 100vh; height: 100svh; min-height: 680px; }
@@ -414,6 +446,7 @@ html.reduce-motion .bar-fill { transition: none; transform: none !important; }
 @media (max-width: 1080px) {
   :root { --console-space: 0px; }
   .hero { height: auto; min-height: 0; }
+  .nav-live { display: none; }   /* the live landing sits right under the film here */
   .stage { position: relative; height: calc(78svh + 72px); min-height: 592px; padding-bottom: 72px; }
   .stage[data-panes="2"] { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; height: calc(100svh + 72px); min-height: 820px; }
   .stage[data-panes="2"] .pane + .pane::before { left: 16px; right: 16px; top: 0; bottom: auto; width: auto; height: 1px; }
@@ -439,6 +472,9 @@ html.reduce-motion .bar-fill { transition: none; transform: none !important; }
   .topbar { height: 56px; gap: 16px; }
   .brand img { width: 28px; height: 28px; }
   .sound-toggle .label { display: none; }
+  .film { --top-h: 56px; --bar-h: 64px; }
+  .film-cta { display: none; }   /* on phones the live landing is right below the film anyway */
+  .film-label { gap: 14px; }
   .stage { height: calc(70svh + 72px); min-height: 552px; }
   .pane-head { top: 66px; }
   .story, .bignums { grid-template-columns: 1fr; }
